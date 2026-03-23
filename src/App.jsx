@@ -83,7 +83,7 @@ export default function App() {
   const [isOpen, setIsOpen] = useState(false)
   const [isOpening, setIsOpening] = useState(false)
   const [isMuted, setIsMuted] = useState(true)
-  const targetDate = new Date('2026-05-12T17:00:00')
+  const targetDate = new Date('2026-09-12T17:00:00')
   console.log(targetDate)
 
   const handleOpenEnvelope = () => {
