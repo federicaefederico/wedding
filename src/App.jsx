@@ -225,8 +225,8 @@ export default function App() {
         <section id="detalles" className="py-20 px-4 bg-white/20">
           <div className="max-w-5xl mx-auto space-y-20">
             <div className="text-center">
-              <h2 className="text-4xl font-serif text-navy mb-2 font-script">Detalles del día</h2>
-              <p className="text-navy-muted">Todo lo que necesitas saber</p>
+              <h2 className="text-4xl font-serif text-navy mb-2 font-script">Dettagli del giorno</h2>
+              <p className="text-navy-muted">Tutto quello che devi sapere</p>
             </div>
 
             <div className="grid md:grid-cols-2 gap-12">
@@ -273,8 +273,8 @@ export default function App() {
             {/* Program / Timeline */}
             <div className="pt-20">
               <div className="text-center mb-16">
-                <h2 className="text-3xl font-serif text-navy mb-2 font-script">Programa del día</h2>
-                <p className="text-navy-muted">Lo que tenemos preparado para vosotros</p>
+                <h2 className="text-3xl font-serif text-navy mb-2 font-script">Programma del giorno</h2>
+                <p className="text-navy-muted">Cosa abbiamo preparato per te</p>
               </div>
 
               <div className="max-w-2xl mx-auto px-4 md:px-0">
@@ -398,7 +398,7 @@ export default function App() {
             <h2 className="text-3xl font-serif">Federica & Federico</h2>
             <p className="text-white/60 tracking-widest uppercase text-sm">12 Settembre 2026</p>
           </div>
-          <p className="text-xs text-white/40 pt-8 uppercase tracking-[0.2em]">Fatto con amore da Luca</p>
+          <p className="text-xs text-white/40 pt-8 tracking-[0.2em]">Fatto con amore da LucAi</p>
         </footer>
 
         {/* Floating Controls */}
