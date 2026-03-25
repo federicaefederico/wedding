@@ -146,20 +146,20 @@ export default function App() {
               <div className="absolute inset-0 bg-[#fcfbf9] rounded-none z-10 border border-navy/10 overflow-hidden"></div>
 
               {/* Corpo principale della busta */}
-              <div className="absolute inset-0 z-20 pointer-events-none overflow-hidden drop-shadow-2xl">
-                <svg viewBox="0 0 400 300" preserveAspectRatio="none" className="w-full h-full">
+              <div className="absolute inset-0 z-20 pointer-events-none drop-shadow-2xl filter will-change-[filter]">
+                <svg viewBox="0 0 400 300" preserveAspectRatio="none" className="w-full h-full overflow-visible">
                   {/* Aletta Sinistra */}
                   <polygon fill="#f9f7f3" points="0,0 200,150 0,300" stroke="rgba(0,0,0,0.04)" strokeWidth="1" strokeLinejoin="round" />
                   {/* Aletta Destra */}
                   <polygon fill="#f9f7f3" points="400,0 200,150 400,300" stroke="rgba(0,0,0,0.04)" strokeWidth="1" strokeLinejoin="round" />
                   {/* Aletta Inferiore */}
-                  <polygon fill="#fdfdfc" points="0,300 200,150 400,300" stroke="rgba(0,0,0,0.05)" strokeWidth="1" strokeLinejoin="round" className="drop-shadow-sm" />
+                  <polygon fill="#fdfdfc" points="0,300 200,150 400,300" stroke="rgba(0,0,0,0.05)" strokeWidth="1" strokeLinejoin="round" />
                 </svg>
               </div>
 
               {/* Aletta Superiore e Sigillo - altezza esattamente 50% */}
               <motion.div
-                className="absolute inset-x-0 top-0 h-1/2 z-30 pointer-events-none origin-top rounded-none"
+                className="absolute inset-x-0 top-0 h-1/2 z-30 pointer-events-none origin-top rounded-none filter drop-shadow-xl will-change-[transform,filter]"
                 initial={{ rotateX: 0 }}
                 animate={{ rotateX: isOpening ? 180 : 0 }}
                 transition={{ duration: 1.8, ease: "easeInOut" }}
@@ -167,7 +167,7 @@ export default function App() {
               >
                 {/* ViewBox combacia con l'altezza: 150 su una larghezza 400 */}
                 <svg viewBox="0 0 400 150" preserveAspectRatio="none" className="w-full h-full overflow-visible">
-                  <polygon fill="#f8f5f0" points="0,0 200,150 400,0" stroke="rgba(0,0,0,0.06)" strokeWidth="1" strokeLinejoin="round" className="drop-shadow-xl" />
+                  <polygon fill="#f8f5f0" points="0,0 200,150 400,0" stroke="rgba(0,0,0,0.06)" strokeWidth="1" strokeLinejoin="round" />
                 </svg>
 
                 {/* Sigillo solidale (top-full significa esattamente al bordo inferiore dell'aletta, cioè al centro perfetto della busta totale) */}
