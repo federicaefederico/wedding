@@ -279,8 +279,8 @@ export default function App() {
             {/* Program / Timeline */}
             <div className="pt-20">
               <div className="text-center mb-16">
-                <h2 className="text-3xl font-serif text-navy mb-2 font-script">Il programma</h2>
-                <p className="text-navy-muted">Quello che abbiamo preparato per voi</p>
+                <h2 className="text-3xl font-serif text-navy mb-2 font-script">Programma del giorno</h2>
+                <p className="text-navy-muted">Cosa abbiamo preparato per te</p>
               </div>
 
               <div className="max-w-2xl mx-auto px-4 md:px-0">
@@ -404,7 +404,7 @@ export default function App() {
             <h2 className="text-3xl font-serif">Federica & Federico</h2>
             <p className="text-white/60 tracking-widest uppercase text-sm">12 Settembre 2026</p>
           </div>
-          <p className="text-xs text-white/40 pt-8 uppercase tracking-[0.2em]">Fatto con amore da Luca</p>
+          <p className="text-xs text-white/40 pt-8 tracking-[0.2em]">Fatto con amore da LucAi</p>
         </footer>
 
         {/* Floating Controls */}
