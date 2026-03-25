@@ -13,34 +13,40 @@ import {
   Music2,
   ChevronDown
 } from 'lucide-react'
-import { intervalToDuration, format } from 'date-fns'
+import { intervalToDuration, format, differenceInDays } from 'date-fns'
 
 // --- Components ---
 
-const Countdown = ({ targetDate }) => {
-  const [duration, setDuration] = useState(
-    intervalToDuration({ start: new Date(), end: targetDate })
-  )
-
-  console.log("duration", duration)
+const Countdown = ({ targetDate, showMonths = false }) => {
+  const [now, setNow] = useState(new Date())
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setDuration(intervalToDuration({ start: new Date(), end: targetDate }))
+      setNow(new Date())
     }, 1000)
     return () => clearInterval(timer)
-  }, [targetDate])
+  }, [])
 
-  const items = [
-    { label: duration.months === 1 ? 'MESE' : 'MESI', value: duration.months || 0 },
-    { label: duration.days === 1 ? 'GIORNO' : 'GIORNI', value: duration.days || 0 },
-    { label: duration.hours === 1 ? 'ORA' : 'ORE', value: duration.hours || 0 },
-    { label: duration.minutes === 1 ? 'MINUTO' : 'MINUTI', value: duration.minutes || 0 },
-    { label: duration.seconds === 1 ? 'SECONDO' : 'SECONDI', value: duration.seconds || 0 },
-  ]
+  const duration = intervalToDuration({ start: now, end: targetDate })
+  const totalDays = differenceInDays(targetDate, now)
+
+  const items = showMonths
+    ? [
+      { label: duration.months === 1 ? 'MESE' : 'MESI', value: duration.months || 0 },
+      { label: duration.days === 1 ? 'GIORNO' : 'GIORNI', value: duration.days || 0 },
+      { label: duration.hours === 1 ? 'ORA' : 'ORE', value: duration.hours || 0 },
+      { label: duration.minutes === 1 ? 'MINUTO' : 'MINUTI', value: duration.minutes || 0 },
+      { label: duration.seconds === 1 ? 'SECONDO' : 'SECONDI', value: duration.seconds || 0 },
+    ]
+    : [
+      { label: totalDays === 1 ? 'GIORNO' : 'GIORNI', value: totalDays || 0 },
+      { label: duration.hours === 1 ? 'ORA' : 'ORE', value: duration.hours || 0 },
+      { label: duration.minutes === 1 ? 'MINUTO' : 'MINUTI', value: duration.minutes || 0 },
+      { label: duration.seconds === 1 ? 'SECONDO' : 'SECONDI', value: duration.seconds || 0 },
+    ]
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-5 gap-4 px-4 max-w-4xl mx-auto my-12">
+    <div className={`grid grid-cols-2 ${showMonths ? 'md:grid-cols-5' : 'md:grid-cols-4'} gap-4 px-4 max-w-4xl mx-auto my-12`}>
       {items.map((item, idx) => (
         <motion.div
           key={idx}
@@ -83,8 +89,8 @@ export default function App() {
   const [isOpen, setIsOpen] = useState(false)
   const [isOpening, setIsOpening] = useState(false)
   const [isMuted, setIsMuted] = useState(true)
+  const [showMonths, setShowMonths] = useState(false) // Toggle tra 5 blocchi (true) e 4 blocchi (false)
   const targetDate = new Date('2026-09-12T17:00:00')
-  console.log(targetDate)
 
   const handleOpenEnvelope = () => {
     if (isOpening || isOpen) return;
@@ -200,7 +206,7 @@ export default function App() {
             <h2 className="text-4xl font-serif text-navy mb-2">Conto alla rovescia</h2>
             <p className="text-navy-muted">Per il giorno più speciale delle nostre vite</p>
           </div>
-          <Countdown targetDate={targetDate} />
+          <Countdown targetDate={targetDate} showMonths={showMonths} />
         </section>
 
         {/* Quote Section */}
@@ -211,7 +217,7 @@ export default function App() {
             className="max-w-2xl"
           >
             <h3 className="text-3xl md:text-5xl font-script text-navy leading-relaxed">
-              "Ven por nuestro amor, ¡quédate por la tarta!"
+              "Vieni per il nostro amore, resta per la torta!"
             </h3>
             <div className="mt-12 flex justify-center">
               <div className="w-24 h-24 border border-navy/10 rounded-full flex items-center justify-center bg-white card-shadow">
@@ -225,8 +231,8 @@ export default function App() {
         <section id="detalles" className="py-20 px-4 bg-white/20">
           <div className="max-w-5xl mx-auto space-y-20">
             <div className="text-center">
-              <h2 className="text-4xl font-serif text-navy mb-2 font-script">Detalles del día</h2>
-              <p className="text-navy-muted">Todo lo que necesitas saber</p>
+              <h2 className="text-4xl font-serif text-navy mb-2 font-script">I Dettagli</h2>
+              <p className="text-navy-muted">Tutto quello che c'è da sapere</p>
             </div>
 
             <div className="grid md:grid-cols-2 gap-12">
@@ -239,18 +245,18 @@ export default function App() {
                 <div className="w-16 h-16 bg-paper rounded-full flex items-center justify-center mx-auto mb-4">
                   <MapPin className="w-8 h-8 text-navy" />
                 </div>
-                <h3 className="text-2xl font-serif text-navy">Localización</h3>
+                <h3 className="text-2xl font-serif text-navy">Luogo</h3>
                 <div className="space-y-1">
                   <p className="text-lg font-medium text-navy">Finca Biniagual</p>
                   <p className="text-navy-muted text-sm">Camí de Biniagual, Sencelles (Mallorca)</p>
                 </div>
                 <div className="flex items-center justify-center space-x-2 text-sm text-navy-muted">
                   <Clock className="w-4 h-4" />
-                  <span>De 17:00h a 01:00h</span>
+                  <span>Dalle 17:00h alle 01:00h</span>
                 </div>
                 <button className="w-full py-4 px-6 bg-navy text-white rounded-md hover:bg-navy/90 transition-colors tracking-widest uppercase text-xs font-bold flex items-center justify-center gap-2">
                   <MapPin className="w-4 h-4" />
-                  Abrir en Google Maps
+                  Apri in Google Maps
                 </button>
               </motion.div>
 
@@ -264,8 +270,8 @@ export default function App() {
                 </div>
                 <div className="text-center z-10 p-8">
                   <MapPin className="w-12 h-12 text-navy/20 mx-auto mb-4" />
-                  <p className="text-navy-muted font-serif italic italic font-light">Interactive Map View Placeholder</p>
-                  <button className="mt-6 text-navy underline text-sm tracking-widest font-bold">AÑADIR AL CALENDARIO</button>
+                  <p className="text-navy-muted font-serif italic italic font-light">Mappa Interattiva</p>
+                  <button className="mt-6 text-navy underline text-sm tracking-widest font-bold">AGGIUNGI AL CALENDARIO</button>
                 </div>
               </div>
             </div>
@@ -273,51 +279,51 @@ export default function App() {
             {/* Program / Timeline */}
             <div className="pt-20">
               <div className="text-center mb-16">
-                <h2 className="text-3xl font-serif text-navy mb-2 font-script">Programa del día</h2>
-                <p className="text-navy-muted">Lo que tenemos preparado para vosotros</p>
+                <h2 className="text-3xl font-serif text-navy mb-2 font-script">Il programma</h2>
+                <p className="text-navy-muted">Quello che abbiamo preparato per voi</p>
               </div>
 
               <div className="max-w-2xl mx-auto px-4 md:px-0">
                 <TimelineItem
+                  time="15:00"
+                  title="Cerimonia"
+                  subtitle="Il momento più speciale della giornata"
+                  icon={Heart}
+                />
+                <TimelineItem
                   time="17:00"
-                  title="Llegada de invitados"
-                  subtitle="Recepción y bienvenida en la finca"
+                  title="Arrivo degli ospiti"
+                  subtitle="Ricevimento e benvenuto"
                   icon={PartyPopper}
                 />
                 <TimelineItem
                   time="17:30"
-                  title="Welcome Drink"
-                  subtitle="Cóctel de bienvenida mientras esperamos"
+                  title="Drink di benvenuto"
+                  subtitle="Cocktail di benvenuto"
                   icon={GlassWater}
                 />
                 <TimelineItem
-                  time="18:00"
-                  title="Ceremonia"
-                  subtitle="El momento más especial del día"
-                  icon={Heart}
-                />
-                <TimelineItem
                   time="19:00"
-                  title="Cóctel"
-                  subtitle="Aperitivos y bebidas en los jardines"
+                  title="Cocktail"
+                  subtitle="Aperitivi e drink nei giardini"
                   icon={GlassWater}
                 />
                 <TimelineItem
                   time="21:00"
-                  title="Banquete"
-                  subtitle="Cena y celebración"
+                  title="Banchetto"
+                  subtitle="Cena e celebrazione"
                   icon={UtensilsCrossed}
                 />
                 <TimelineItem
                   time="00:00"
-                  title="Fiesta"
-                  subtitle="¡A bailar hasta el amanecer!"
+                  title="Festa"
+                  subtitle="Si balla fino all'alba!"
                   icon={Music2}
                 />
                 <TimelineItem
                   time="03:00"
-                  title="Fin de fiesta"
-                  subtitle="Despedida e buenos recuerdos"
+                  title="Fine della festa"
+                  subtitle="Saluti e bei ricordi"
                   icon={PartyPopper}
                   isLast
                 />
@@ -335,22 +341,22 @@ export default function App() {
               className="bg-white p-8 md:p-12 rounded-lg card-shadow border border-navy/5"
             >
               <div className="text-center mb-10">
-                <h2 className="text-4xl font-serif text-navy mb-2 font-script">Confirma tu asistencia</h2>
-                <p className="text-navy-muted">Esperamos contar contigo</p>
+                <h2 className="text-4xl font-serif text-navy mb-2 font-script">Conferma la tua presenza</h2>
+                <p className="text-navy-muted">Non vediamo l'ora di festeggiare con voi</p>
               </div>
 
               <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
                 <div className="space-y-2 text-left">
-                  <label className="text-xs font-bold text-navy uppercase tracking-widest">Nombre completo *</label>
+                  <label className="text-xs font-bold text-navy uppercase tracking-widest">Nome completo *</label>
                   <input
                     type="text"
-                    placeholder="Tu nombre"
+                    placeholder="Il tuo nome"
                     className="w-full p-4 bg-paper rounded border border-navy/10 focus:border-navy focus:outline-none transition-colors"
                   />
                 </div>
 
                 <div className="space-y-2 text-left">
-                  <label className="text-xs font-bold text-navy uppercase tracking-widest">Email (opcional)</label>
+                  <label className="text-xs font-bold text-navy uppercase tracking-widest">Email (opzionale)</label>
                   <input
                     type="email"
                     placeholder="tu@email.com"
@@ -359,21 +365,21 @@ export default function App() {
                 </div>
 
                 <div className="space-y-4 text-left pt-2">
-                  <label className="text-xs font-bold text-navy uppercase tracking-widest">¿Asistirás? *</label>
+                  <label className="text-xs font-bold text-navy uppercase tracking-widest">Parteciperai? *</label>
                   <div className="flex space-x-8">
                     <label className="flex items-center space-x-3 cursor-pointer">
                       <input type="radio" name="attendance" className="w-5 h-5 accent-navy" />
-                      <span className="text-navy-muted">Sí, asistiré</span>
+                      <span className="text-navy-muted">Sì, ci sarò</span>
                     </label>
                     <label className="flex items-center space-x-3 cursor-pointer">
                       <input type="radio" name="attendance" className="w-5 h-5 accent-navy" />
-                      <span className="text-navy-muted">No podré asistir</span>
+                      <span className="text-navy-muted">No, non potrò venire</span>
                     </label>
                   </div>
                 </div>
 
                 <div className="space-y-2 text-left">
-                  <label className="text-xs font-bold text-navy uppercase tracking-widest">Número de invitados</label>
+                  <label className="text-xs font-bold text-navy uppercase tracking-widest">Numero di ospiti</label>
                   <input
                     type="number"
                     defaultValue="1"
@@ -384,7 +390,7 @@ export default function App() {
 
                 <button className="w-full py-4 bg-navy text-white rounded-md hover:bg-navy/90 transition-all font-bold tracking-widest uppercase text-xs flex items-center justify-center gap-2 mt-8">
                   <Send className="w-4 h-4" />
-                  Enviar confirmación
+                  Invia conferma
                 </button>
               </form>
             </motion.div>
