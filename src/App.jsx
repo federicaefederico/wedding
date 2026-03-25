@@ -175,11 +175,12 @@ export default function App() {
                   className="absolute left-1/2  pointer-events-auto"
                   style={{ transform: "translate(-50%, -50%) translateZ(1px)" }}
                 >
-                  <div className="w-[12vw] max-w-[150px] min-w-[100px] aspect-square flex items-center justify-center group">
-                    <img 
-                      src={sigillo} 
-                      alt="Sigillo" 
-                      className="w-full h-full object-contain drop-shadow-[0_5px_15px_rgba(0,0,0,0.3)] transition-transform duration-500 group-hover:scale-105"
+                  <div className="w-[12vw] max-w-[150px] min-w-[100px] aspect-square flex items-center justify-center group filter drop-shadow-[0_8px_16px_rgba(0,0,0,0.3)] will-change-[filter]">
+                    <img
+                      src={sigillo}
+                      alt=""
+                      loading="eager"
+                      className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105 will-change-transform block"
                     />
                   </div>
                 </div>
