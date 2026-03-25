@@ -13,6 +13,7 @@ import {
   Music2,
   ChevronDown
 } from 'lucide-react'
+import sigillo from './assets/sigillo.png'
 import { intervalToDuration, format, differenceInDays } from 'date-fns'
 
 // --- Components ---
@@ -86,11 +87,21 @@ const TimelineItem = ({ time, title, subtitle, icon: Icon, isLast }) => (
 )
 
 export default function App() {
+  const [isReady, setIsReady] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
   const [isOpening, setIsOpening] = useState(false)
   const [isMuted, setIsMuted] = useState(true)
   const [showMonths, setShowMonths] = useState(false) // Toggle tra 5 blocchi (true) e 4 blocchi (false)
   const targetDate = new Date('2026-09-12T17:00:00')
+
+  useEffect(() => {
+    if (document.readyState === 'complete') {
+      setIsReady(true)
+    } else {
+      window.addEventListener('load', () => setIsReady(true))
+      return () => window.removeEventListener('load', () => setIsReady(true))
+    }
+  }, [])
 
   const handleOpenEnvelope = () => {
     if (isOpening || isOpen) return;
@@ -102,10 +113,21 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-paper overflow-x-hidden pt-0 mt-0">
-      {/* --- Splash Screen / Envelope --- */}
       <AnimatePresence>
-        {!isOpen && (
+        {!isReady && (
           <motion.div
+            key="preloader"
+            className="fixed inset-0 z-[100] bg-paper flex items-center justify-center"
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1 }}
+          />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {isReady && !isOpen && (
+          <motion.div
+            key="splash"
             className="fixed inset-0 z-50 flex items-center justify-center bg-[#f3f0e7] px-4 perspective-[1500px] overflow-hidden"
             initial={{ opacity: 1 }}
             animate={isOpening ? { opacity: 0 } : { opacity: 1 }}
@@ -153,10 +175,12 @@ export default function App() {
                   className="absolute left-1/2  pointer-events-auto"
                   style={{ transform: "translate(-50%, -50%) translateZ(1px)" }}
                 >
-                  <div className="w-[10vw] max-w-[120px] min-w-[80px] aspect-square rounded-full bg-[#f3f0e7] shadow-[0_5px_15px_rgba(0,0,0,0.2)] flex items-center justify-center border-2 border-white/40 group overflow-hidden">
-                    <div className="w-[8vw] max-w-[100px] min-w-[65px] aspect-square rounded-full bg-[#f3f0e7] shadow-inner flex items-center justify-center relative">
-                      <span className="font-serif text-[#3a5978]/40 font-bold text-3xl italic group-hover:scale-105 transition-transform duration-500">F&F</span>
-                    </div>
+                  <div className="w-[12vw] max-w-[150px] min-w-[100px] aspect-square flex items-center justify-center group">
+                    <img 
+                      src={sigillo} 
+                      alt="Sigillo" 
+                      className="w-full h-full object-contain drop-shadow-[0_5px_15px_rgba(0,0,0,0.3)] transition-transform duration-500 group-hover:scale-105"
+                    />
                   </div>
                 </div>
               </motion.div>
@@ -245,19 +269,70 @@ export default function App() {
                 <div className="w-16 h-16 bg-paper rounded-full flex items-center justify-center mx-auto mb-4">
                   <MapPin className="w-8 h-8 text-navy" />
                 </div>
-                <h3 className="text-2xl font-serif text-navy">Luogo</h3>
+                <h3 className="text-2xl font-serif text-navy">Villa Valenca</h3>
                 <div className="space-y-1">
-                  <p className="text-lg font-medium text-navy">Finca Biniagual</p>
-                  <p className="text-navy-muted text-sm">Camí de Biniagual, Sencelles (Mallorca)</p>
+                  <p className="text-lg font-medium text-navy">Rovato (BS)</p>
+                  <p className="text-navy-muted text-sm px-4">Via Bersini Don Luigi, 20, 25038 San Giuseppe, Rovato BS</p>
                 </div>
                 <div className="flex items-center justify-center space-x-2 text-sm text-navy-muted">
                   <Clock className="w-4 h-4" />
-                  <span>Dalle 17:00h alle 01:00h</span>
+                  <span>Dalle 15:00h alle 01:00h</span>
                 </div>
-                <button className="w-full py-4 px-6 bg-navy text-white rounded-md hover:bg-navy/90 transition-colors tracking-widest uppercase text-xs font-bold flex items-center justify-center gap-2">
+                <a
+                  href="https://maps.app.goo.gl/kdcajB4Ycqnvi7K5A"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full py-4 px-6 bg-navy text-white rounded-md hover:bg-navy/90 transition-colors tracking-widest uppercase text-xs font-bold flex items-center justify-center gap-2"
+                >
                   <MapPin className="w-4 h-4" />
                   Apri in Google Maps
-                </button>
+                </a>
+              </motion.div>
+
+              {/* Map Placeholder */}
+              <div className="h-full min-h-[400px] bg-navy/5 rounded-lg border border-navy/10 flex items-center justify-center relative overflow-hidden">
+                <div className="absolute inset-0 opacity-20 pointer-events-none">
+                  {/* Simulated map lines */}
+                  <div className="absolute top-1/4 left-0 w-full h-px bg-navy" />
+                  <div className="absolute top-1/2 left-0 w-full h-1 bg-navy" />
+                  <div className="absolute top-0 left-1/3 h-full w-px bg-navy" />
+                </div>
+                <div className="text-center z-10 p-8">
+                  <MapPin className="w-12 h-12 text-navy/20 mx-auto mb-4" />
+                  <p className="text-navy-muted font-serif italic italic font-light">Mappa Interattiva</p>
+                  <button className="mt-6 text-navy underline text-sm tracking-widest font-bold">AGGIUNGI AL CALENDARIO</button>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-12">
+              {/* Location */}
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                className="bg-white p-8 rounded-lg card-shadow text-center space-y-6"
+              >
+                <div className="w-16 h-16 bg-paper rounded-full flex items-center justify-center mx-auto mb-4">
+                  <MapPin className="w-8 h-8 text-navy" />
+                </div>
+                <h3 className="text-2xl font-serif text-navy">Villa Valenca</h3>
+                <div className="space-y-1">
+                  <p className="text-lg font-medium text-navy">Rovato (BS)</p>
+                  <p className="text-navy-muted text-sm px-4">Via Bersini Don Luigi, 20, 25038 San Giuseppe, Rovato BS</p>
+                </div>
+                <div className="flex items-center justify-center space-x-2 text-sm text-navy-muted">
+                  <Clock className="w-4 h-4" />
+                  <span>Dalle 15:00h alle 01:00h</span>
+                </div>
+                <a
+                  href="https://maps.app.goo.gl/kdcajB4Ycqnvi7K5A"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full py-4 px-6 bg-navy text-white rounded-md hover:bg-navy/90 transition-colors tracking-widest uppercase text-xs font-bold flex items-center justify-center gap-2"
+                >
+                  <MapPin className="w-4 h-4" />
+                  Apri in Google Maps
+                </a>
               </motion.div>
 
               {/* Map Placeholder */}
