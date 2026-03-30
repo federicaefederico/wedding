@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   Heart,
   MapPin,
-  Clock,
   Volume2,
   VolumeX,
   Send,
@@ -14,6 +13,8 @@ import {
   ChevronDown
 } from 'lucide-react'
 import sigillo from './assets/sigillo.png'
+import chiesa from './assets/chiesa.jpeg'
+import villa from './assets/villa.jpeg'
 import { intervalToDuration, format, differenceInDays } from 'date-fns'
 
 // --- Components ---
@@ -260,95 +261,99 @@ export default function App() {
               <p className="text-navy-muted">Tutto quello che c'è da sapere</p>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-12">
-              {/* Location */}
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                className="bg-white p-8 rounded-lg card-shadow text-center space-y-6"
-              >
-                <div className="w-16 h-16 bg-paper rounded-full flex items-center justify-center mx-auto mb-4">
-                  <MapPin className="w-8 h-8 text-navy" />
-                </div>
-                <h3 className="text-2xl font-serif text-navy">Villa Valenca</h3>
-                <div className="space-y-1">
-                  <p className="text-lg font-medium text-navy">Rovato (BS)</p>
-                  <p className="text-navy-muted text-sm px-4">Via Bersini Don Luigi, 20, 25038 San Giuseppe, Rovato BS</p>
-                </div>
-                <div className="flex items-center justify-center space-x-2 text-sm text-navy-muted">
-                  <Clock className="w-4 h-4" />
-                  <span>Dalle 15:00h alle 01:00h</span>
-                </div>
+            <div className="space-y-12">
+              <div className="text-center">
+                <h3 className="text-3xl font-serif text-navy italic">La Cerimonia</h3>
+                <div className="w-12 h-px bg-gold/30 mx-auto mt-2" />
+              </div>
+              <div className="grid md:grid-cols-2 gap-12">
+                {/* Information Card with Background Image */}
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  className="relative p-0 rounded-lg card-shadow text-center overflow-hidden flex flex-col justify-center min-h-[400px] bg-cover bg-center"
+                  style={{ backgroundImage: `url(${chiesa})` }}
+                >
+                  <div className="absolute inset-0 bg-gradient-to-b from-white/95 via-transparent to-white/95" />
+                  <div className="relative p-6 h-full flex flex-col justify-between">
+                    <h3 className="text-3xl font-serif text-navy font-medium drop-shadow-sm">Chiesa di San Giuseppe Calasanzio</h3>
+                    <div className="space-y-1 drop-shadow-sm">
+                      <p className="text-lg font-medium text-navy">Via Don Carlo Gnocchi, 16, 20148 Milano MI</p>
+                    </div>
+                  </div>
+                </motion.div>
+
+                {/* Clickable Map Area */}
                 <a
-                  href="https://maps.app.goo.gl/kdcajB4Ycqnvi7K5A"
+                  href="https://www.google.com/maps/search/?api=1&query=Chiesa+di+San+Giuseppe+Calasanzio+Via+Don+Carlo+Gnocchi+16+20148+Milano"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full py-4 px-6 bg-navy text-white rounded-md hover:bg-navy/90 transition-colors tracking-widest uppercase text-xs font-bold flex items-center justify-center gap-2"
+                  className="h-full min-h-[400px] bg-navy-muted/5 rounded-lg border border-navy/10 flex items-center justify-center relative overflow-hidden group hover:border-navy/30 transition-all duration-500"
                 >
-                  <MapPin className="w-4 h-4" />
-                  Apri in Google Maps
-                </a>
-              </motion.div>
+                  {/* Subtle map decoration */}
+                  <div className="absolute inset-0 opacity-10 pointer-events-none">
+                    <div className="absolute top-1/4 left-0 w-full h-px bg-navy" />
+                    <div className="absolute top-1/2 left-0 w-full h-1 bg-navy" />
+                    <div className="absolute top-0 left-1/3 h-full w-px bg-navy" />
+                  </div>
 
-              {/* Map Placeholder */}
-              <div className="h-full min-h-[400px] bg-navy/5 rounded-lg border border-navy/10 flex items-center justify-center relative overflow-hidden">
-                <div className="absolute inset-0 opacity-20 pointer-events-none">
-                  {/* Simulated map lines */}
-                  <div className="absolute top-1/4 left-0 w-full h-px bg-navy" />
-                  <div className="absolute top-1/2 left-0 w-full h-1 bg-navy" />
-                  <div className="absolute top-0 left-1/3 h-full w-px bg-navy" />
-                </div>
-                <div className="text-center z-10 p-8">
-                  <MapPin className="w-12 h-12 text-navy/20 mx-auto mb-4" />
-                  <p className="text-navy-muted font-serif italic italic font-light">Mappa Interattiva</p>
-                  <button className="mt-6 text-navy underline text-sm tracking-widest font-bold">AGGIUNGI AL CALENDARIO</button>
-                </div>
+                  <div className="text-center z-10 p-8 transform group-hover:scale-105 transition-transform duration-500">
+                    <div className="w-16 h-16 bg-gold/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-gold/20">
+                      <MapPin className="w-8 h-8 text-gold" />
+                    </div>
+                    <p className="text-navy font-serif italic font-bold text-xl">Mappa Interattiva</p>
+                    <p className="text-navy-muted text-xs tracking-widest uppercase mt-4 font-bold opacity-0 group-hover:opacity-100 transition-opacity">Visualizza su Google Maps</p>
+                    <button className="mt-8 text-navy underline text-xs tracking-widest font-bold">AGGIUNGI AL CALENDARIO</button>
+                  </div>
+                </a>
               </div>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-12">
-              {/* Location */}
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                className="bg-white p-8 rounded-lg card-shadow text-center space-y-6"
-              >
-                <div className="w-16 h-16 bg-paper rounded-full flex items-center justify-center mx-auto mb-4">
-                  <MapPin className="w-8 h-8 text-navy" />
-                </div>
-                <h3 className="text-2xl font-serif text-navy">Villa Valenca</h3>
-                <div className="space-y-1">
-                  <p className="text-lg font-medium text-navy">Rovato (BS)</p>
-                  <p className="text-navy-muted text-sm px-4">Via Bersini Don Luigi, 20, 25038 San Giuseppe, Rovato BS</p>
-                </div>
-                <div className="flex items-center justify-center space-x-2 text-sm text-navy-muted">
-                  <Clock className="w-4 h-4" />
-                  <span>Dalle 15:00h alle 01:00h</span>
-                </div>
+            <div className="space-y-12">
+              <div className="text-center">
+                <h3 className="text-3xl font-serif text-navy italic">Il Ricevimento</h3>
+                <div className="w-12 h-px bg-gold/30 mx-auto mt-2" />
+              </div>
+              <div className="grid md:grid-cols-2 gap-12">
+                {/* Information Card with Background Image */}
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  className="relative p-0 rounded-lg card-shadow text-center overflow-hidden flex flex-col justify-center min-h-[400px] bg-cover bg-center"
+                  style={{ backgroundImage: `url(${villa})` }}
+                >
+                  <div className="absolute inset-0 bg-gradient-to-b from-white/95 via-transparent to-white/95" />
+                  <div className="relative p-6 h-full flex flex-col justify-between">
+                    <h3 className="text-3xl font-serif text-navy font-medium drop-shadow-sm">Villa Valenca</h3>
+                    <div className="space-y-1 drop-shadow-sm">
+                      <p className="text-lg font-medium text-navy">Via Bersini Don Luigi, 20, 25038 {/* San Giuseppe, */} Rovato BS</p>
+                    </div>
+                  </div>
+                </motion.div>
+
+                {/* Clickable Map Area */}
                 <a
                   href="https://maps.app.goo.gl/kdcajB4Ycqnvi7K5A"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full py-4 px-6 bg-navy text-white rounded-md hover:bg-navy/90 transition-colors tracking-widest uppercase text-xs font-bold flex items-center justify-center gap-2"
+                  className="h-full min-h-[400px] bg-navy-muted/5 rounded-lg border border-navy/10 flex items-center justify-center relative overflow-hidden group hover:border-navy/30 transition-all duration-500"
                 >
-                  <MapPin className="w-4 h-4" />
-                  Apri in Google Maps
-                </a>
-              </motion.div>
+                  {/* Subtle map decoration */}
+                  <div className="absolute inset-0 opacity-10 pointer-events-none">
+                    <div className="absolute top-1/4 left-0 w-full h-px bg-navy" />
+                    <div className="absolute top-1/2 left-0 w-full h-1 bg-navy" />
+                    <div className="absolute top-0 left-1/3 h-full w-px bg-navy" />
+                  </div>
 
-              {/* Map Placeholder */}
-              <div className="h-full min-h-[400px] bg-navy/5 rounded-lg border border-navy/10 flex items-center justify-center relative overflow-hidden">
-                <div className="absolute inset-0 opacity-20 pointer-events-none">
-                  {/* Simulated map lines */}
-                  <div className="absolute top-1/4 left-0 w-full h-px bg-navy" />
-                  <div className="absolute top-1/2 left-0 w-full h-1 bg-navy" />
-                  <div className="absolute top-0 left-1/3 h-full w-px bg-navy" />
-                </div>
-                <div className="text-center z-10 p-8">
-                  <MapPin className="w-12 h-12 text-navy/20 mx-auto mb-4" />
-                  <p className="text-navy-muted font-serif italic italic font-light">Mappa Interattiva</p>
-                  <button className="mt-6 text-navy underline text-sm tracking-widest font-bold">AGGIUNGI AL CALENDARIO</button>
-                </div>
+                  <div className="text-center z-10 p-8 transform group-hover:scale-105 transition-transform duration-500">
+                    <div className="w-16 h-16 bg-gold/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-gold/20">
+                      <MapPin className="w-8 h-8 text-gold" />
+                    </div>
+                    <p className="text-navy font-serif italic font-bold text-xl">Mappa Interattiva</p>
+                    <p className="text-navy-muted text-xs tracking-widest uppercase mt-4 font-bold opacity-0 group-hover:opacity-100 transition-opacity">Visualizza su Google Maps</p>
+                    <button className="mt-8 text-navy underline text-xs tracking-widest font-bold">AGGIUNGI AL CALENDARIO</button>
+                  </div>
+                </a>
               </div>
             </div>
 
