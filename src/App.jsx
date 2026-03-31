@@ -357,6 +357,34 @@ export default function App() {
               </div>
             </div>
 
+            <div className="space-y-12 pt-20 border-t border-navy/5">
+              <div className="text-center space-y-2">
+                <h3 className="text-2xl font-serif text-navy font-medium">Chiesa di San Giuseppe Calasanzio</h3>
+                <p className="text-navy-muted text-sm tracking-widest uppercase">Via Don Carlo Gnocchi, 16, 20148 Milano MI</p>
+                <div className="w-12 h-px bg-gold/30 mx-auto mt-2" />
+              </div>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                className="relative h-[300px] md:h-[450px] rounded-lg card-shadow overflow-hidden bg-cover bg-center"
+                style={{ backgroundImage: `url(${chiesa})` }}
+              />
+            </div>
+
+            <div className="space-y-12 pt-20">
+              <div className="text-center space-y-2">
+                <h3 className="text-2xl font-serif text-navy font-medium">Villa Valenca</h3>
+                <p className="text-navy-muted text-sm tracking-widest uppercase">Via Bersini Don Luigi, 20, 25038 Rovato BS</p>
+                <div className="w-12 h-px bg-gold/30 mx-auto mt-2" />
+              </div>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                className="relative h-[300px] md:h-[450px] rounded-lg card-shadow overflow-hidden bg-cover bg-center"
+                style={{ backgroundImage: `url(${villa})` }}
+              />
+            </div>
+
             {/* Program / Timeline */}
             <div className="pt-20">
               <div className="text-center mb-16">
