@@ -254,188 +254,109 @@ export default function App() {
         </section>
 
         {/* Details Section */}
-        <section id="detalles" className="py-20 px-4 bg-white/20">
-          <div className="max-w-5xl mx-auto space-y-20">
-            <div className="text-center">
-              <h2 className="text-4xl font-serif text-navy mb-2 font-script">I Dettagli</h2>
-              <p className="text-navy-muted">Tutto quello che c'è da sapere</p>
+        <section id="detalles" className="py-24 px-4 bg-navy/[0.03] relative overflow-hidden">
+          {/* Subtle background pattern/decoration if needed, but keeping it clean for now */}
+          <div className="max-w-6xl mx-auto flex flex-col items-center">
+            <div className="text-center mb-16 space-y-2">
+              <h2 className="text-4xl md:text-5xl font-serif text-navy font-script">I Dettagli</h2>
+              <p className="text-navy-muted tracking-[0.2em] uppercase text-xs font-bold">Informazioni Utili</p>
+              <div className="w-24 h-px bg-gold/30 mx-auto mt-4" />
             </div>
 
-            <div className="space-y-12">
-              <div className="text-center">
-                <h3 className="text-3xl font-serif text-navy italic">La Cerimonia</h3>
-                <div className="w-12 h-px bg-gold/30 mx-auto mt-2" />
-              </div>
-              <div className="grid md:grid-cols-2 gap-12">
-                {/* Information Card with Background Image */}
-                <motion.div
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  className="relative p-0 rounded-lg card-shadow text-center overflow-hidden flex flex-col justify-center min-h-[400px] bg-cover bg-center"
-                  style={{ backgroundImage: `url(${chiesa})` }}
-                >
-                  <div className="absolute inset-0 bg-gradient-to-b from-white/95 via-transparent to-white/95" />
-                  <div className="relative p-6 h-full flex flex-col justify-between">
-                    <h3 className="text-3xl font-serif text-navy font-medium drop-shadow-sm">Chiesa di San Giuseppe Calasanzio</h3>
-                    <div className="space-y-1 drop-shadow-sm">
-                      <p className="text-lg font-medium text-navy">Via Don Carlo Gnocchi, 16, 20148 Milano MI</p>
-                    </div>
-                  </div>
-                </motion.div>
-
-                {/* Clickable Map Area */}
-                <a
-                  href="https://www.google.com/maps/search/?api=1&query=Chiesa+di+San+Giuseppe+Calasanzio+Via+Don+Carlo+Gnocchi+16+20148+Milano"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="h-full min-h-[400px] bg-navy-muted/5 rounded-lg border border-navy/10 flex items-center justify-center relative overflow-hidden group hover:border-navy/30 transition-all duration-500"
-                >
-                  {/* Subtle map decoration */}
-                  <div className="absolute inset-0 opacity-10 pointer-events-none">
-                    <div className="absolute top-1/4 left-0 w-full h-px bg-navy" />
-                    <div className="absolute top-1/2 left-0 w-full h-1 bg-navy" />
-                    <div className="absolute top-0 left-1/3 h-full w-px bg-navy" />
-                  </div>
-
-                  <div className="text-center z-10 p-8 transform group-hover:scale-105 transition-transform duration-500">
-                    <div className="w-16 h-16 bg-gold/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-gold/20">
-                      <MapPin className="w-8 h-8 text-gold" />
-                    </div>
-                    <p className="text-navy font-serif italic font-bold text-xl">Mappa Interattiva</p>
-                    <p className="text-navy-muted text-xs tracking-widest uppercase mt-4 font-bold opacity-0 group-hover:opacity-100 transition-opacity">Visualizza su Google Maps</p>
-                    <button className="mt-8 text-navy underline text-xs tracking-widest font-bold">AGGIUNGI AL CALENDARIO</button>
-                  </div>
-                </a>
-              </div>
-            </div>
-
-            <div className="space-y-12">
-              <div className="text-center">
-                <h3 className="text-3xl font-serif text-navy italic">Il Ricevimento</h3>
-                <div className="w-12 h-px bg-gold/30 mx-auto mt-2" />
-              </div>
-              <div className="grid md:grid-cols-2 gap-12">
-                {/* Information Card with Background Image */}
-                <motion.div
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  className="relative p-0 rounded-lg card-shadow text-center overflow-hidden flex flex-col justify-center min-h-[400px] bg-cover bg-center"
-                  style={{ backgroundImage: `url(${villa})` }}
-                >
-                  <div className="absolute inset-0 bg-gradient-to-b from-white/95 via-transparent to-white/95" />
-                  <div className="relative p-6 h-full flex flex-col justify-between">
-                    <h3 className="text-3xl font-serif text-navy font-medium drop-shadow-sm">Villa Valenca</h3>
-                    <div className="space-y-1 drop-shadow-sm">
-                      <p className="text-lg font-medium text-navy">Via Bersini Don Luigi, 20, 25038 {/* San Giuseppe, */} Rovato BS</p>
-                    </div>
-                  </div>
-                </motion.div>
-
-                {/* Clickable Map Area */}
-                <a
-                  href="https://maps.app.goo.gl/kdcajB4Ycqnvi7K5A"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="h-full min-h-[400px] bg-navy-muted/5 rounded-lg border border-navy/10 flex items-center justify-center relative overflow-hidden group hover:border-navy/30 transition-all duration-500"
-                >
-                  {/* Subtle map decoration */}
-                  <div className="absolute inset-0 opacity-10 pointer-events-none">
-                    <div className="absolute top-1/4 left-0 w-full h-px bg-navy" />
-                    <div className="absolute top-1/2 left-0 w-full h-1 bg-navy" />
-                    <div className="absolute top-0 left-1/3 h-full w-px bg-navy" />
-                  </div>
-
-                  <div className="text-center z-10 p-8 transform group-hover:scale-105 transition-transform duration-500">
-                    <div className="w-16 h-16 bg-gold/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-gold/20">
-                      <MapPin className="w-8 h-8 text-gold" />
-                    </div>
-                    <p className="text-navy font-serif italic font-bold text-xl">Mappa Interattiva</p>
-                    <p className="text-navy-muted text-xs tracking-widest uppercase mt-4 font-bold opacity-0 group-hover:opacity-100 transition-opacity">Visualizza su Google Maps</p>
-                    <button className="mt-8 text-navy underline text-xs tracking-widest font-bold">AGGIUNGI AL CALENDARIO</button>
-                  </div>
-                </a>
-              </div>
-            </div>
-
-            <div className="space-y-12 pt-20 border-t border-navy/5">
-              <div className="text-center space-y-2">
-                <h3 className="text-2xl font-serif text-navy font-medium">Chiesa di San Giuseppe Calasanzio</h3>
-                <p className="text-navy-muted text-sm tracking-widest uppercase">Via Don Carlo Gnocchi, 16, 20148 Milano MI</p>
-                <div className="w-12 h-px bg-gold/30 mx-auto mt-2" />
-              </div>
+            <div className="grid md:grid-cols-2 gap-12 w-full max-w-5xl">
+              {/* Cerimonia Card */}
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                className="relative h-[300px] md:h-[450px] rounded-lg card-shadow overflow-hidden bg-cover bg-center"
-                style={{ backgroundImage: `url(${chiesa})` }}
-              />
-            </div>
+                viewport={{ once: true }}
+                className="bg-white rounded-[2rem] overflow-hidden shadow-2xl shadow-navy/10 border border-navy/5 flex flex-col h-full group"
+              >
+                <div className="h-64 md:h-72 relative overflow-hidden">
+                  <motion.div 
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ duration: 0.8 }}
+                    className="absolute inset-0 bg-cover bg-center"
+                    style={{ backgroundImage: `url(${chiesa})` }}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent opacity-60" />
+                </div>
+                
+                <div className="p-10 flex flex-col flex-grow items-center text-center space-y-6">
+                  <div className="space-y-3">
+                    <span className="text-gold font-bold text-[10px] tracking-[0.3em] uppercase">La Cerimonia</span>
+                    <h3 className="text-3xl font-serif text-navy font-medium">Chiesa di San Giuseppe Calasanzio</h3>
+                    <p className="text-navy-muted font-light italic text-sm px-4">Via Don Carlo Gnocchi, 16, 20148 Milano MI</p>
+                  </div>
+                  
+                  <div className="pt-4 mt-auto">
+                    <a
+                      href="https://www.google.com/maps/search/?api=1&query=Chiesa+di+San+Giuseppe+Calasanzio+Via+Don+Carlo+Gnocchi+16+20148+Milano"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center space-x-3 px-8 py-4 bg-navy text-white rounded-full text-[10px] font-bold tracking-[0.2em] uppercase hover:bg-gold transition-all duration-300 shadow-lg hover:shadow-gold/20"
+                    >
+                      <MapPin className="w-4 h-4" />
+                      <span>Apri su Google Maps</span>
+                    </a>
+                  </div>
+                </div>
+              </motion.div>
 
-            <div className="space-y-12 pt-20">
-              <div className="text-center space-y-2">
-                <h3 className="text-2xl font-serif text-navy font-medium">Villa Valenca</h3>
-                <p className="text-navy-muted text-sm tracking-widest uppercase">Via Bersini Don Luigi, 20, 25038 Rovato BS</p>
-                <div className="w-12 h-px bg-gold/30 mx-auto mt-2" />
-              </div>
+              {/* Ricevimento Card */}
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                className="relative h-[300px] md:h-[450px] rounded-lg card-shadow overflow-hidden bg-cover bg-center"
-                style={{ backgroundImage: `url(${villa})` }}
-              />
+                viewport={{ once: true }}
+                transition={{ delay: 0.2 }}
+                className="bg-white rounded-[2rem] overflow-hidden shadow-2xl shadow-navy/10 border border-navy/5 flex flex-col h-full group"
+              >
+                <div className="h-64 md:h-72 relative overflow-hidden">
+                  <motion.div 
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ duration: 0.8 }}
+                    className="absolute inset-0 bg-cover bg-center"
+                    style={{ backgroundImage: `url(${villa})` }}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent opacity-60" />
+                </div>
+                
+                <div className="p-10 flex flex-col flex-grow items-center text-center space-y-6">
+                  <div className="space-y-3">
+                    <span className="text-gold font-bold text-[10px] tracking-[0.3em] uppercase">Il Ricevimento</span>
+                    <h3 className="text-3xl font-serif text-navy font-medium">Villa Valenca</h3>
+                    <p className="text-navy-muted font-light italic text-sm px-4">Via Bersini Don Luigi, 20, 25038 Rovato BS</p>
+                  </div>
+                  
+                  <div className="pt-4 mt-auto">
+                    <a
+                      href="https://maps.app.goo.gl/kdcajB4Ycqnvi7K5A"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center space-x-3 px-8 py-4 bg-navy text-white rounded-full text-[10px] font-bold tracking-[0.2em] uppercase hover:bg-gold transition-all duration-300 shadow-lg hover:shadow-gold/20"
+                    >
+                      <MapPin className="w-4 h-4" />
+                      <span>Apri su Google Maps</span>
+                    </a>
+                  </div>
+                </div>
+              </motion.div>
             </div>
 
             {/* Program / Timeline */}
-            <div className="pt-20">
-              <div className="text-center mb-16">
-                <h2 className="text-3xl font-serif text-navy mb-2 font-script">Programma del giorno</h2>
-                <p className="text-navy-muted">Cosa abbiamo preparato per te</p>
+            <div className="pt-32 w-full max-w-4xl">
+              <div className="text-center mb-16 space-y-2">
+                <h2 className="text-3xl font-serif text-navy font-script">Il Programma</h2>
+                <p className="text-navy-muted tracking-[0.2em] uppercase text-[10px] font-bold">Il Giorno più Bello</p>
               </div>
 
-              <div className="max-w-2xl mx-auto px-4 md:px-0">
-                <TimelineItem
-                  time="15:00"
-                  title="Cerimonia"
-                  subtitle="Il momento più speciale della giornata"
-                  icon={Heart}
-                />
-                <TimelineItem
-                  time="17:00"
-                  title="Arrivo degli ospiti"
-                  subtitle="Ricevimento e benvenuto"
-                  icon={PartyPopper}
-                />
-                <TimelineItem
-                  time="17:30"
-                  title="Drink di benvenuto"
-                  subtitle="Cocktail di benvenuto"
-                  icon={GlassWater}
-                />
-                <TimelineItem
-                  time="19:00"
-                  title="Cocktail"
-                  subtitle="Aperitivi e drink nei giardini"
-                  icon={GlassWater}
-                />
-                <TimelineItem
-                  time="21:00"
-                  title="Banchetto"
-                  subtitle="Cena e celebrazione"
-                  icon={UtensilsCrossed}
-                />
-                <TimelineItem
-                  time="00:00"
-                  title="Festa"
-                  subtitle="Si balla fino all'alba!"
-                  icon={Music2}
-                />
-                <TimelineItem
-                  time="03:00"
-                  title="Fine della festa"
-                  subtitle="Saluti e bei ricordi"
-                  icon={PartyPopper}
-                  isLast
-                />
+              <div className="max-w-2xl mx-auto px-4 md:px-0 bg-white/40 p-8 md:p-12 rounded-[2rem] border border-navy/5">
+                <TimelineItem time="15:00" title="Cerimonia" subtitle="Il momento più speciale della giornata" icon={Heart} />
+                <TimelineItem time="17:00" title="Arrivo degli ospiti" subtitle="Ricevimento e benvenuto" icon={PartyPopper} />
+                <TimelineItem time="17:30" title="Drink di benvenuto" subtitle="Cocktail di benvenuto" icon={GlassWater} />
+                <TimelineItem time="19:00" title="Cocktail" subtitle="Aperitivi e drink nei giardini" icon={GlassWater} />
+                <TimelineItem time="21:00" title="Banchetto" subtitle="Cena e celebrazione" icon={UtensilsCrossed} />
+                <TimelineItem time="00:00" title="Festa" subtitle="Si balla fino all'alba!" icon={Music2} />
+                <TimelineItem time="03:00" title="Fine della festa" subtitle="Saluti e bei ricordi" icon={PartyPopper} isLast />
               </div>
             </div>
           </div>
