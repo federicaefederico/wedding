@@ -19,6 +19,30 @@ import { intervalToDuration, format, differenceInDays } from 'date-fns'
 
 // --- Components ---
 
+const CardSeparator = () => (
+  <div className="flex items-center justify-center w-full py-12 px-4 overflow-hidden">
+    <motion.div
+      initial={{ width: 0, opacity: 0 }}
+      whileInView={{ width: '200px', opacity: 0.2 }}
+      className="h-px bg-navy"
+    />
+    <motion.div
+      initial={{ scale: 0, opacity: 0 }}
+      whileInView={{ scale: 1, opacity: 0.3 }}
+      className="mx-8 text-navy shrink-0"
+    >
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 2C13 10 21 11 22 12C21 13 13 14 12 22C11 14 3 13 2 12C3 11 11 10 12 2Z" />
+      </svg>
+    </motion.div>
+    <motion.div
+      initial={{ width: 0, opacity: 0 }}
+      whileInView={{ width: '200px', opacity: 0.2 }}
+      className="h-px bg-navy"
+    />
+  </div>
+)
+
 const Countdown = ({ targetDate, showMonths = false }) => {
   const [now, setNow] = useState(new Date())
 
@@ -86,6 +110,80 @@ const TimelineItem = ({ time, title, subtitle, icon: Icon, isLast }) => (
     </motion.div>
   </div>
 )
+
+const FAQItem = ({ question, answer, isOpen, onClick }) => (
+  <div className="border border-navy/10 bg-white/50 backdrop-blur-sm rounded-2xl overflow-hidden mb-4 last:mb-0 transition-all duration-300 hover:border-navy/20">
+    <button
+      onClick={onClick}
+      className="w-full flex items-center justify-between p-6 text-left transition-colors"
+    >
+      <span className="font-serif text-navy text-lg pr-8">{question}</span>
+      <motion.div
+        animate={{ rotate: isOpen ? 180 : 0 }}
+        className="text-navy-muted"
+      >
+        <ChevronDown className="w-5 h-5" />
+      </motion.div>
+    </button>
+
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          initial={{ height: 0, opacity: 0 }}
+          animate={{ height: "auto", opacity: 1 }}
+          exit={{ height: 0, opacity: 0 }}
+          transition={{ duration: 0.3, ease: "easeInOut" }}
+        >
+          <div className="p-6 pt-0 text-navy-muted text-sm border-t border-navy/5 leading-relaxed">
+            {answer}
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  </div>
+)
+
+const FAQAccordion = () => {
+  const [activeIndex, setActiveIndex] = useState(null)
+
+  const items = [
+    {
+      q: "Entro quando devo confermare?",
+      a: "Vi preghiamo di confermare la vostra presenza entro il 12 Luglio 2026 utilizzando il modulo RSVP qui sotto o contattandoci direttamente."
+    },
+    {
+      q: "C'è un dress code particolare?",
+      a: "L'abito formale è gradito. Tenete presente che parte del ricevimento si terrà nei giardini della villa, quindi vi consigliamo calzature comode per il prato."
+    },
+    {
+      q: "Cosa devo fare se ho allergie o restrizioni alimentari?",
+      a: "Potete indicare qualsiasi allergia o intolleranza nel campo 'Note' del modulo RSVP. Avviseremo lo chef per garantirvi un menu dedicato."
+    },
+    {
+      q: "I bambini sono i benvenuti?",
+      a: "Certamente! Fateci sapere se avrete bisogno di seggioloni o se volete segnalare menu particolari per i più piccoli."
+    },
+    {
+      q: "È disponibile un parcheggio presso la Villa?",
+      a: "Sì, Villa Valenca dispone di un ampio parcheggio privato e gratuito a disposizione di tutti gli ospiti."
+    }
+  ]
+
+  return (
+    <div className="space-y-4 max-w-2xl mx-auto">
+      {items.map((faq, idx) => (
+        <FAQItem
+          key={idx}
+          question={faq.q}
+          answer={faq.a}
+          isOpen={activeIndex === idx}
+          onClick={() => setActiveIndex(activeIndex === idx ? null : idx)}
+        />
+      ))}
+    </div>
+  )
+}
+
 
 export default function App() {
   const [isReady, setIsReady] = useState(false)
@@ -226,14 +324,18 @@ export default function App() {
           </motion.div>
         </section>
 
+        <CardSeparator />
+
         {/* Countdown Section */}
         <section className="py-20 bg-white/30">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-serif text-navy mb-2">Conto alla rovescia</h2>
-            <p className="text-navy-muted">Per il giorno più speciale delle nostre vite</p>
+            <p className="text-navy-muted">Per il giorno più speciale della nostra vita</p>
           </div>
           <Countdown targetDate={targetDate} showMonths={showMonths} />
         </section>
+
+        <CardSeparator />
 
         {/* Quote Section */}
         <section className="py-32 flex flex-col items-center text-center px-4">
@@ -253,6 +355,8 @@ export default function App() {
           </motion.div>
         </section>
 
+        <CardSeparator />
+
         {/* Details Section */}
         <section id="detalles" className="py-24 px-4 bg-navy/[0.03] relative overflow-hidden">
           {/* Subtle background pattern/decoration if needed, but keeping it clean for now */}
@@ -263,16 +367,16 @@ export default function App() {
               <div className="w-24 h-px bg-gold/30 mx-auto mt-4" />
             </div>
 
-            <div className="grid md:grid-cols-2 gap-12 w-full max-w-5xl">
+            <div className="flex flex-col items-center gap-0 w-full max-w-4xl mx-auto">
               {/* Cerimonia Card */}
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className="bg-white rounded-[2rem] overflow-hidden shadow-2xl shadow-navy/10 border border-navy/5 flex flex-col h-full group"
+                className="bg-white rounded-[2rem] overflow-hidden shadow-2xl shadow-navy/10 border border-navy/5 flex flex-col w-full max-w-2xl group"
               >
-                <div className="h-64 md:h-72 relative overflow-hidden">
-                  <motion.div 
+                <div className="h-64 md:h-80 relative overflow-hidden">
+                  <motion.div
                     whileHover={{ scale: 1.05 }}
                     transition={{ duration: 0.8 }}
                     className="absolute inset-0 bg-cover bg-center"
@@ -280,15 +384,15 @@ export default function App() {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent opacity-60" />
                 </div>
-                
-                <div className="p-10 flex flex-col flex-grow items-center text-center space-y-6">
+
+                <div className="p-10 flex flex-col items-center text-center space-y-6">
                   <div className="space-y-3">
                     <span className="text-gold font-bold text-[10px] tracking-[0.3em] uppercase">La Cerimonia</span>
                     <h3 className="text-3xl font-serif text-navy font-medium">Chiesa di San Giuseppe Calasanzio</h3>
                     <p className="text-navy-muted font-light italic text-sm px-4">Via Don Carlo Gnocchi, 16, 20148 Milano MI</p>
                   </div>
-                  
-                  <div className="pt-4 mt-auto">
+
+                  <div className="pt-4">
                     <a
                       href="https://www.google.com/maps/search/?api=1&query=Chiesa+di+San+Giuseppe+Calasanzio+Via+Don+Carlo+Gnocchi+16+20148+Milano"
                       target="_blank"
@@ -302,16 +406,18 @@ export default function App() {
                 </div>
               </motion.div>
 
+              <CardSeparator />
+
               {/* Ricevimento Card */}
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: 0.2 }}
-                className="bg-white rounded-[2rem] overflow-hidden shadow-2xl shadow-navy/10 border border-navy/5 flex flex-col h-full group"
+                transition={{ delay: 0.1 }}
+                className="bg-white rounded-[2rem] overflow-hidden shadow-2xl shadow-navy/10 border border-navy/5 flex flex-col w-full max-w-2xl group"
               >
-                <div className="h-64 md:h-72 relative overflow-hidden">
-                  <motion.div 
+                <div className="h-64 md:h-80 relative overflow-hidden">
+                  <motion.div
                     whileHover={{ scale: 1.05 }}
                     transition={{ duration: 0.8 }}
                     className="absolute inset-0 bg-cover bg-center"
@@ -319,15 +425,15 @@ export default function App() {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent opacity-60" />
                 </div>
-                
-                <div className="p-10 flex flex-col flex-grow items-center text-center space-y-6">
+
+                <div className="p-10 flex flex-col items-center text-center space-y-6">
                   <div className="space-y-3">
                     <span className="text-gold font-bold text-[10px] tracking-[0.3em] uppercase">Il Ricevimento</span>
                     <h3 className="text-3xl font-serif text-navy font-medium">Villa Valenca</h3>
                     <p className="text-navy-muted font-light italic text-sm px-4">Via Bersini Don Luigi, 20, 25038 Rovato BS</p>
                   </div>
-                  
-                  <div className="pt-4 mt-auto">
+
+                  <div className="pt-4">
                     <a
                       href="https://maps.app.goo.gl/kdcajB4Ycqnvi7K5A"
                       target="_blank"
@@ -342,6 +448,8 @@ export default function App() {
               </motion.div>
             </div>
 
+            <CardSeparator />
+
             {/* Program / Timeline */}
             <div className="pt-32 w-full max-w-4xl">
               <div className="text-center mb-16 space-y-2">
@@ -350,17 +458,74 @@ export default function App() {
               </div>
 
               <div className="max-w-2xl mx-auto px-4 md:px-0 bg-white/40 p-8 md:p-12 rounded-[2rem] border border-navy/5">
-                <TimelineItem time="15:00" title="Cerimonia" subtitle="Il momento più speciale della giornata" icon={Heart} />
-                <TimelineItem time="17:00" title="Arrivo degli ospiti" subtitle="Ricevimento e benvenuto" icon={PartyPopper} />
-                <TimelineItem time="17:30" title="Drink di benvenuto" subtitle="Cocktail di benvenuto" icon={GlassWater} />
-                <TimelineItem time="19:00" title="Cocktail" subtitle="Aperitivi e drink nei giardini" icon={GlassWater} />
-                <TimelineItem time="21:00" title="Banchetto" subtitle="Cena e celebrazione" icon={UtensilsCrossed} />
-                <TimelineItem time="00:00" title="Festa" subtitle="Si balla fino all'alba!" icon={Music2} />
-                <TimelineItem time="03:00" title="Fine della festa" subtitle="Saluti e bei ricordi" icon={PartyPopper} isLast />
+                <TimelineItem time="15:00" title="Cerimonia" subtitle="Il momento del nostro sì" icon={Heart} />
+                <TimelineItem time="18:00" title="Aperitivo" subtitle="Nei giardini della villa" icon={GlassWater} />
+                <TimelineItem time="20:30" title="Cena" subtitle="Condivisione e allegria" icon={UtensilsCrossed} />
+                <TimelineItem time="22:15" title="Taglio della torta" subtitle="Il lato dolce della serata" icon={PartyPopper} />
+                <TimelineItem time="23:00" title="Festa" subtitle="Si balla fino alle ore 1:00" icon={Music2} />
+                <TimelineItem time="02:00" title="Fine della festa" subtitle="Saluti e bei ricordi" icon={PartyPopper} isLast />
               </div>
             </div>
           </div>
         </section>
+
+        <CardSeparator />
+
+        <section className="py-24 px-4 bg-white/20">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-16 space-y-2">
+              <h2 className="text-3xl font-serif text-navy font-script">Domande Frequenti</h2>
+              <p className="text-navy-muted tracking-[0.2em] uppercase text-[10px] font-bold">Tutto quello che c'è da sapere</p>
+            </div>
+
+            <FAQAccordion />
+          </div>
+        </section>
+
+        <CardSeparator />
+
+        {/* Gifts Section */}
+        <section className="py-24 px-4 bg-navy/[0.02]">
+          <div className="max-w-3xl mx-auto text-center">
+            <div className="mb-16 space-y-2">
+              <h2 className="text-3xl font-serif text-navy font-script">Il Regalo più Grande</h2>
+              <p className="text-navy-muted tracking-[0.2em] uppercase text-[10px] font-bold">Un gesto d'amore</p>
+            </div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              className="bg-white/60 backdrop-blur-md p-10 md:p-16 rounded-[3rem] border border-navy/5 shadow-2xl shadow-navy/5 relative overflow-hidden group"
+            >
+              {/* Subtle background decoration */}
+              <div className="absolute top-0 right-0 p-8 text-navy/5 transform translate-x-4 -translate-y-4 group-hover:scale-110 transition-transform duration-700">
+                <Heart className="w-24 h-24 stroke-[1px]" />
+              </div>
+
+              <div className="relative z-10 space-y-8">
+                <p className="text-navy/70 leading-relaxed max-w-lg mx-auto font-light">
+                  La vostra presenza nel nostro giorno più importante è per noi il dono più prezioso. 
+                  Tuttavia, se desiderate farci un pensiero, abbiamo scelto di raccogliere il vostro contributo 
+                  per realizzare il nostro sogno di una <span className="font-bold text-navy">luna di miele indimenticabile</span>.
+                </p>
+
+                <div className="pt-4 inline-block">
+                  <div className="bg-paper p-6 rounded-2xl border border-navy/5 card-shadow flex flex-col space-y-2 items-center">
+                    <span className="text-[10px] text-navy-muted uppercase tracking-[0.3em] font-bold">Codice IBAN</span>
+                    <p className="text-navy font-mono text-sm md:text-md tracking-wider select-all">
+                      IT00 A 0000 0000 0000 0000 0000 000
+                    </p>
+                  </div>
+                  <p className="mt-4 text-[10px] text-navy-muted italic lowercase tracking-wider">
+                    Intestato a Federica & Federico
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </section>
+
+        <CardSeparator />
 
         {/* RSVP Section */}
         <section className="py-20 px-4">
