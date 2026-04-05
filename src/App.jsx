@@ -157,7 +157,7 @@ const FAQAccordion = () => {
     },
     {
       q: "Cosa devo fare se ho allergie o restrizioni alimentari?",
-      a: "Potete indicare qualsiasi allergia o intolleranza nel campo 'Note' del modulo RSVP. Avviseremo lo chef per garantirvi un menu dedicato."
+      a: "Potete indicare qualsiasi allergia o intolleranza direttamente nel modulo RSVP. Avviseremo lo chef per garantirvi un menu dedicato."
     },
     {
       q: "I bambini sono i benvenuti?",
@@ -504,8 +504,8 @@ export default function App() {
 
               <div className="relative z-10 space-y-8">
                 <p className="text-navy/70 leading-relaxed max-w-lg mx-auto font-light">
-                  La vostra presenza nel nostro giorno più importante è per noi il dono più prezioso. 
-                  Tuttavia, se desiderate farci un pensiero, abbiamo scelto di raccogliere il vostro contributo 
+                  La vostra presenza nel nostro giorno più importante è per noi il dono più prezioso.
+                  Tuttavia, se desiderate farci un pensiero, abbiamo scelto di raccogliere il vostro contributo
                   per realizzare il nostro sogno di una <span className="font-bold text-navy">luna di miele indimenticabile</span>.
                 </p>
 
@@ -542,7 +542,7 @@ export default function App() {
 
               <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
                 <div className="space-y-2 text-left">
-                  <label className="text-xs font-bold text-navy uppercase tracking-widest">Nome completo *</label>
+                  <label className="text-xs font-bold text-navy uppercase tracking-widest">Inserisci nome e cognome *</label>
                   <input
                     type="text"
                     placeholder="Il tuo nome"
@@ -573,14 +573,24 @@ export default function App() {
                   </div>
                 </div>
 
+
+
                 <div className="space-y-2 text-left">
-                  <label className="text-xs font-bold text-navy uppercase tracking-widest">Numero di ospiti</label>
-                  <input
-                    type="number"
-                    defaultValue="1"
-                    min="1"
-                    className="w-full p-4 bg-paper rounded border border-navy/10 focus:border-navy focus:outline-none transition-colors"
-                  />
+                  <label className="text-xs font-bold text-navy uppercase tracking-widest">Allergie o intolleranze alimentari</label>
+                  <textarea
+                    placeholder="Esempi: celiachia, allergia alle noci, vegetariano..."
+                    rows="3"
+                    className="w-full p-4 bg-paper rounded border border-navy/10 focus:border-navy focus:outline-none transition-colors resize-none"
+                  ></textarea>
+                </div>
+
+                <div className="space-y-2 text-left">
+                  <label className="text-xs font-bold text-navy uppercase tracking-widest">Messaggio agli sposi</label>
+                  <textarea
+                    placeholder="Lasciate un messaggio per noi..."
+                    rows="4"
+                    className="w-full p-4 bg-paper rounded border border-navy/10 focus:border-navy focus:outline-none transition-colors resize-none"
+                  ></textarea>
                 </div>
 
                 <button className="w-full py-4 bg-navy text-white rounded-md hover:bg-navy/90 transition-all font-bold tracking-widest uppercase text-xs flex items-center justify-center gap-2 mt-8">
