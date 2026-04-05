@@ -79,10 +79,10 @@ const Countdown = ({ targetDate, showMonths = false }) => {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ delay: idx * 0.1 }}
-          className="bg-white/50 backdrop-blur-sm border border-navy/10 p-6 rounded-lg text-center card-shadow"
+          className="bg-white/10 backdrop-blur-md border border-white/10 p-6 rounded-lg text-center shadow-lg"
         >
-          <div className="text-4xl md:text-5xl font-serif text-navy mb-1">{item.value}</div>
-          <div className="text-xs tracking-widest text-navy-muted uppercase font-medium">{item.label}</div>
+          <div className="text-4xl md:text-5xl font-serif text-paper mb-1">{item.value}</div>
+          <div className="text-xs tracking-widest text-paper/80 uppercase font-medium">{item.label}</div>
         </motion.div>
       ))}
     </div>
@@ -327,10 +327,10 @@ export default function App() {
         <CardSeparator />
 
         {/* Countdown Section */}
-        <section className="py-20 bg-white/30">
+        <section className="py-20 bg-navy">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-serif text-navy mb-2">Conto alla rovescia</h2>
-            <p className="text-navy-muted">Per il giorno più speciale della nostra vita</p>
+            <h2 className="text-4xl font-serif text-paper mb-2">Conto alla rovescia</h2>
+            <p className="text-paper/80">Per il giorno più speciale della nostra vita</p>
           </div>
           <Countdown targetDate={targetDate} showMonths={showMonths} />
         </section>
