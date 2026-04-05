@@ -46,18 +46,9 @@
 }
 
 .timeline-line {
-  @apply absolute left-1/2 top-0 bottom-0 w-px bg-navy/20 -translate-x-1/2 md:block hidden;
+  @apply absolute left-5 top-0 bottom-0 w-px bg-navy/20;
 }
 
 .timeline-dot {
-  @apply absolute left-1/2 w-3 h-3 bg-navy rounded-full -translate-x-1/2 md:block hidden;
-}
-
-@media (max-width: 768px) {
-  .timeline-line {
-    @apply left-4;
-  }
-  .timeline-dot {
-    @apply left-4;
-  }
+  @apply absolute left-5 w-3 h-3 bg-navy rounded-full -translate-x-1/2 hidden;
 }

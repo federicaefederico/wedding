@@ -375,14 +375,14 @@ export default function App() {
                 viewport={{ once: true }}
                 className="bg-white rounded-[2rem] overflow-hidden shadow-2xl shadow-navy/10 border border-navy/5 flex flex-col w-full max-w-2xl group"
               >
-                <div className="h-64 md:h-80 relative overflow-hidden">
-                  <motion.div
-                    whileHover={{ scale: 1.05 }}
-                    transition={{ duration: 0.8 }}
-                    className="absolute inset-0 bg-cover bg-center"
-                    style={{ backgroundImage: `url(${chiesa})` }}
+                <div className="w-full relative overflow-hidden flex items-center justify-center p-4 md:p-6 bg-white">
+                  <motion.img
+                    src={chiesa}
+                    alt="Chiesa di San Giuseppe Calasanzio"
+                    whileHover={{ scale: 1.02 }}
+                    transition={{ duration: 0.6 }}
+                    className="w-full h-auto max-h-[500px] object-contain rounded-2xl shadow-lg"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent opacity-60" />
                 </div>
 
                 <div className="p-10 flex flex-col items-center text-center space-y-6">
@@ -416,14 +416,14 @@ export default function App() {
                 transition={{ delay: 0.1 }}
                 className="bg-white rounded-[2rem] overflow-hidden shadow-2xl shadow-navy/10 border border-navy/5 flex flex-col w-full max-w-2xl group"
               >
-                <div className="h-64 md:h-80 relative overflow-hidden">
-                  <motion.div
-                    whileHover={{ scale: 1.05 }}
-                    transition={{ duration: 0.8 }}
-                    className="absolute inset-0 bg-cover bg-center"
-                    style={{ backgroundImage: `url(${villa})` }}
+                <div className="w-full relative overflow-hidden flex items-center justify-center p-4 md:p-6 bg-white">
+                  <motion.img
+                    src={villa}
+                    alt="Villa Valenca"
+                    whileHover={{ scale: 1.02 }}
+                    transition={{ duration: 0.6 }}
+                    className="w-full h-auto max-h-[500px] object-contain rounded-2xl shadow-lg"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent opacity-60" />
                 </div>
 
                 <div className="p-10 flex flex-col items-center text-center space-y-6">
@@ -457,13 +457,15 @@ export default function App() {
                 <p className="text-navy-muted tracking-[0.2em] uppercase text-[10px] font-bold">Il Giorno più Bello</p>
               </div>
 
-              <div className="max-w-2xl mx-auto px-4 md:px-0 bg-white/40 p-8 md:p-12 rounded-[2rem] border border-navy/5">
-                <TimelineItem time="15:00" title="Cerimonia" subtitle="Il momento del nostro sì" icon={Heart} />
+              <div className="max-w-2xl mx-auto px-4 md:px-0 bg-white/40 p-8 md:p-12 rounded-[2rem] border border-navy/5 flex justify-center">
+                <div className="w-full max-w-md">
+                  <TimelineItem time="15:00" title="Cerimonia" subtitle="Il momento del nostro sì" icon={Heart} />
                 <TimelineItem time="18:00" title="Aperitivo" subtitle="Nei giardini della villa" icon={GlassWater} />
                 <TimelineItem time="20:30" title="Cena" subtitle="Condivisione e allegria" icon={UtensilsCrossed} />
                 <TimelineItem time="22:15" title="Taglio della torta" subtitle="Il lato dolce della serata" icon={PartyPopper} />
                 <TimelineItem time="23:00" title="Festa" subtitle="Si balla fino alle ore 1:00" icon={Music2} />
                 <TimelineItem time="02:00" title="Fine della festa" subtitle="Saluti e bei ricordi" icon={PartyPopper} isLast />
+                </div>
               </div>
             </div>
           </div>
