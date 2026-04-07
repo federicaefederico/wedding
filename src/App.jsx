@@ -10,12 +10,18 @@ import {
   PartyPopper,
   UtensilsCrossed,
   Music2,
-  ChevronDown
+  ChevronDown,
+  Lock,
+  Loader2
 } from 'lucide-react'
 import sigillo from './assets/sigillo.png'
 import chiesa from './assets/chiesa.jpeg'
 import villa from './assets/villa.jpeg'
 import { intervalToDuration, format, differenceInDays } from 'date-fns'
+import { Routes, Route, useNavigate } from 'react-router-dom'
+import { submitRSVP } from './services/rsvpService'
+import { supabase } from './lib/supabaseClient'
+import Dashboard from './components/Dashboard'
 
 // --- Components ---
 
@@ -184,14 +190,28 @@ const FAQAccordion = () => {
   )
 }
 
+// --- Home Component (Landing Page) ---
 
-export default function App() {
+function Home() {
   const [isReady, setIsReady] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
   const [isOpening, setIsOpening] = useState(false)
   const [isMuted, setIsMuted] = useState(true)
-  const [showMonths, setShowMonths] = useState(false) // Toggle tra 5 blocchi (true) e 4 blocchi (false)
+  const [showMonths, setShowMonths] = useState(false)
   const targetDate = new Date('2026-09-12T17:00:00')
+
+  // Form State
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    attendance: '',
+    dietary_requirements: '',
+    message: '',
+    privacyAccepted: false
+  })
+  const [showPrivacyModal, setShowPrivacyModal] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [status, setStatus] = useState(null) // 'success' | 'error' | null
 
   useEffect(() => {
     if (document.readyState === 'complete') {
@@ -207,7 +227,40 @@ export default function App() {
     setIsOpening(true);
     setTimeout(() => {
       setIsOpen(true);
-    }, 2400); // 1.8s di apertura + 0.6s di dissolvenza rapida
+    }, 2400);
+  }
+
+  const handleRSVPSubmit = async (e) => {
+    e.preventDefault()
+    if (!formData.name || !formData.attendance) {
+      alert('Per favore compila i campi obbligatori (*)')
+      return
+    }
+    if (!formData.privacyAccepted) {
+      alert('Per favore accetta l\'informativa sulla privacy per procedere')
+      return
+    }
+
+    setIsSubmitting(true)
+    setStatus(null)
+
+    try {
+      await submitRSVP(formData)
+      setStatus('success')
+      setFormData({
+        name: '',
+        email: '',
+        attendance: '',
+        dietary_requirements: '',
+        message: '',
+        privacyAccepted: false
+      })
+    } catch (error) {
+      setStatus('error')
+      alert('Si è verificato un errore durante l\'invio. Riprova più tardi.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -230,33 +283,24 @@ export default function App() {
             className="fixed inset-0 z-50 flex items-center justify-center bg-[#f3f0e7] px-4 perspective-[1500px] overflow-hidden"
             initial={{ opacity: 1 }}
             animate={isOpening ? { opacity: 0 } : { opacity: 1 }}
-            transition={{ duration: 0.6, delay: 1.8, ease: "easeOut" }} // Ritardo esatto per attendere l'apertura pulita (1.8s), poi svanisce subito
+            transition={{ duration: 0.6, delay: 1.8, ease: "easeOut" }}
             exit={{ opacity: 0 }}
           >
             <motion.div
               className="relative w-[250vw] md:w-[150vw] xl:w-[120vw] aspect-[4/3] cursor-pointer"
               onClick={handleOpenEnvelope}
               initial={{ scale: 1 }}
-              animate={isOpening ? { scale: 3 } : { scale: 1 }} // Esclusivamente avvicinamento (zoom esteso) agli occhi
+              animate={isOpening ? { scale: 3 } : { scale: 1 }}
               transition={{ duration: 2, delay: 1.5, ease: "easeInOut" }}
             >
-
-              {/* Retro della busta */}
               <div className="absolute inset-0 bg-[#fcfbf9] rounded-none z-10 border border-navy/10 overflow-hidden"></div>
-
-              {/* Corpo principale della busta */}
               <div className="absolute inset-0 z-20 pointer-events-none drop-shadow-2xl filter will-change-[filter]">
                 <svg viewBox="0 0 400 300" preserveAspectRatio="none" className="w-full h-full overflow-visible">
-                  {/* Aletta Sinistra */}
                   <polygon fill="#f9f7f3" points="0,0 200,150 0,300" stroke="rgba(0,0,0,0.04)" strokeWidth="1" strokeLinejoin="round" />
-                  {/* Aletta Destra */}
                   <polygon fill="#f9f7f3" points="400,0 200,150 400,300" stroke="rgba(0,0,0,0.04)" strokeWidth="1" strokeLinejoin="round" />
-                  {/* Aletta Inferiore */}
                   <polygon fill="#fdfdfc" points="0,300 200,150 400,300" stroke="rgba(0,0,0,0.05)" strokeWidth="1" strokeLinejoin="round" />
                 </svg>
               </div>
-
-              {/* Aletta Superiore e Sigillo - altezza esattamente 50% */}
               <motion.div
                 className="absolute inset-x-0 top-0 h-1/2 z-30 pointer-events-none origin-top rounded-none filter drop-shadow-xl will-change-[transform,filter]"
                 initial={{ rotateX: 0 }}
@@ -264,12 +308,9 @@ export default function App() {
                 transition={{ duration: 1.8, ease: "easeInOut" }}
                 style={{ transformStyle: "preserve-3d" }}
               >
-                {/* ViewBox combacia con l'altezza: 150 su una larghezza 400 */}
                 <svg viewBox="0 0 400 150" preserveAspectRatio="none" className="w-full h-full overflow-visible">
                   <polygon fill="#f8f5f0" points="0,0 200,150 400,0" stroke="rgba(0,0,0,0.06)" strokeWidth="1" strokeLinejoin="round" />
                 </svg>
-
-                {/* Sigillo solidale (top-full significa esattamente al bordo inferiore dell'aletta, cioè al centro perfetto della busta totale) */}
                 <div
                   className="absolute left-1/2  pointer-events-auto"
                   style={{ transform: "translate(-50%, -50%) translateZ(1px)" }}
@@ -284,15 +325,12 @@ export default function App() {
                   </div>
                 </div>
               </motion.div>
-
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
-      {/* --- Main Content --- */}
-      <main className={`transition-all duration-1000 ${isOpen ? 'opacity-100' : 'opacity-0 blur-lg pointer-events-none h-screen overflow-hidden'}`}>
 
-        {/* Hero Section */}
+      <main className={`transition-all duration-1000 ${isOpen ? 'opacity-100' : 'opacity-0 blur-lg pointer-events-none h-screen overflow-hidden'}`}>
         <section className="relative min-h-screen flex flex-col items-center justify-center text-center px-4 pt-20">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -300,13 +338,11 @@ export default function App() {
             transition={{ duration: 1 }}
             className="space-y-6"
           >
-            {/* Header Decoration */}
             <div className="flex items-center justify-center space-x-4 text-navy-muted mb-8">
               <div className="h-px w-12 bg-navy/20" />
               <Heart className="w-4 h-4" />
               <div className="h-px w-12 bg-navy/20" />
             </div>
-
             <h1 className="text-6xl md:text-8xl font-serif text-navy">Federica & Federico</h1>
             <p className="text-xl md:text-2xl tracking-[0.3em] font-light text-navy-muted uppercase py-4">
               12 Settembre 2026
@@ -325,8 +361,7 @@ export default function App() {
         </section>
 
         <CardSeparator />
-
-        {/* Countdown Section */}
+        
         <section className="py-20 bg-navy">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-serif text-paper mb-2">Conto alla rovescia</h2>
@@ -337,7 +372,6 @@ export default function App() {
 
         <CardSeparator />
 
-        {/* Quote Section */}
         <section className="py-32 flex flex-col items-center text-center px-4">
           <motion.div
             initial={{ opacity: 0 }}
@@ -357,9 +391,7 @@ export default function App() {
 
         <CardSeparator />
 
-        {/* Details Section */}
         <section id="detalles" className="py-24 px-4 bg-navy/[0.03] relative overflow-hidden">
-          {/* Subtle background pattern/decoration if needed, but keeping it clean for now */}
           <div className="max-w-6xl mx-auto flex flex-col items-center">
             <div className="text-center mb-16 space-y-2">
               <h2 className="text-4xl md:text-5xl font-serif text-navy font-script">I Dettagli</h2>
@@ -368,7 +400,6 @@ export default function App() {
             </div>
 
             <div className="flex flex-col items-center gap-0 w-full max-w-4xl mx-auto">
-              {/* Cerimonia Card */}
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -380,24 +411,21 @@ export default function App() {
                     src={chiesa}
                     alt="Chiesa di San Giuseppe Calasanzio"
                     whileHover={{ scale: 1.02 }}
-                    transition={{ duration: 0.6 }}
                     className="w-full h-auto max-h-[500px] object-contain rounded-2xl shadow-lg"
                   />
                 </div>
-
                 <div className="p-10 flex flex-col items-center text-center space-y-6">
                   <div className="space-y-3">
                     <span className="text-gold font-bold text-[10px] tracking-[0.3em] uppercase">La Cerimonia</span>
                     <h3 className="text-3xl font-serif text-navy font-medium">Chiesa di San Giuseppe Calasanzio</h3>
                     <p className="text-navy-muted font-light italic text-sm px-4">Via Don Carlo Gnocchi, 16, 20148 Milano MI</p>
                   </div>
-
                   <div className="pt-4">
                     <a
                       href="https://www.google.com/maps/search/?api=1&query=Chiesa+di+San+Giuseppe+Calasanzio+Via+Don+Carlo+Gnocchi+16+20148+Milano"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center space-x-3 px-8 py-4 bg-navy text-white rounded-full text-[10px] font-bold tracking-[0.2em] uppercase hover:bg-gold transition-all duration-300 shadow-lg hover:shadow-gold/20"
+                      className="inline-flex items-center space-x-3 px-8 py-4 bg-navy text-white rounded-full text-[10px] font-bold tracking-[0.2em] uppercase hover:bg-gold transition-colors shadow-lg"
                     >
                       <MapPin className="w-4 h-4" />
                       <span>Apri su Google Maps</span>
@@ -408,12 +436,10 @@ export default function App() {
 
               <CardSeparator />
 
-              {/* Ricevimento Card */}
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: 0.1 }}
                 className="bg-white rounded-[2rem] overflow-hidden shadow-2xl shadow-navy/10 border border-navy/5 flex flex-col w-full max-w-2xl group"
               >
                 <div className="w-full relative overflow-hidden flex items-center justify-center p-4 md:p-6 bg-white">
@@ -421,24 +447,21 @@ export default function App() {
                     src={villa}
                     alt="Villa Valenca"
                     whileHover={{ scale: 1.02 }}
-                    transition={{ duration: 0.6 }}
                     className="w-full h-auto max-h-[500px] object-contain rounded-2xl shadow-lg"
                   />
                 </div>
-
                 <div className="p-10 flex flex-col items-center text-center space-y-6">
                   <div className="space-y-3">
                     <span className="text-gold font-bold text-[10px] tracking-[0.3em] uppercase">Il Ricevimento</span>
                     <h3 className="text-3xl font-serif text-navy font-medium">Villa Valenca</h3>
                     <p className="text-navy-muted font-light italic text-sm px-4">Via Bersini Don Luigi, 20, 25038 Rovato BS</p>
                   </div>
-
                   <div className="pt-4">
                     <a
                       href="https://maps.app.goo.gl/kdcajB4Ycqnvi7K5A"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center space-x-3 px-8 py-4 bg-navy text-white rounded-full text-[10px] font-bold tracking-[0.2em] uppercase hover:bg-gold transition-all duration-300 shadow-lg hover:shadow-gold/20"
+                      className="inline-flex items-center space-x-3 px-8 py-4 bg-navy text-white rounded-full text-[10px] font-bold tracking-[0.2em] uppercase hover:bg-gold transition-colors shadow-lg"
                     >
                       <MapPin className="w-4 h-4" />
                       <span>Apri su Google Maps</span>
@@ -450,21 +473,19 @@ export default function App() {
 
             <CardSeparator />
 
-            {/* Program / Timeline */}
             <div className="pt-32 w-full max-w-4xl">
               <div className="text-center mb-16 space-y-2">
                 <h2 className="text-3xl font-serif text-navy font-script">Il Programma</h2>
                 <p className="text-navy-muted tracking-[0.2em] uppercase text-[10px] font-bold">Il Giorno più Bello</p>
               </div>
-
               <div className="max-w-2xl mx-auto px-4 md:px-0 bg-white/40 p-8 md:p-12 rounded-[2rem] border border-navy/5 flex justify-center">
                 <div className="w-full max-w-md">
                   <TimelineItem time="15:00" title="Cerimonia" subtitle="Il momento del nostro sì" icon={Heart} />
-                <TimelineItem time="18:00" title="Aperitivo" subtitle="Nei giardini della villa" icon={GlassWater} />
-                <TimelineItem time="20:30" title="Cena" subtitle="Condivisione e allegria" icon={UtensilsCrossed} />
-                <TimelineItem time="22:15" title="Taglio della torta" subtitle="Il lato dolce della serata" icon={PartyPopper} />
-                <TimelineItem time="23:00" title="Festa" subtitle="Si balla fino alle ore 1:00" icon={Music2} />
-                <TimelineItem time="02:00" title="Fine della festa" subtitle="Saluti e bei ricordi" icon={PartyPopper} isLast />
+                  <TimelineItem time="18:00" title="Aperitivo" subtitle="Nei giardini della villa" icon={GlassWater} />
+                  <TimelineItem time="20:30" title="Cena" subtitle="Condivisione e allegria" icon={UtensilsCrossed} />
+                  <TimelineItem time="22:15" title="Taglio della torta" subtitle="Il lato dolce della serata" icon={PartyPopper} />
+                  <TimelineItem time="23:00" title="Festa" subtitle="Si balla fino alle ore 1:00" icon={Music2} />
+                  <TimelineItem time="02:00" title="Fine della festa" subtitle="Saluti e bei ricordi" icon={PartyPopper} isLast />
                 </div>
               </div>
             </div>
@@ -479,38 +500,32 @@ export default function App() {
               <h2 className="text-3xl font-serif text-navy font-script">Domande Frequenti</h2>
               <p className="text-navy-muted tracking-[0.2em] uppercase text-[10px] font-bold">Tutto quello che c'è da sapere</p>
             </div>
-
             <FAQAccordion />
           </div>
         </section>
 
         <CardSeparator />
 
-        {/* Gifts Section */}
         <section className="py-24 px-4 bg-navy/[0.02]">
           <div className="max-w-3xl mx-auto text-center">
             <div className="mb-16 space-y-2">
               <h2 className="text-3xl font-serif text-navy font-script">Il Regalo più Grande</h2>
               <p className="text-navy-muted tracking-[0.2em] uppercase text-[10px] font-bold">Un gesto d'amore</p>
             </div>
-
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              className="bg-white/60 backdrop-blur-md p-10 md:p-16 rounded-[3rem] border border-navy/5 shadow-2xl shadow-navy/5 relative overflow-hidden group"
+              className="bg-white/60 backdrop-blur-md p-10 md:p-16 rounded-[3rem] border border-navy/5 shadow-2xl relative overflow-hidden group"
             >
-              {/* Subtle background decoration */}
-              <div className="absolute top-0 right-0 p-8 text-navy/5 transform translate-x-4 -translate-y-4 group-hover:scale-110 transition-transform duration-700">
+              <div className="absolute top-0 right-0 p-8 text-navy/5 transform translate-x-4 -translate-y-4">
                 <Heart className="w-24 h-24 stroke-[1px]" />
               </div>
-
               <div className="relative z-10 space-y-8">
                 <p className="text-navy/70 leading-relaxed max-w-lg mx-auto font-light">
                   La vostra presenza nel nostro giorno più importante è per noi il dono più prezioso.
                   Tuttavia, se desiderate farci un pensiero, abbiamo scelto di raccogliere il vostro contributo
                   per realizzare il nostro sogno di una <span className="font-bold text-navy">luna di miele indimenticabile</span>.
                 </p>
-
                 <div className="pt-4 inline-block">
                   <div className="bg-paper p-6 rounded-2xl border border-navy/5 card-shadow flex flex-col space-y-2 items-center">
                     <span className="text-[10px] text-navy-muted uppercase tracking-[0.3em] font-bold">Codice IBAN</span>
@@ -542,69 +557,136 @@ export default function App() {
                 <p className="text-navy-muted">Non vediamo l'ora di festeggiare con voi</p>
               </div>
 
-              <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
-                <div className="space-y-2 text-left">
-                  <label className="text-xs font-bold text-navy uppercase tracking-widest">Inserisci nome e cognome *</label>
-                  <input
-                    type="text"
-                    placeholder="Il tuo nome"
-                    className="w-full p-4 bg-paper rounded border border-navy/10 focus:border-navy focus:outline-none transition-colors"
-                  />
-                </div>
+              {status === 'success' ? (
+                <motion.div 
+                  initial={{ opacity: 0, y: 10 }} 
+                  animate={{ opacity: 1, y: 0 }}
+                  className="bg-green-50 border border-green-100 p-8 rounded-xl text-center"
+                >
+                  <PartyPopper className="w-12 h-12 text-green-500 mx-auto mb-4" />
+                  <h3 className="text-xl font-serif text-navy mb-2">Grazie mille!</h3>
+                  <p className="text-navy-muted">La tua conferma è stata inviata con successo.</p>
+                  <button 
+                    onClick={() => setStatus(null)}
+                    className="mt-6 text-xs font-bold text-navy uppercase tracking-widest border-b border-navy/20 pb-1"
+                  >
+                    Invia un'altra risposta
+                  </button>
+                </motion.div>
+              ) : (
+                <form className="space-y-6" onSubmit={handleRSVPSubmit}>
+                  <div className="space-y-2 text-left">
+                    <label className="text-xs font-bold text-navy uppercase tracking-widest">Inserisci nome e cognome *</label>
+                    <input
+                      type="text"
+                      required
+                      value={formData.name}
+                      onChange={(e) => setFormData({...formData, name: e.target.value})}
+                      placeholder="Il tuo nome"
+                      className="w-full p-4 bg-paper rounded border border-navy/10 focus:border-navy focus:outline-none transition-colors"
+                    />
+                  </div>
 
-                <div className="space-y-2 text-left">
-                  <label className="text-xs font-bold text-navy uppercase tracking-widest">Email (opzionale)</label>
-                  <input
-                    type="email"
-                    placeholder="tu@email.com"
-                    className="w-full p-4 bg-paper rounded border border-navy/10 focus:border-navy focus:outline-none transition-colors"
-                  />
-                </div>
+                  <div className="space-y-2 text-left">
+                    <label className="text-xs font-bold text-navy uppercase tracking-widest">Email (opzionale)</label>
+                    <input
+                      type="email"
+                      value={formData.email}
+                      onChange={(e) => setFormData({...formData, email: e.target.value})}
+                      placeholder="tu@email.com"
+                      className="w-full p-4 bg-paper rounded border border-navy/10 focus:border-navy focus:outline-none transition-colors"
+                    />
+                  </div>
 
-                <div className="space-y-4 text-left pt-2">
-                  <label className="text-xs font-bold text-navy uppercase tracking-widest">Parteciperai? *</label>
-                  <div className="flex space-x-8">
-                    <label className="flex items-center space-x-3 cursor-pointer">
-                      <input type="radio" name="attendance" className="w-5 h-5 accent-navy" />
-                      <span className="text-navy-muted">Sì, ci sarò</span>
-                    </label>
-                    <label className="flex items-center space-x-3 cursor-pointer">
-                      <input type="radio" name="attendance" className="w-5 h-5 accent-navy" />
-                      <span className="text-navy-muted">No, non potrò venire</span>
+                  <div className="space-y-4 text-left pt-2">
+                    <label className="text-xs font-bold text-navy uppercase tracking-widest">Parteciperai? *</label>
+                    <div className="flex space-x-8">
+                      <label className="flex items-center space-x-3 cursor-pointer">
+                        <input 
+                          type="radio" 
+                          name="attendance" 
+                          required
+                          value="yes"
+                          checked={formData.attendance === 'yes'}
+                          onChange={(e) => setFormData({...formData, attendance: e.target.value})}
+                          className="w-5 h-5 accent-navy" 
+                        />
+                        <span className="text-navy-muted">Sì, ci sarò</span>
+                      </label>
+                      <label className="flex items-center space-x-3 cursor-pointer">
+                        <input 
+                          type="radio" 
+                          name="attendance" 
+                          value="no"
+                          checked={formData.attendance === 'no'}
+                          onChange={(e) => setFormData({...formData, attendance: e.target.value})}
+                          className="w-5 h-5 accent-navy" 
+                        />
+                        <span className="text-navy-muted">No, non potrò venire</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2 text-left">
+                    <label className="text-xs font-bold text-navy uppercase tracking-widest">Allergie o intolleranze alimentari</label>
+                    <textarea
+                      value={formData.dietary_requirements}
+                      onChange={(e) => setFormData({...formData, dietary_requirements: e.target.value})}
+                      placeholder="Esempi: celiachia, allergia alle noci, vegetariano..."
+                      rows="3"
+                      className="w-full p-4 bg-paper rounded border border-navy/10 focus:border-navy focus:outline-none transition-colors resize-none"
+                    ></textarea>
+                  </div>
+                  <div className="space-y-2 text-left">
+                    <label className="text-xs font-bold text-navy uppercase tracking-widest">Messaggio agli sposi</label>
+                    <textarea
+                      value={formData.message}
+                      onChange={(e) => setFormData({...formData, message: e.target.value})}
+                      placeholder="Lasciate un messaggio per noi..."
+                      rows="4"
+                      className="w-full p-4 bg-paper rounded border border-navy/10 focus:border-navy focus:outline-none transition-colors resize-none"
+                    ></textarea>
+                  </div>
+
+
+                  <div className="space-y-4 pt-4 border-t border-navy/5">
+                    <label className="flex items-start space-x-3 cursor-pointer group">
+                      <div className="pt-1">
+                        <input 
+                          type="checkbox" 
+                          required
+                          checked={formData.privacyAccepted}
+                          onChange={(e) => setFormData({...formData, privacyAccepted: e.target.checked})}
+                          className="w-5 h-5 accent-navy cursor-pointer" 
+                        />
+                      </div>
+                      <span className="text-[11px] text-navy-muted leading-relaxed group-hover:text-navy transition-colors">
+                        Dichiaro di aver preso visione dell'
+                        <button 
+                          type="button"
+                          onClick={() => setShowPrivacyModal(true)}
+                          className="text-navy font-bold underline underline-offset-2 ml-1"
+                        >
+                          Informativa sulla Privacy
+                        </button>
+                        * e acconsento al trattamento dei miei dati personali per le finalità descritte.
+                      </span>
                     </label>
                   </div>
-                </div>
 
-
-
-                <div className="space-y-2 text-left">
-                  <label className="text-xs font-bold text-navy uppercase tracking-widest">Allergie o intolleranze alimentari</label>
-                  <textarea
-                    placeholder="Esempi: celiachia, allergia alle noci, vegetariano..."
-                    rows="3"
-                    className="w-full p-4 bg-paper rounded border border-navy/10 focus:border-navy focus:outline-none transition-colors resize-none"
-                  ></textarea>
-                </div>
-
-                <div className="space-y-2 text-left">
-                  <label className="text-xs font-bold text-navy uppercase tracking-widest">Messaggio agli sposi</label>
-                  <textarea
-                    placeholder="Lasciate un messaggio per noi..."
-                    rows="4"
-                    className="w-full p-4 bg-paper rounded border border-navy/10 focus:border-navy focus:outline-none transition-colors resize-none"
-                  ></textarea>
-                </div>
-
-                <button className="w-full py-4 bg-navy text-white rounded-md hover:bg-navy/90 transition-all font-bold tracking-widest uppercase text-xs flex items-center justify-center gap-2 mt-8">
-                  <Send className="w-4 h-4" />
-                  Invia conferma
-                </button>
-              </form>
+                  <button 
+                    disabled={isSubmitting || !formData.privacyAccepted}
+                    className="w-full py-4 bg-navy text-white rounded-md hover:bg-navy/90 transition-all font-bold tracking-widest uppercase text-xs flex items-center justify-center gap-2 mt-4 disabled:opacity-50"
+                  >
+                    {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                    {isSubmitting ? 'Inviando...' : 'Invia conferma'}
+                  </button>
+                </form>
+              )}
             </motion.div>
           </div>
         </section>
 
-        {/* Footer */}
         <footer className="py-20 px-4 text-center space-y-8 bg-navy text-white/90">
           <Heart className="w-8 h-8 text-white mx-auto fill-white/20" />
           <div className="space-y-2">
@@ -614,16 +696,173 @@ export default function App() {
           <p className="text-xs text-white/40 pt-8 tracking-[0.2em]">Fatto con amore da LucAi</p>
         </footer>
 
-        {/* Floating Controls */}
         <div className="fixed bottom-6 right-6 z-40 flex flex-col space-y-4">
           <button
             onClick={() => setIsMuted(!isMuted)}
-            className="w-12 h-12 bg-navy text-white rounded-full shadow-lg flex items-center justify-center hover:scale-110 transition-transform"
+            className="w-12 h-12 bg-navy text-white rounded-full shadow-lg flex items-center justify-center"
           >
             {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
           </button>
         </div>
+
+        {/* Privacy Modal */}
+        <AnimatePresence>
+          {showPrivacyModal && (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowPrivacyModal(false)}
+              className="fixed inset-0 z-[100] bg-navy/60 backdrop-blur-sm flex items-center justify-center p-4 cursor-pointer"
+            >
+              <motion.div 
+                initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                exit={{ scale: 0.9, opacity: 0, y: 20 }}
+                onClick={(e) => e.stopPropagation()}
+                className="bg-white w-full max-w-2xl max-h-[80vh] overflow-y-auto rounded-[2rem] p-10 md:p-16 shadow-2xl relative cursor-default"
+              >
+                <div className="space-y-6 text-navy-muted leading-relaxed">
+                  <div className="text-center mb-8">
+                    <h2 className="text-3xl font-serif text-navy mb-2">Informativa Privacy</h2>
+                    <p className="text-gold text-[10px] uppercase tracking-widest font-bold">Matrimonio Federica & Federico</p>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <h4 className="text-navy font-bold uppercase text-xs tracking-widest border-b border-navy/10 pb-2">1. Responsabile del Trattamento</h4>
+                    <p className="text-sm">I dati personali raccolti tramite questo form sono gestiti direttamente dagli sposi (<span className="text-navy font-medium">Federica e Federico</span>), nel rispetto della riservatezza e della privacy degli invitati.</p>
+                  </div>
+
+                  <div className="space-y-4">
+                    <h4 className="text-navy font-bold uppercase text-xs tracking-widest border-b border-navy/10 pb-2">2. Finalità del Trattamento</h4>
+                    <p className="text-sm">I dati (nome, email, presenze, messaggi) vengono utilizzati esclusivamente per scopi legati all'organizzazione del matrimonio, come la gestione delle presenze, dei tavoli e l'eventuale invio di ringraziamenti post-evento.</p>
+                  </div>
+
+                  <div className="space-y-4">
+                    <h4 className="text-navy font-bold uppercase text-xs tracking-widest border-b border-navy/10 pb-2">3. Dati Sensibili (Allergie)</h4>
+                    <p className="text-sm">Le informazioni riguardanti allergie o necessità alimentari sono trattate con estrema cura e verranno comunicate ai responsabili del catering (Villa Valenca) in forma strettamente necessaria per garantire un servizio sicuro, senza diffondere ulteriori dati personali.</p>
+                  </div>
+
+                  <div className="space-y-4">
+                    <h4 className="text-navy font-bold uppercase text-xs tracking-widest border-b border-navy/10 pb-2">4. Conservazione e Cancellazione</h4>
+                    <p className="text-sm">I dati verranno conservati nel database protetto (Supabase) per il tempo strettamente necessario all'organizzazione dell'evento e verranno eliminati una volta concluso il periodo del matrimonio e dei saluti finali.</p>
+                  </div>
+
+                  <div className="space-y-4">
+                    <h4 className="text-navy font-bold uppercase text-xs tracking-widest border-b border-navy/10 pb-2">5. I tuoi Diritti</h4>
+                    <p className="text-sm">Puoi richiedere in qualsiasi momento la modifica o la cancellazione della tua risposta contattandoci direttamente (via telefono o WhatsApp).</p>
+                  </div>
+
+                  <div className="pt-8 text-center" onClick={(e) => e.stopPropagation()}>
+                    <button 
+                      onClick={() => setShowPrivacyModal(false)}
+                      className="px-10 py-4 bg-navy text-white rounded-full font-bold tracking-widest uppercase text-xs hover:bg-gold transition-colors shadow-lg"
+                    >
+                      Chiudi
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </main>
     </div>
+  )
+}
+
+// --- Login Component ---
+
+function Login() {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [loading, setLoading] = useState(false)
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    const checkUser = async () => {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (session) {
+        navigate('/dashboard')
+      }
+    }
+    checkUser()
+  }, [navigate])
+
+  const handleLogin = async (e) => {
+    e.preventDefault()
+    setLoading(true)
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    if (error) {
+      alert('Credenziali non valide: ' + error.message)
+    } else {
+      navigate('/dashboard')
+    }
+    setLoading(false)
+  }
+
+  return (
+    <div className="min-h-screen bg-paper flex items-center justify-center p-4">
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-white p-8 md:p-12 rounded-3xl shadow-2xl border border-navy/5 max-w-md w-full"
+      >
+        <div className="text-center mb-8">
+          <div className="w-16 h-16 bg-navy text-white rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+            <Lock className="w-8 h-8" />
+          </div>
+          <h1 className="text-3xl font-serif text-navy">Area Riservata</h1>
+          <p className="text-navy-muted text-sm mt-2">Accedi per visualizzare le risposte</p>
+        </div>
+
+        <form onSubmit={handleLogin} className="space-y-6">
+          <div className="space-y-2">
+            <label className="text-xs font-bold text-navy uppercase tracking-widest">Email</label>
+            <input
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full p-4 bg-paper rounded-xl border border-navy/10 focus:border-navy focus:outline-none transition-colors"
+              placeholder="latua@email.com"
+            />
+          </div>
+          <div className="space-y-2">
+            <label className="text-xs font-bold text-navy uppercase tracking-widest">Password</label>
+            <input
+              type="password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full p-4 bg-paper rounded-xl border border-navy/10 focus:border-navy focus:outline-none transition-colors"
+              placeholder="••••••••"
+            />
+          </div>
+          <button
+            disabled={loading}
+            className="w-full py-4 bg-navy text-white rounded-xl font-bold tracking-widest uppercase text-xs flex items-center justify-center gap-2 hover:bg-navy/90 transition-all shadow-lg disabled:opacity-50"
+          >
+            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Accedi'}
+          </button>
+        </form>
+        
+        <p className="text-center text-[10px] text-navy-muted mt-8 uppercase tracking-widest">
+          Federica & Federico 2026
+        </p>
+      </motion.div>
+    </div>
+  )
+}
+
+// --- Main App Component (Routing) ---
+
+export default function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/dashboard" element={<Dashboard />} />
+    </Routes>
   )
 }
