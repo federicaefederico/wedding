@@ -198,7 +198,7 @@ function Home() {
   const [isOpening, setIsOpening] = useState(false)
   const [isMuted, setIsMuted] = useState(true)
   const [showMonths, setShowMonths] = useState(false)
-  const targetDate = new Date('2026-09-12T17:00:00')
+  const targetDate = new Date('2026-09-12T15:30:00')
 
   // Form State
   const [formData, setFormData] = useState({
@@ -331,38 +331,67 @@ function Home() {
       </AnimatePresence>
 
       <main className={`transition-all duration-1000 ${isOpen ? 'opacity-100' : 'opacity-0 blur-lg pointer-events-none h-screen overflow-hidden'}`}>
-        <section className="relative min-h-screen flex flex-col items-center justify-center text-center px-4 pt-20">
+        <section className="relative min-h-screen flex flex-col items-center justify-between text-center px-4 py-12 overflow-hidden">
+          {/* Background Image with Fixed Effect */}
+          <div className="absolute inset-0 z-0">
+            <div 
+              className="absolute inset-0 bg-cover bg-center bg-no-repeat bg-fixed"
+              style={{ 
+                backgroundImage: "url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=2070&auto=format&fit=crop')"
+              }}
+            />
+            {/* Overlay for Readability */}
+            <div className="absolute inset-0 bg-paper/70 backdrop-blur-[1px]" />
+          </div>
+
+          {/* Navigation Menu (Z-index 10) */}
+          <motion.nav 
+            initial={{ opacity: 0, y: -20 }}
+            animate={isOpen ? { opacity: 1, y: 0 } : {}}
+            transition={{ delay: 1, duration: 1 }}
+            className="w-full relative z-10"
+          >
+            <ul className="w-full flex justify-between items-center px-4 md:px-20">
+              {['Dettagli', 'Programma', 'Regalo', 'FAQ', 'RSVP'].map((item) => (
+                <li key={item}>
+                  <button 
+                    onClick={() => {
+                      const element = document.getElementById(item.toLowerCase());
+                      if (element) element.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    className="text-[10px] md:text-xs uppercase tracking-[0.3em] font-medium text-navy hover:text-navy/70 transition-colors no-underline cursor-pointer bg-transparent border-none p-0"
+                  >
+                    {item}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </motion.nav>
+
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 1 }}
-            className="space-y-6"
+            className="relative z-10 flex flex-col items-center space-y-2"
           >
-            <div className="flex items-center justify-center space-x-4 text-navy-muted mb-8">
+            <h1 className="text-[clamp(3rem,12vw,11rem)] font-kunstler text-navy leading-[0.8] whitespace-nowrap">
+              Federica e Federico
+            </h1>
+            <div className="flex items-center justify-center space-x-4 text-navy-muted">
               <div className="h-px w-12 bg-navy/20" />
               <Heart className="w-4 h-4" />
               <div className="h-px w-12 bg-navy/20" />
             </div>
-            <h1 className="text-6xl md:text-8xl font-serif text-navy">Federica & Federico</h1>
-            <p className="text-xl md:text-2xl tracking-[0.3em] font-light text-navy-muted uppercase py-4">
+            <p className="text-[clamp(0.9rem,3.5vw,1.5rem)] tracking-[0.3em] font-light text-navy-muted uppercase pt-2 whitespace-nowrap">
               12 Settembre 2026
             </p>
-            <div className="pt-8">
-              <p className="font-script text-3xl text-navy/80">Conferma la tua presenza</p>
-              <motion.div
-                animate={{ y: [0, 10, 0] }}
-                transition={{ repeat: Infinity, duration: 2 }}
-                className="mt-4 text-navy-muted"
-              >
-                <ChevronDown className="mx-auto" />
-              </motion.div>
-            </div>
           </motion.div>
+
+          {/* Spacer to keep content centered */}
+          <div className="h-12 w-full relative z-10 invisible md:block" />
         </section>
 
-        <CardSeparator />
-        
-        <section className="py-20 bg-navy">
+        <section id="countdown" className="py-20 bg-navy">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-serif text-paper mb-2">Conto alla rovescia</h2>
             <p className="text-paper/80">Per il giorno più speciale della nostra vita</p>
@@ -372,7 +401,7 @@ function Home() {
 
         <CardSeparator />
 
-        <section className="py-32 flex flex-col items-center text-center px-4">
+        <section id="citazione" className="py-32 flex flex-col items-center text-center px-4">
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -391,7 +420,7 @@ function Home() {
 
         <CardSeparator />
 
-        <section id="detalles" className="py-24 px-4 bg-navy/[0.03] relative overflow-hidden">
+        <section id="dettagli" className="py-24 px-4 bg-navy/[0.03] relative overflow-hidden">
           <div className="max-w-6xl mx-auto flex flex-col items-center">
             <div className="text-center mb-16 space-y-2">
               <h2 className="text-4xl md:text-5xl font-serif text-navy font-script">I Dettagli</h2>
@@ -473,7 +502,7 @@ function Home() {
 
             <CardSeparator />
 
-            <div className="pt-32 w-full max-w-4xl">
+            <div id="programma" className="pt-32 w-full max-w-4xl">
               <div className="text-center mb-16 space-y-2">
                 <h2 className="text-3xl font-serif text-navy font-script">Il Programma</h2>
                 <p className="text-navy-muted tracking-[0.2em] uppercase text-[10px] font-bold">Il Giorno più Bello</p>
@@ -494,19 +523,7 @@ function Home() {
 
         <CardSeparator />
 
-        <section className="py-24 px-4 bg-white/20">
-          <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-16 space-y-2">
-              <h2 className="text-3xl font-serif text-navy font-script">Domande Frequenti</h2>
-              <p className="text-navy-muted tracking-[0.2em] uppercase text-[10px] font-bold">Tutto quello che c'è da sapere</p>
-            </div>
-            <FAQAccordion />
-          </div>
-        </section>
-
-        <CardSeparator />
-
-        <section className="py-24 px-4 bg-navy/[0.02]">
+        <section id="regalo" className="py-24 px-4 bg-navy/[0.02]">
           <div className="max-w-3xl mx-auto text-center">
             <div className="mb-16 space-y-2">
               <h2 className="text-3xl font-serif text-navy font-script">Il Regalo più Grande</h2>
@@ -544,9 +561,21 @@ function Home() {
 
         <CardSeparator />
 
+        <section id="faq" className="py-24 px-4 bg-white/20">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-16 space-y-2">
+              <h2 className="text-3xl font-serif text-navy font-script">Domande Frequenti</h2>
+              <p className="text-navy-muted tracking-[0.2em] uppercase text-[10px] font-bold">Tutto quello che c'è da sapere</p>
+            </div>
+            <FAQAccordion />
+          </div>
+        </section>
+
+        <CardSeparator />
+
         {/* RSVP Section */}
-        <section className="py-20 px-4">
-          <div className="max-w-xl mx-auto">
+        <section id="rsvp" className="py-20 px-4">
+          <div className="max-w-xl mx-auto flex flex-col justify-center items-center">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}
@@ -557,16 +586,17 @@ function Home() {
                 <p className="text-navy-muted">Non vediamo l'ora di festeggiare con voi</p>
               </div>
 
+
               {status === 'success' ? (
-                <motion.div 
-                  initial={{ opacity: 0, y: 10 }} 
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   className="bg-green-50 border border-green-100 p-8 rounded-xl text-center"
                 >
                   <PartyPopper className="w-12 h-12 text-green-500 mx-auto mb-4" />
                   <h3 className="text-xl font-serif text-navy mb-2">Grazie mille!</h3>
                   <p className="text-navy-muted">La tua conferma è stata inviata con successo.</p>
-                  <button 
+                  <button
                     onClick={() => setStatus(null)}
                     className="mt-6 text-xs font-bold text-navy uppercase tracking-widest border-b border-navy/20 pb-1"
                   >
@@ -581,7 +611,7 @@ function Home() {
                       type="text"
                       required
                       value={formData.name}
-                      onChange={(e) => setFormData({...formData, name: e.target.value})}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       placeholder="Il tuo nome"
                       className="w-full p-4 bg-paper rounded border border-navy/10 focus:border-navy focus:outline-none transition-colors"
                     />
@@ -592,7 +622,7 @@ function Home() {
                     <input
                       type="email"
                       value={formData.email}
-                      onChange={(e) => setFormData({...formData, email: e.target.value})}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       placeholder="tu@email.com"
                       className="w-full p-4 bg-paper rounded border border-navy/10 focus:border-navy focus:outline-none transition-colors"
                     />
@@ -602,25 +632,25 @@ function Home() {
                     <label className="text-xs font-bold text-navy uppercase tracking-widest">Parteciperai? *</label>
                     <div className="flex space-x-8">
                       <label className="flex items-center space-x-3 cursor-pointer">
-                        <input 
-                          type="radio" 
-                          name="attendance" 
+                        <input
+                          type="radio"
+                          name="attendance"
                           required
                           value="yes"
                           checked={formData.attendance === 'yes'}
-                          onChange={(e) => setFormData({...formData, attendance: e.target.value})}
-                          className="w-5 h-5 accent-navy" 
+                          onChange={(e) => setFormData({ ...formData, attendance: e.target.value })}
+                          className="w-5 h-5 accent-navy"
                         />
                         <span className="text-navy-muted">Sì, ci sarò</span>
                       </label>
                       <label className="flex items-center space-x-3 cursor-pointer">
-                        <input 
-                          type="radio" 
-                          name="attendance" 
+                        <input
+                          type="radio"
+                          name="attendance"
                           value="no"
                           checked={formData.attendance === 'no'}
-                          onChange={(e) => setFormData({...formData, attendance: e.target.value})}
-                          className="w-5 h-5 accent-navy" 
+                          onChange={(e) => setFormData({ ...formData, attendance: e.target.value })}
+                          className="w-5 h-5 accent-navy"
                         />
                         <span className="text-navy-muted">No, non potrò venire</span>
                       </label>
@@ -631,7 +661,7 @@ function Home() {
                     <label className="text-xs font-bold text-navy uppercase tracking-widest">Allergie o intolleranze alimentari</label>
                     <textarea
                       value={formData.dietary_requirements}
-                      onChange={(e) => setFormData({...formData, dietary_requirements: e.target.value})}
+                      onChange={(e) => setFormData({ ...formData, dietary_requirements: e.target.value })}
                       placeholder="Esempi: celiachia, allergia alle noci, vegetariano..."
                       rows="3"
                       className="w-full p-4 bg-paper rounded border border-navy/10 focus:border-navy focus:outline-none transition-colors resize-none"
@@ -641,7 +671,7 @@ function Home() {
                     <label className="text-xs font-bold text-navy uppercase tracking-widest">Messaggio agli sposi</label>
                     <textarea
                       value={formData.message}
-                      onChange={(e) => setFormData({...formData, message: e.target.value})}
+                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                       placeholder="Lasciate un messaggio per noi..."
                       rows="4"
                       className="w-full p-4 bg-paper rounded border border-navy/10 focus:border-navy focus:outline-none transition-colors resize-none"
@@ -652,17 +682,17 @@ function Home() {
                   <div className="space-y-4 pt-4 border-t border-navy/5">
                     <label className="flex items-start space-x-3 cursor-pointer group">
                       <div className="pt-1">
-                        <input 
-                          type="checkbox" 
+                        <input
+                          type="checkbox"
                           required
                           checked={formData.privacyAccepted}
-                          onChange={(e) => setFormData({...formData, privacyAccepted: e.target.checked})}
-                          className="w-5 h-5 accent-navy cursor-pointer" 
+                          onChange={(e) => setFormData({ ...formData, privacyAccepted: e.target.checked })}
+                          className="w-5 h-5 accent-navy cursor-pointer"
                         />
                       </div>
                       <span className="text-[11px] text-navy-muted leading-relaxed group-hover:text-navy transition-colors">
                         Dichiaro di aver preso visione dell'
-                        <button 
+                        <button
                           type="button"
                           onClick={() => setShowPrivacyModal(true)}
                           className="text-navy font-bold underline underline-offset-2 ml-1"
@@ -674,7 +704,7 @@ function Home() {
                     </label>
                   </div>
 
-                  <button 
+                  <button
                     disabled={isSubmitting || !formData.privacyAccepted}
                     className="w-full py-4 bg-navy text-white rounded-md hover:bg-navy/90 transition-all font-bold tracking-widest uppercase text-xs flex items-center justify-center gap-2 mt-4 disabled:opacity-50"
                   >
@@ -687,11 +717,23 @@ function Home() {
           </div>
         </section>
 
+
+
         <footer className="py-20 px-4 text-center space-y-8 bg-navy text-white/90">
           <Heart className="w-8 h-8 text-white mx-auto fill-white/20" />
           <div className="space-y-2">
             <h2 className="text-3xl font-serif">Federica & Federico</h2>
             <p className="text-white/60 tracking-widest uppercase text-sm">12 Settembre 2026</p>
+          </div>
+          <div className="pt-8 grid grid-cols-1 md:grid-cols-2 gap-6 max-w-sm mx-auto border-t border-white/5">
+            <div className="space-y-1">
+              <p className="text-[10px] uppercase tracking-[0.2em] text-white/40 font-bold">Federica</p>
+              <a href="tel:+393892858728" className="text-sm text-white/80 hover:text-white transition-colors tracking-widest">+39 389 285 8728</a>
+            </div>
+            <div className="space-y-1">
+              <p className="text-[10px] uppercase tracking-[0.2em] text-white/40 font-bold">Federico</p>
+              <a href="tel:+393332114838" className="text-sm text-white/80 hover:text-white transition-colors tracking-widest">+39 333 211 4838</a>
+            </div>
           </div>
           <p className="text-xs text-white/40 pt-8 tracking-[0.2em]">Fatto con amore da LucAi</p>
         </footer>
@@ -708,14 +750,14 @@ function Home() {
         {/* Privacy Modal */}
         <AnimatePresence>
           {showPrivacyModal && (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setShowPrivacyModal(false)}
               className="fixed inset-0 z-[100] bg-navy/60 backdrop-blur-sm flex items-center justify-center p-4 cursor-pointer"
             >
-              <motion.div 
+              <motion.div
                 initial={{ scale: 0.9, opacity: 0, y: 20 }}
                 animate={{ scale: 1, opacity: 1, y: 0 }}
                 exit={{ scale: 0.9, opacity: 0, y: 20 }}
@@ -727,7 +769,7 @@ function Home() {
                     <h2 className="text-3xl font-serif text-navy mb-2">Informativa Privacy</h2>
                     <p className="text-gold text-[10px] uppercase tracking-widest font-bold">Matrimonio Federica & Federico</p>
                   </div>
-                  
+
                   <div className="space-y-4">
                     <h4 className="text-navy font-bold uppercase text-xs tracking-widest border-b border-navy/10 pb-2">1. Responsabile del Trattamento</h4>
                     <p className="text-sm">I dati personali raccolti tramite questo form sono gestiti direttamente dagli sposi (<span className="text-navy font-medium">Federica e Federico</span>), nel rispetto della riservatezza e della privacy degli invitati.</p>
@@ -754,7 +796,7 @@ function Home() {
                   </div>
 
                   <div className="pt-8 text-center" onClick={(e) => e.stopPropagation()}>
-                    <button 
+                    <button
                       onClick={() => setShowPrivacyModal(false)}
                       className="px-10 py-4 bg-navy text-white rounded-full font-bold tracking-widest uppercase text-xs hover:bg-gold transition-colors shadow-lg"
                     >
@@ -803,7 +845,7 @@ function Login() {
 
   return (
     <div className="min-h-screen bg-paper flex items-center justify-center p-4">
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="bg-white p-8 md:p-12 rounded-3xl shadow-2xl border border-navy/5 max-w-md w-full"
@@ -846,7 +888,7 @@ function Login() {
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Accedi'}
           </button>
         </form>
-        
+
         <p className="text-center text-[10px] text-navy-muted mt-8 uppercase tracking-widest">
           Federica & Federico 2026
         </p>
