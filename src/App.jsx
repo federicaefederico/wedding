@@ -502,6 +502,69 @@ function Home() {
 
             <CardSeparator />
 
+            {/* Gallery Section */}
+            <div className="w-full max-w-6xl mx-auto px-4 py-8">
+              <div 
+                className="grid gap-3 md:gap-4 w-full aspect-[4/5] md:aspect-video"
+                style={{
+                  gridTemplateColumns: '30% 30% 40%',
+                  gridTemplateRows: '37% 13% 50%'
+                }}
+              >
+                {/* Images X - Top Left area (summing to 60% width of the left part) */}
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8 }}
+                  className="relative overflow-hidden rounded-xl md:rounded-3xl shadow-lg border border-navy/5"
+                >
+                  <img src="https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1000&auto=format&fit=crop" className="absolute inset-0 w-full h-full object-cover" alt="" />
+                </motion.div>
+
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.1 }}
+                  className="relative overflow-hidden rounded-xl md:rounded-3xl shadow-lg border border-navy/5"
+                >
+                  <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=1000&auto=format&fit=crop" className="absolute inset-0 w-full h-full object-cover" alt="" />
+                </motion.div>
+
+                {/* Image Y1 - Right column top half */}
+                <motion.div 
+                  initial={{ opacity: 0, x: 20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.8, delay: 0.2 }}
+                  className="relative overflow-hidden rounded-xl md:rounded-3xl shadow-lg border border-navy/5"
+                  style={{ gridRow: '1 / span 2', gridColumn: '3' }}
+                >
+                  <img src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=1000&auto=format&fit=crop" className="absolute inset-0 w-full h-full object-cover" alt="" />
+                </motion.div>
+
+                {/* Image Z - Bottom Left (60% width, 63% height) */}
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 1, delay: 0.3 }}
+                  className="relative overflow-hidden rounded-2xl md:rounded-[3rem] shadow-2xl border border-navy/5"
+                  style={{ gridRow: '2 / span 2', gridColumn: '1 / span 2' }}
+                >
+                  <img src="https://images.unsplash.com/photo-1510076857177-74700760f49a?q=80&w=1000&auto=format&fit=crop" className="absolute inset-0 w-full h-full object-cover" alt="" />
+                </motion.div>
+
+                {/* Image Y2 - Right column bottom half */}
+                <motion.div 
+                  initial={{ opacity: 0, x: 20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.8, delay: 0.4 }}
+                  className="relative overflow-hidden rounded-xl md:rounded-3xl shadow-lg border border-navy/5"
+                  style={{ gridColumn: '3', gridRow: '3' }}
+                >
+                  <img src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?q=80&w=1000&auto=format&fit=crop" className="absolute inset-0 w-full h-full object-cover" alt="" />
+                </motion.div>
+              </div>
+            </div>
+
             <div id="programma" className="pt-32 w-full max-w-4xl">
               <div className="text-center mb-16 space-y-2">
                 <h2 className="text-3xl font-serif text-navy font-script">Il Programma</h2>
