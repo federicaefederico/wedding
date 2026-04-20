@@ -335,7 +335,7 @@ function Home() {
           {/* Background Image with Fixed Effect */}
           <div className="absolute inset-0 z-0">
             <div 
-              className="absolute inset-0 bg-cover bg-center bg-no-repeat bg-fixed"
+              className="absolute inset-0 bg-cover bg-center bg-no-repeat bg-scroll md:bg-fixed"
               style={{ 
                 backgroundImage: "url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=2070&auto=format&fit=crop')"
               }}
