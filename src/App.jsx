@@ -3,8 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   Heart,
   MapPin,
-  Volume2,
-  VolumeX,
   Send,
   GlassWater,
   PartyPopper,
@@ -196,7 +194,6 @@ function Home() {
   const [isReady, setIsReady] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
   const [isOpening, setIsOpening] = useState(false)
-  const [isMuted, setIsMuted] = useState(true)
   const [showMonths, setShowMonths] = useState(false)
   const targetDate = new Date('2026-09-12T15:30:00')
 
@@ -331,7 +328,7 @@ function Home() {
       </AnimatePresence>
 
       <main className={`transition-all duration-1000 ${isOpen ? 'opacity-100' : 'opacity-0 blur-lg pointer-events-none h-screen overflow-hidden'}`}>
-        <section className="relative min-h-screen flex flex-col items-center justify-between text-center px-4 py-12 overflow-hidden">
+        <section className="relative min-h-screen flex flex-col items-center justify-between text-center px-0 pt-6 overflow-hidden">
           {/* Background Image with Fixed Effect */}
           <div className="absolute inset-0 z-0">
             <div
@@ -374,7 +371,7 @@ function Home() {
             transition={{ duration: 1 }}
             className="relative z-10 flex flex-col items-center space-y-2"
           >
-            <h1 className="text-[clamp(3rem,12vw,11rem)] font-kunstler text-navy leading-[0.8] whitespace-nowrap">
+            <h1 className="text-[clamp(4rem,12vw,11rem)] font-kunstler text-navy leading-[0.8] whitespace-nowrap">
               Federica e Federico
             </h1>
             <div className="flex items-center justify-center space-x-4 text-navy-muted">
@@ -786,10 +783,10 @@ function Home() {
 
 
 
-        <footer className="py-20 px-4 text-center space-y-8 bg-navy text-white/90">
+        <footer className="py-6 px-4 text-center space-y-2 bg-navy text-white/90">
           <Heart className="w-8 h-8 text-white mx-auto fill-white/20" />
           <div className="space-y-2">
-            <h2 className="text-3xl font-serif">Federica & Federico</h2>
+            <h2 className="text-4xl font-kunstler">Federica e Federico</h2>
             <p className="text-white/60 tracking-widest uppercase text-sm">12 Settembre 2026</p>
           </div>
           <div className="pt-8 grid grid-cols-1 md:grid-cols-2 gap-6 max-w-sm mx-auto border-t border-white/5">
@@ -805,14 +802,7 @@ function Home() {
           <p className="text-xs text-white/40 pt-8 tracking-[0.2em]">Fatto con amore da LucAi</p>
         </footer>
 
-        <div className="fixed bottom-6 right-6 z-40 flex flex-col space-y-4">
-          <button
-            onClick={() => setIsMuted(!isMuted)}
-            className="w-12 h-12 bg-navy text-white rounded-full shadow-lg flex items-center justify-center"
-          >
-            {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
-          </button>
-        </div>
+
 
         {/* Privacy Modal */}
         <AnimatePresence>
