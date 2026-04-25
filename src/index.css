@@ -19,6 +19,18 @@
   --font-serif: "Lora", serif;
   --font-script: "Alex Brush", cursive;
   --font-kunstler: "Kunstler Script Local", "Pinyon Script", cursive;
+
+  --background-eucalyptus: url("./assets/eucalyptus_pattern.svg");
+}
+
+@layer utilities {
+  .bg-eucalyptus {
+    background-image: 
+      linear-gradient(rgba(243, 240, 231, 0.85), rgba(243, 240, 231, 0.85)), 
+      var(--background-eucalyptus);
+    background-repeat: repeat;
+    background-size: 600px;
+  }
 }
 
 @layer base {

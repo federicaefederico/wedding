@@ -261,7 +261,7 @@ function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-paper overflow-x-hidden pt-0 mt-0">
+    <div className="min-h-screen bg-paper bg-eucalyptus overflow-x-hidden pt-0 mt-0">
       <AnimatePresence>
         {!isReady && (
           <motion.div
@@ -328,7 +328,7 @@ function Home() {
       </AnimatePresence>
 
       <main className={`transition-all duration-1000 ${isOpen ? 'opacity-100' : 'opacity-0 blur-lg pointer-events-none h-screen overflow-hidden'}`}>
-        <section className="relative min-h-screen flex flex-col items-center justify-between text-center px-0 pt-6 overflow-hidden">
+        <section className="relative min-h-screen flex flex-col items-center justify-between text-center px-0 pt-12 overflow-hidden">
           {/* Background Image with Fixed Effect */}
           <div className="absolute inset-0 z-0">
             <div
@@ -799,7 +799,7 @@ function Home() {
               <a href="tel:+393332114838" className="text-sm text-white/80 hover:text-white transition-colors tracking-widest">+39 333 211 4838</a>
             </div>
           </div>
-          <p className="text-xs text-white/40 pt-8 tracking-[0.2em]">Fatto con amore da LucAi</p>
+          {/* <p className="text-xs text-white/40 pt-8 tracking-[0.2em]">Fatto con amore da LucAi</p> */}
         </footer>
 
 
