@@ -140,7 +140,7 @@ const FAQItem = ({ question, answer, isOpen, onClick }) => (
           exit={{ height: 0, opacity: 0 }}
           transition={{ duration: 0.3, ease: "easeInOut" }}
         >
-          <div className="p-6 pt-0 text-navy-muted text-sm border-t border-navy/5 leading-relaxed">
+          <div className="p-6 pt-0 text-navy-muted text-sm border-t border-navy/5 leading-relaxed whitespace-pre-line">
             {answer}
           </div>
         </motion.div>
@@ -167,7 +167,7 @@ const FAQAccordion = () => {
     },
     {
       q: "I bambini sono i benvenuti?",
-      a: "Certamente! Fateci sapere se avrete bisogno di seggioloni o se volete segnalare menu particolari per i più piccoli."
+      a: "Certamente! I più piccoli sono i benvenuti e sarà previsto per loro un menù dedicato. Se avete esigenze particolari, saremo felici di fare il possibile per soddisfarle.\n\nTuttavia, desideriamo informarvi che, data l’atmosfera intima della location e il mood della serata, non sono previste aree gioco o servizi di animazione.\n\nVi chiediamo gentilmente di segnalarci in anticipo eventuali necessità specifiche, come la disponibilità di seggioloni o spazi per culle, così da poterci organizzare al meglio."
     },
     {
       q: "È disponibile un parcheggio presso la Villa?",
@@ -334,9 +334,9 @@ function Home() {
         <section className="relative min-h-screen flex flex-col items-center justify-between text-center px-4 py-12 overflow-hidden">
           {/* Background Image with Fixed Effect */}
           <div className="absolute inset-0 z-0">
-            <div 
+            <div
               className="absolute inset-0 bg-cover bg-center bg-no-repeat bg-scroll md:bg-fixed"
-              style={{ 
+              style={{
                 backgroundImage: "url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=2070&auto=format&fit=crop')"
               }}
             />
@@ -345,7 +345,7 @@ function Home() {
           </div>
 
           {/* Navigation Menu (Z-index 10) */}
-          <motion.nav 
+          <motion.nav
             initial={{ opacity: 0, y: -20 }}
             animate={isOpen ? { opacity: 1, y: 0 } : {}}
             transition={{ delay: 1, duration: 1 }}
@@ -354,7 +354,7 @@ function Home() {
             <ul className="w-full flex justify-between items-center px-4 md:px-20">
               {['Dettagli', 'Programma', 'Regalo', 'FAQ', 'RSVP'].map((item) => (
                 <li key={item}>
-                  <button 
+                  <button
                     onClick={() => {
                       const element = document.getElementById(item.toLowerCase());
                       if (element) element.scrollIntoView({ behavior: 'smooth' });
@@ -440,14 +440,14 @@ function Home() {
                     src={chiesa}
                     alt="Chiesa di San Giuseppe Calasanzio"
                     whileHover={{ scale: 1.02 }}
-                    className="w-full h-auto max-h-[500px] object-contain rounded-2xl shadow-lg"
+                    className="w-full h-auto max-h-[500px] object-contain shadow-lg"
                   />
                 </div>
                 <div className="p-10 flex flex-col items-center text-center space-y-6">
                   <div className="space-y-3">
                     <span className="text-gold font-bold text-[10px] tracking-[0.3em] uppercase">La Cerimonia</span>
                     <h3 className="text-3xl font-serif text-navy font-medium">Chiesa di San Giuseppe Calasanzio</h3>
-                    <p className="text-navy-muted font-light italic text-sm px-4">Via Don Carlo Gnocchi, 16, 20148 Milano MI</p>
+                    <p className="text-navy-muted font-light text-sm px-4">Via Don Carlo Gnocchi, 16 - Milano</p>
                   </div>
                   <div className="pt-4">
                     <a
@@ -476,14 +476,14 @@ function Home() {
                     src={villa}
                     alt="Villa Valenca"
                     whileHover={{ scale: 1.02 }}
-                    className="w-full h-auto max-h-[500px] object-contain rounded-2xl shadow-lg"
+                    className="w-full h-auto max-h-[500px] object-contain shadow-lg"
                   />
                 </div>
                 <div className="p-10 flex flex-col items-center text-center space-y-6">
                   <div className="space-y-3">
                     <span className="text-gold font-bold text-[10px] tracking-[0.3em] uppercase">Il Ricevimento</span>
                     <h3 className="text-3xl font-serif text-navy font-medium">Villa Valenca</h3>
-                    <p className="text-navy-muted font-light italic text-sm px-4">Via Bersini Don Luigi, 20, 25038 Rovato BS</p>
+                    <p className="text-navy-muted font-light text-sm px-4">Via Don Luigi Bersini, 20 - Brescia</p>
                   </div>
                   <div className="pt-4">
                     <a
@@ -504,60 +504,60 @@ function Home() {
 
             {/* Gallery Section */}
             <div className="w-full max-w-6xl mx-auto px-4 py-8">
-              <div 
+              <div
                 className="grid gap-3 md:gap-4 w-full aspect-[4/5] md:aspect-video"
                 style={{
-                  gridTemplateColumns: '30% 30% 40%',
-                  gridTemplateRows: '37% 13% 50%'
+                  gridTemplateColumns: '3fr 3fr 4fr',
+                  gridTemplateRows: '37fr 13fr 50fr'
                 }}
               >
                 {/* Images X - Top Left area (summing to 60% width of the left part) */}
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8 }}
-                  className="relative overflow-hidden rounded-xl md:rounded-3xl shadow-lg border border-navy/5"
+                  className="relative overflow-hidden shadow-lg border border-navy/5"
                 >
                   <img src="https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1000&auto=format&fit=crop" className="absolute inset-0 w-full h-full object-cover" alt="" />
                 </motion.div>
 
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 0.1 }}
-                  className="relative overflow-hidden rounded-xl md:rounded-3xl shadow-lg border border-navy/5"
+                  className="relative overflow-hidden shadow-lg border border-navy/5"
                 >
                   <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=1000&auto=format&fit=crop" className="absolute inset-0 w-full h-full object-cover" alt="" />
                 </motion.div>
 
                 {/* Image Y1 - Right column top half */}
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, x: 20 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.8, delay: 0.2 }}
-                  className="relative overflow-hidden rounded-xl md:rounded-3xl shadow-lg border border-navy/5"
+                  className="relative overflow-hidden shadow-lg border border-navy/5"
                   style={{ gridRow: '1 / span 2', gridColumn: '3' }}
                 >
                   <img src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=1000&auto=format&fit=crop" className="absolute inset-0 w-full h-full object-cover" alt="" />
                 </motion.div>
 
                 {/* Image Z - Bottom Left (60% width, 63% height) */}
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, scale: 0.95 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 1, delay: 0.3 }}
-                  className="relative overflow-hidden rounded-2xl md:rounded-[3rem] shadow-2xl border border-navy/5"
+                  className="relative overflow-hidden shadow-2xl border border-navy/5"
                   style={{ gridRow: '2 / span 2', gridColumn: '1 / span 2' }}
                 >
-                  <img src="https://images.unsplash.com/photo-1510076857177-74700760f49a?q=80&w=1000&auto=format&fit=crop" className="absolute inset-0 w-full h-full object-cover" alt="" />
+                  <img src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=1000&auto=format&fit=crop" className="absolute inset-0 w-full h-full object-cover" alt="" />
                 </motion.div>
 
                 {/* Image Y2 - Right column bottom half */}
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, x: 20 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.8, delay: 0.4 }}
-                  className="relative overflow-hidden rounded-xl md:rounded-3xl shadow-lg border border-navy/5"
+                  className="relative overflow-hidden shadow-lg border border-navy/5"
                   style={{ gridColumn: '3', gridRow: '3' }}
                 >
                   <img src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?q=80&w=1000&auto=format&fit=crop" className="absolute inset-0 w-full h-full object-cover" alt="" />
@@ -602,21 +602,25 @@ function Home() {
               </div>
               <div className="relative z-10 space-y-8">
                 <p className="text-navy/70 leading-relaxed max-w-lg mx-auto font-light">
-                  La vostra presenza nel nostro giorno più importante è per noi il dono più prezioso.
-                  Tuttavia, se desiderate farci un pensiero, abbiamo scelto di raccogliere il vostro contributo
-                  per realizzare il nostro sogno di una <span className="font-bold text-navy">luna di miele indimenticabile</span>.
+                  Il pensiero più bello che possiate farci è essere con noi nel nostro grande giorno.
+                  Ma se desiderate aiutarci a realizzare il nostro sogno di viaggio nel <span className="font-bold text-navy">Sudafrica</span>,
+                  qui trovate le coordinate per farlo:
                 </p>
-                <div className="pt-4 inline-block">
+                <div className="pt-4 flex flex-col items-center space-y-4">
                   <div className="bg-paper p-6 rounded-2xl border border-navy/5 card-shadow flex flex-col space-y-2 items-center">
                     <span className="text-[10px] text-navy-muted uppercase tracking-[0.3em] font-bold">Codice IBAN</span>
                     <p className="text-navy font-mono text-sm md:text-md tracking-wider select-all">
                       IT00 A 0000 0000 0000 0000 0000 000
                     </p>
                   </div>
-                  <p className="mt-4 text-[10px] text-navy-muted italic lowercase tracking-wider">
+                  <p className="text-[10px] text-navy-muted italic lowercase tracking-wider">
                     Intestato a Federica & Federico
                   </p>
                 </div>
+                <p className="text-navy/70 leading-relaxed max-w-lg mx-auto font-light">
+                  Ogni gesto sarà per noi un ricordo prezioso che porteremo in valigia e nel cuore.
+                  Grazie di cuore per essere parte di questa nostra avventura!
+                </p>
               </div>
             </motion.div>
           </div>
