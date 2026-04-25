@@ -500,7 +500,7 @@ function Home() {
             <CardSeparator />
 
             {/* Gallery Section */}
-            <div className="w-full max-w-6xl mx-auto px-4 py-8">
+            <div className="w-full max-w-6xl mx-auto p-0">
               <div
                 className="grid gap-3 md:gap-4 w-full aspect-[4/5] md:aspect-video"
                 style={{
