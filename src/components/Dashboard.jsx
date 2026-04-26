@@ -1,13 +1,27 @@
 import { useEffect, useState } from 'react'
 import { getRSVPs, deleteRSVP } from '../services/rsvpService'
-import { motion } from 'framer-motion'
-import { Trash2, Users, CheckCircle2, XCircle, MessageSquare, AlertTriangle, LogOut, Camera, Save, ExternalLink, Eye, EyeOff, Plus } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Trash2, Users, CheckCircle2, XCircle, MessageSquare, AlertTriangle, LogOut, Camera, Save, ExternalLink, Eye, EyeOff, Plus, Heart, GlassWater, Gift, Music, Church, Cake, Sparkles } from 'lucide-react'
 import { supabase } from '../lib/supabaseClient'
 import { useNavigate } from 'react-router-dom'
 
 export default function Dashboard() {
   const [rsvps, setRsvps] = useState([])
   const [albumSettings, setAlbumSettings] = useState([])
+  const [showAddModal, setShowAddModal] = useState(false)
+  const [newCategory, setNewCategory] = useState({ key: '', title: '', googleTitle: '', iconName: 'Camera' })
+  
+  const availableIcons = [
+    { id: 'Camera', icon: Camera },
+    { id: 'Church', icon: Church },
+    { id: 'Cake', icon: Cake },
+    { id: 'Music', icon: Music },
+    { id: 'Users', icon: Users },
+    { id: 'Heart', icon: Heart },
+    { id: 'GlassWater', icon: GlassWater },
+    { id: 'Gift', icon: Gift },
+    { id: 'Sparkles', icon: Sparkles }
+  ]
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [updatingId, setUpdatingId] = useState(null)
@@ -53,19 +67,20 @@ export default function Dashboard() {
     }
   }
 
-  const handleAddCategory = async () => {
-    const key = prompt("Inserisci una chiave unica per la categoria (es: aperitivo, selfie):")
-    if (!key) return
-    const title = prompt("Inserisci il titolo da mostrare (es: Aperitivo in Giardino):")
-    if (!title) return
+  const handleAddCategory = async (e) => {
+    e.preventDefault()
+    if (!newCategory.key || !newCategory.title) return
+
+    const cleanKey = newCategory.key.toLowerCase().replace(/\s+/g, '_')
 
     const { data, error } = await supabase
       .from('album_settings')
       .insert([
         { 
-          category_key: key.toLowerCase().replace(/\s+/g, '_'), 
-          display_title: title,
-          google_album_title: `Wedding_day_${key}`,
+          category_key: cleanKey, 
+          display_title: newCategory.title,
+          google_album_title: newCategory.googleTitle,
+          icon_name: newCategory.iconName,
           is_visible: true
         }
       ])
@@ -75,6 +90,8 @@ export default function Dashboard() {
       alert('Errore: ' + error.message)
     } else {
       setAlbumSettings([...albumSettings, data[0]])
+      setShowAddModal(false)
+      setNewCategory({ key: '', title: '', googleTitle: '' })
     }
   }
 
@@ -263,7 +280,7 @@ export default function Dashboard() {
               <h2 className="text-2xl font-serif text-navy">Gestione Album Foto</h2>
             </div>
             <button
-              onClick={handleAddCategory}
+              onClick={() => setShowAddModal(true)}
               className="flex items-center gap-2 px-6 py-2 bg-navy text-white rounded-full text-xs font-bold uppercase tracking-widest hover:bg-gold transition-all shadow-md"
             >
               <Plus className="w-4 h-4" />
@@ -280,9 +297,6 @@ export default function Dashboard() {
               >
                 <div className="flex justify-between items-start">
                   <div className="flex gap-2">
-                    <div className="px-3 py-1 bg-gold/10 text-gold rounded-full text-[10px] font-bold uppercase tracking-widest">
-                      {album.category_key}
-                    </div>
                     {!album.is_visible && (
                       <div className="px-3 py-1 bg-navy/10 text-navy-muted rounded-full text-[10px] font-bold uppercase tracking-widest flex items-center gap-1">
                         <EyeOff className="w-3 h-3" /> Nascosto
@@ -350,6 +364,22 @@ export default function Dashboard() {
                       )}
                     </div>
                   </div>
+
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-bold text-navy-muted uppercase tracking-widest">Icona</label>
+                    <div className="flex flex-wrap gap-1 p-2 bg-paper rounded-xl border border-navy/5">
+                      {availableIcons.map(({ id, icon: IconComponent }) => (
+                        <button
+                          key={id}
+                          type="button"
+                          onClick={() => handleUpdateAlbum(album.id, { icon_name: id })}
+                          className={`p-2 rounded-lg transition-all ${album.icon_name === id ? 'bg-gold text-white shadow-sm' : 'text-navy-muted hover:bg-navy/5'}`}
+                        >
+                          <IconComponent className="w-4 h-4" />
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                 </div>
 
                 <div className="pt-2 flex items-center justify-between">
@@ -365,6 +395,105 @@ export default function Dashboard() {
           </div>
         </section>
       </div>
+
+      {/* --- MODAL AGGIUNGI CATEGORIA --- */}
+      <AnimatePresence>
+        {showAddModal && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowAddModal(false)}
+              className="absolute inset-0 bg-navy/40 backdrop-blur-sm"
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="relative bg-white w-full max-w-md rounded-[2.5rem] p-8 md:p-12 shadow-2xl border border-navy/5"
+            >
+              <div className="text-center mb-8">
+                <div className="w-16 h-16 bg-gold/10 text-gold rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <Plus className="w-8 h-8" />
+                </div>
+                <h2 className="text-2xl font-serif text-navy">Nuova Categoria</h2>
+                <p className="text-navy-muted text-xs uppercase tracking-widest mt-2">Aggiungi un nuovo album</p>
+              </div>
+
+              <form onSubmit={handleAddCategory} className="space-y-6">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-bold text-navy uppercase tracking-widest">Identificativo (es: selfie)</label>
+                  <input 
+                    type="text"
+                    required
+                    value={newCategory.key}
+                    onChange={(e) => setNewCategory({...newCategory, key: e.target.value})}
+                    placeholder="Sola parola, es: aperitivo"
+                    className="w-full p-4 bg-paper rounded-2xl border border-navy/10 focus:border-gold/50 focus:outline-none transition-colors text-sm"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[10px] font-bold text-navy uppercase tracking-widest">Titolo da mostrare agli ospiti</label>
+                  <input 
+                    type="text"
+                    required
+                    value={newCategory.title}
+                    onChange={(e) => setNewCategory({...newCategory, title: e.target.value})}
+                    placeholder="Es: I vostri Selfie"
+                    className="w-full p-4 bg-paper rounded-2xl border border-navy/10 focus:border-gold/50 focus:outline-none transition-colors text-sm"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[10px] font-bold text-navy uppercase tracking-widest">Nome Album Google Foto</label>
+                  <input 
+                    type="text"
+                    required
+                    value={newCategory.googleTitle}
+                    onChange={(e) => setNewCategory({...newCategory, googleTitle: e.target.value})}
+                    placeholder="Es: Wedding_day_selfie"
+                    className="w-full p-4 bg-paper rounded-2xl border border-navy/10 focus:border-gold/50 focus:outline-none transition-colors text-sm"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[10px] font-bold text-navy uppercase tracking-widest">Scegli un'icona</label>
+                  <div className="grid grid-cols-5 gap-2 p-3 bg-paper rounded-2xl border border-navy/10">
+                    {availableIcons.map(({ id, icon: IconComponent }) => (
+                      <button
+                        key={id}
+                        type="button"
+                        onClick={() => setNewCategory({...newCategory, iconName: id})}
+                        className={`p-3 rounded-xl flex items-center justify-center transition-all ${newCategory.iconName === id ? 'bg-gold text-white shadow-lg' : 'text-navy-muted hover:bg-navy/5'}`}
+                      >
+                        <IconComponent className="w-5 h-5" />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex gap-4 pt-4">
+                  <button 
+                    type="button"
+                    onClick={() => setShowAddModal(false)}
+                    className="flex-grow py-4 bg-paper text-navy-muted rounded-2xl text-[10px] font-bold uppercase tracking-widest hover:bg-navy/5 transition-colors"
+                  >
+                    Annulla
+                  </button>
+                  <button 
+                    type="submit"
+                    className="flex-grow py-4 bg-navy text-white rounded-2xl text-[10px] font-bold uppercase tracking-widest hover:bg-gold transition-all shadow-lg"
+                  >
+                    Crea Categoria
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }

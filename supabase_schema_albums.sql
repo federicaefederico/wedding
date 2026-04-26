@@ -1,4 +1,4 @@
--- Tabella per la gestione dinamica degli album di Google Foto (Versione 2)
+-- Tabella per la gestione dinamica degli album di Google Foto (Versione Completa)
 CREATE TABLE IF NOT EXISTS album_settings (
   id bigint PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
   category_key TEXT UNIQUE NOT NULL, -- es: 'chiesa', 'torta'
@@ -25,12 +25,11 @@ SET display_title = EXCLUDED.display_title;
 -- Configurazione Row Level Security (RLS)
 ALTER TABLE album_settings ENABLE ROW LEVEL SECURITY;
 
--- Permetti a tutti (ospiti) di leggere solo gli album visibili
--- Nota: Il filtro 'is_visible' è applicato nel codice frontend, 
--- qui permettiamo la lettura di base.
+-- 1. Permetti la lettura pubblica (per gli ospiti)
 CREATE POLICY "Allow public read access" ON album_settings
   FOR SELECT USING (true);
 
--- Permetti agli admin autenticati di gestire tutto
-CREATE POLICY "Allow authenticated all" ON album_settings
-  FOR ALL USING (auth.role() = 'authenticated');
+-- 2. Permetti agli admin (autenticati) di fare tutto: INSERT, UPDATE, DELETE
+CREATE POLICY "Allow authenticated full access" ON album_settings
+  FOR ALL USING (auth.role() = 'authenticated')
+  WITH CHECK (auth.role() = 'authenticated');

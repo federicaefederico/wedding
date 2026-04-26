@@ -18,7 +18,9 @@ import {
   Users,
   CheckCircle2,
   AlertCircle,
-  ExternalLink
+  ExternalLink,
+  Music,
+  Gift
 } from 'lucide-react'
 import sigillo from './assets/sigillo.png'
 import chiesa from './assets/chiesa.jpeg'
@@ -288,7 +290,6 @@ const PhotoCard = ({ title, icon: Icon, desc, albumUrl, categoryKey, albumTitle 
 
       <div>
         <h3 className="text-lg font-serif text-navy mb-1">{title}</h3>
-        <p className="text-xs text-navy-muted font-light leading-relaxed">{desc}</p>
       </div>
 
       <div className="pt-4 flex flex-col w-full space-y-3">
@@ -1150,13 +1151,17 @@ function PhotoGallery() {
     fetchSettings()
   }, [])
 
-  const iconMap = {
-    chiesa: Church,
-    ingresso: Camera,
-    torta: Cake,
-    ballo: Music2,
-    fuochi: Sparkles,
-    ospiti: Users
+  const iconComponents = {
+    Camera,
+    Church,
+    Cake,
+    Music2,
+    Music,
+    Users,
+    Heart,
+    GlassWater,
+    Gift,
+    Sparkles
   }
 
   return (
@@ -1181,8 +1186,7 @@ function PhotoGallery() {
             <PhotoCard
               key={cat.id}
               title={cat.display_title}
-              icon={iconMap[cat.category_key] || Camera}
-              desc={cat.display_title === 'Insieme a voi' ? 'Selfie e sorrisi condivisi' : 'I momenti più belli'}
+              icon={iconComponents[cat.icon_name] || iconComponents[cat.category_key] || Camera}
               categoryKey={cat.category_key}
               albumUrl={cat.share_url || '#'}
               albumTitle={cat.google_album_title}
