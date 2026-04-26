@@ -53,6 +53,31 @@ export default function Dashboard() {
     }
   }
 
+  const handleAddCategory = async () => {
+    const key = prompt("Inserisci una chiave unica per la categoria (es: aperitivo, selfie):")
+    if (!key) return
+    const title = prompt("Inserisci il titolo da mostrare (es: Aperitivo in Giardino):")
+    if (!title) return
+
+    const { data, error } = await supabase
+      .from('album_settings')
+      .insert([
+        { 
+          category_key: key.toLowerCase().replace(/\s+/g, '_'), 
+          display_title: title,
+          google_album_title: `Wedding_day_${key}`,
+          is_visible: true
+        }
+      ])
+      .select()
+
+    if (error) {
+      alert('Errore: ' + error.message)
+    } else {
+      setAlbumSettings([...albumSettings, data[0]])
+    }
+  }
+
   const handleUpdateAlbum = async (id, updates) => {
     setUpdatingId(id)
     const { error } = await supabase
@@ -67,6 +92,18 @@ export default function Dashboard() {
       setAlbumSettings(albumSettings.map(a => a.id === id ? { ...a, ...updates } : a))
     }
     setUpdatingId(null)
+  }
+
+  const handleDeleteAlbum = async (id) => {
+    if (window.confirm('Sei sicuro di voler eliminare questa categoria?')) {
+      const { error } = await supabase
+        .from('album_settings')
+        .delete()
+        .eq('id', id)
+      
+      if (error) alert('Errore eliminazione: ' + error.message)
+      else setAlbumSettings(albumSettings.filter(a => a.id !== id))
+    }
   }
 
   const handleDelete = async (id) => {
@@ -220,9 +257,18 @@ export default function Dashboard() {
 
         {/* --- SEZIONE GESTIONE ALBUM --- */}
         <section className="mb-16">
-          <div className="flex items-center gap-3 mb-6">
-            <Camera className="w-6 h-6 text-gold" />
-            <h2 className="text-2xl font-serif text-navy">Gestione Album Foto</h2>
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+            <div className="flex items-center gap-3">
+              <Camera className="w-6 h-6 text-gold" />
+              <h2 className="text-2xl font-serif text-navy">Gestione Album Foto</h2>
+            </div>
+            <button
+              onClick={handleAddCategory}
+              className="flex items-center gap-2 px-6 py-2 bg-navy text-white rounded-full text-xs font-bold uppercase tracking-widest hover:bg-gold transition-all shadow-md"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Nuova Categoria</span>
+            </button>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -230,17 +276,35 @@ export default function Dashboard() {
               <motion.div 
                 key={album.id}
                 layout
-                className="bg-white p-6 rounded-3xl shadow-lg border border-navy/5 flex flex-col gap-4"
+                className={`bg-white p-6 rounded-3xl shadow-lg border border-navy/5 flex flex-col gap-4 transition-opacity ${!album.is_visible ? 'opacity-60' : ''}`}
               >
                 <div className="flex justify-between items-start">
-                  <div className="px-3 py-1 bg-gold/10 text-gold rounded-full text-[10px] font-bold uppercase tracking-widest">
-                    {album.category_key}
-                  </div>
-                  {album.google_album_id && (
-                    <div className="text-[10px] text-green-500 font-bold uppercase tracking-widest flex items-center gap-1">
-                      <CheckCircle2 className="w-3 h-3" /> Collegato
+                  <div className="flex gap-2">
+                    <div className="px-3 py-1 bg-gold/10 text-gold rounded-full text-[10px] font-bold uppercase tracking-widest">
+                      {album.category_key}
                     </div>
-                  )}
+                    {!album.is_visible && (
+                      <div className="px-3 py-1 bg-navy/10 text-navy-muted rounded-full text-[10px] font-bold uppercase tracking-widest flex items-center gap-1">
+                        <EyeOff className="w-3 h-3" /> Nascosto
+                      </div>
+                    )}
+                  </div>
+                  
+                  <div className="flex gap-1">
+                    <button
+                      onClick={() => handleUpdateAlbum(album.id, { is_visible: !album.is_visible })}
+                      title={album.is_visible ? "Nascondi dal sito" : "Mostra sul sito"}
+                      className={`p-2 rounded-lg transition-colors ${album.is_visible ? 'text-navy-muted hover:bg-navy/5' : 'text-gold bg-gold/5'}`}
+                    >
+                      {album.is_visible ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                    </button>
+                    <button
+                      onClick={() => handleDeleteAlbum(album.id)}
+                      className="p-2 text-red-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
 
                 <h3 className="text-lg font-serif text-navy">{album.display_title}</h3>

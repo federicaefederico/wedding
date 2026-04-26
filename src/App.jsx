@@ -264,9 +264,10 @@ const PhotoCard = ({ title, icon: Icon, desc, albumUrl, categoryKey, albumTitle 
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -5 }}
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      whileHover={{ y: -2 }}
+      viewport={{ once: true }}
       className="bg-white p-8 rounded-[2rem] border border-navy/5 shadow-xl hover:shadow-2xl transition-all group flex flex-col items-center text-center space-y-4 relative overflow-hidden"
     >
       {status === 'success' && (
@@ -339,8 +340,8 @@ function Home() {
   const [isOpen, setIsOpen] = useState(false)
   const [isOpening, setIsOpening] = useState(false)
   const [showMonths, setShowMonths] = useState(false)
-  const [albumSettings, setAlbumSettings] = useState([])
   const targetDate = new Date('2026-09-12T15:30:00')
+  const navigate = useNavigate()
 
   // Form State
   const [formData, setFormData] = useState({
@@ -363,26 +364,6 @@ function Home() {
       return () => window.removeEventListener('load', () => setIsReady(true))
     }
   }, [])
-
-  useEffect(() => {
-    const fetchSettings = async () => {
-      const { data } = await supabase
-        .from('album_settings')
-        .select('*')
-        .order('id', { ascending: true })
-      if (data) setAlbumSettings(data)
-    }
-    fetchSettings()
-  }, [])
-
-  const iconMap = {
-    chiesa: Church,
-    ingresso: Camera,
-    torta: Cake,
-    ballo: Music2,
-    fuochi: Sparkles,
-    ospiti: Users
-  }
 
   const handleOpenEnvelope = () => {
     if (isOpening || isOpen) return;
@@ -804,23 +785,17 @@ function Home() {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {albumSettings.map((cat) => (
-                <PhotoCard
-                  key={cat.id}
-                  title={cat.display_title}
-                  icon={iconMap[cat.category_key] || Camera}
-                  desc={cat.display_title === 'Insieme a voi' ? 'Selfie e sorrisi condivisi' : 'I momenti più belli'}
-                  categoryKey={cat.category_key}
-                  albumUrl={cat.share_url || '#'}
-                  albumTitle={cat.google_album_title}
-                />
-              ))}
-              {albumSettings.length === 0 && (
-                <div className="col-span-full text-center py-10 text-navy-muted italic">
-                  Caricamento album...
-                </div>
-              )}
+            <div className="flex justify-center">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => navigate('/foto')}
+                className="group relative px-12 py-6 bg-navy text-white rounded-full font-serif text-xl shadow-2xl hover:bg-navy/90 transition-all flex items-center gap-4"
+              >
+                <Camera className="w-6 h-6 text-gold group-hover:rotate-12 transition-transform" />
+                <span>Carica le tue foto</span>
+                <div className="absolute -inset-1 bg-gold/20 rounded-full blur opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              </motion.button>
             </div>
           </div>
         </section>
@@ -1103,7 +1078,7 @@ function Login() {
   }
 
   return (
-    <div className="min-h-screen bg-paper flex items-center justify-center p-4">
+    <div className="min-h-screen bg-paper bg-eucalyptus flex items-center justify-center p-4">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -1156,12 +1131,82 @@ function Login() {
   )
 }
 
+// --- Dedicated Photo Gallery Page ---
+function PhotoGallery() {
+  const [albumSettings, setAlbumSettings] = useState([])
+  const [loading, setLoading] = useState(true)
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      const { data } = await supabase
+        .from('album_settings')
+        .select('*')
+        .eq('is_visible', true)
+        .order('id', { ascending: true })
+      if (data) setAlbumSettings(data)
+      setLoading(false)
+    }
+    fetchSettings()
+  }, [])
+
+  const iconMap = {
+    chiesa: Church,
+    ingresso: Camera,
+    torta: Cake,
+    ballo: Music2,
+    fuochi: Sparkles,
+    ospiti: Users
+  }
+
+  return (
+    <div className="min-h-screen bg-paper bg-eucalyptus py-20 px-4">
+      <div className="max-w-6xl mx-auto">
+        <button
+          onClick={() => navigate('/')}
+          className="mb-12 text-navy-muted hover:text-navy transition-colors flex items-center gap-2 uppercase tracking-widest text-[10px] font-bold"
+        >
+          ← Torna alla Home
+        </button>
+
+        <div className="text-center mb-16 space-y-4">
+          <h1 className="text-5xl font-serif text-navy font-script">I vostri ricordi</h1>
+          <p className="text-navy/60 max-w-2xl mx-auto font-light leading-relaxed">
+            Scegliete la categoria e caricate le vostre foto. Ogni scatto sarà un regalo prezioso per noi.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {albumSettings.map((cat) => (
+            <PhotoCard
+              key={cat.id}
+              title={cat.display_title}
+              icon={iconMap[cat.category_key] || Camera}
+              desc={cat.display_title === 'Insieme a voi' ? 'Selfie e sorrisi condivisi' : 'I momenti più belli'}
+              categoryKey={cat.category_key}
+              albumUrl={cat.share_url || '#'}
+              albumTitle={cat.google_album_title}
+            />
+          ))}
+          {loading && (
+            <div className="col-span-full text-center py-20">
+              <Loader2 className="w-10 h-10 animate-spin text-gold mx-auto mb-4" />
+              <p className="text-navy-muted font-serif">Caricamento gallerie...</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 // --- Main App Component (Routing) ---
 
 export default function App() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
+      <Route path="/foto" element={<PhotoGallery />} />
       <Route path="/login" element={<Login />} />
       <Route path="/dashboard" element={<Dashboard />} />
     </Routes>
