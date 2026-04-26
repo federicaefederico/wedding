@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { getRSVPs, deleteRSVP } from '../services/rsvpService'
 import { motion } from 'framer-motion'
-import { Trash2, Users, CheckCircle2, XCircle, MessageSquare, AlertTriangle, LogOut, Camera, Save, ExternalLink } from 'lucide-react'
+import { Trash2, Users, CheckCircle2, XCircle, MessageSquare, AlertTriangle, LogOut, Camera, Save, ExternalLink, Eye, EyeOff, Plus } from 'lucide-react'
 import { supabase } from '../lib/supabaseClient'
 import { useNavigate } from 'react-router-dom'
 
