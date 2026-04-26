@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Heart,
@@ -10,7 +10,15 @@ import {
   Music2,
   ChevronDown,
   Lock,
-  Loader2
+  Loader2,
+  Camera,
+  Church,
+  Sparkles,
+  Cake,
+  Users,
+  CheckCircle2,
+  AlertCircle,
+  ExternalLink
 } from 'lucide-react'
 import sigillo from './assets/sigillo.png'
 import chiesa from './assets/chiesa.jpeg'
@@ -188,6 +196,142 @@ const FAQAccordion = () => {
   )
 }
 
+const PhotoCard = ({ title, icon: Icon, desc, albumUrl, categoryKey, albumTitle }) => {
+  const [isUploading, setIsUploading] = useState(false)
+  const [status, setStatus] = useState(null) // 'success' | 'error' | null
+  const [uploadCount, setUploadCount] = useState({ current: 0, total: 0 })
+  const fileInputRef = useRef(null)
+
+  const handleUpload = async (e) => {
+    const files = Array.from(e.target.files)
+    if (files.length === 0) return
+
+    setIsUploading(true)
+    setStatus(null)
+    setUploadCount({ current: 0, total: files.length })
+
+    let hasError = false
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i]
+      setUploadCount({ current: i + 1, total: files.length })
+
+      // Verifica dimensione (max 10MB)
+      if (file.size > 10 * 1024 * 1024) {
+        console.warn(`File ${file.name} troppo grande.`)
+        continue
+      }
+
+      try {
+        const fileExt = file.name.split('.').pop()
+        const fileName = `${categoryKey}/${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`
+
+        // 1. Upload su Supabase Storage
+        const { error } = await supabase.storage
+          .from('wedding-photos')
+          .upload(fileName, file)
+
+        if (error) throw error
+
+        // 2. Chiama la Edge Function
+        const { error: funcError } = await supabase.functions.invoke('upload-to-google-photos', {
+          body: {
+            filePath: fileName,
+            fileName: file.name,
+            categoryKey: categoryKey
+          }
+        })
+
+        if (funcError) throw funcError
+
+      } catch (err) {
+        console.error(`Errore caricamento ${file.name}:`, err)
+        hasError = true
+      }
+    }
+
+    if (hasError) {
+      setStatus('error')
+    } else {
+      setStatus('success')
+      setTimeout(() => setStatus(null), 5000)
+    }
+
+    setIsUploading(false)
+    setUploadCount({ current: 0, total: 0 })
+    if (fileInputRef.current) fileInputRef.current.value = ''
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      whileHover={{ y: -5 }}
+      className="bg-white p-8 rounded-[2rem] border border-navy/5 shadow-xl hover:shadow-2xl transition-all group flex flex-col items-center text-center space-y-4 relative overflow-hidden"
+    >
+      {status === 'success' && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="absolute inset-0 bg-green-50/90 backdrop-blur-sm z-20 flex flex-col items-center justify-center p-4"
+        >
+          <CheckCircle2 className="w-10 h-10 text-green-500 mb-2" />
+          <p className="text-sm font-bold text-navy">Caricato con successo!</p>
+          <p className="text-[10px] text-navy-muted">Verrà aggiunto all'album a breve</p>
+        </motion.div>
+      )}
+
+      <div className="w-16 h-16 bg-paper rounded-2xl flex items-center justify-center group-hover:bg-navy/5 transition-colors">
+        <Icon className="w-8 h-8 text-gold" />
+      </div>
+
+      <div>
+        <h3 className="text-lg font-serif text-navy mb-1">{title}</h3>
+        <p className="text-xs text-navy-muted font-light leading-relaxed">{desc}</p>
+      </div>
+
+      <div className="pt-4 flex flex-col w-full space-y-3">
+        <input
+          type="file"
+          multiple
+          ref={fileInputRef}
+          onChange={handleUpload}
+          accept="image/*"
+          className="hidden"
+        />
+
+        <button
+          onClick={() => fileInputRef.current?.click()}
+          disabled={isUploading}
+          className="w-full py-3 bg-navy text-white rounded-xl text-[10px] font-bold tracking-widest uppercase hover:bg-gold transition-colors flex items-center justify-center gap-2 shadow-md disabled:opacity-50"
+        >
+          {isUploading ? (
+            <>
+              <Loader2 className="w-4 h-4 animate-spin" />
+              <span>Caricando {uploadCount.current}/{uploadCount.total}...</span>
+            </>
+          ) : (
+            <>
+              <Camera className="w-4 h-4" />
+              Carica Foto
+            </>
+          )}
+        </button>
+
+        <a
+          href={albumUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-full py-3 bg-paper text-navy rounded-xl text-[10px] font-bold tracking-widest uppercase hover:bg-navy/5 transition-colors flex items-center justify-center gap-2"
+        >
+          <ExternalLink className="w-4 h-4" />
+          Vedi Album
+        </a>
+      </div>
+    </motion.div>
+  )
+}
+
 // --- Home Component (Landing Page) ---
 
 function Home() {
@@ -195,6 +339,7 @@ function Home() {
   const [isOpen, setIsOpen] = useState(false)
   const [isOpening, setIsOpening] = useState(false)
   const [showMonths, setShowMonths] = useState(false)
+  const [albumSettings, setAlbumSettings] = useState([])
   const targetDate = new Date('2026-09-12T15:30:00')
 
   // Form State
@@ -218,6 +363,26 @@ function Home() {
       return () => window.removeEventListener('load', () => setIsReady(true))
     }
   }, [])
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      const { data } = await supabase
+        .from('album_settings')
+        .select('*')
+        .order('id', { ascending: true })
+      if (data) setAlbumSettings(data)
+    }
+    fetchSettings()
+  }, [])
+
+  const iconMap = {
+    chiesa: Church,
+    ingresso: Camera,
+    torta: Cake,
+    ballo: Music2,
+    fuochi: Sparkles,
+    ospiti: Users
+  }
 
   const handleOpenEnvelope = () => {
     if (isOpening || isOpen) return;
@@ -349,7 +514,7 @@ function Home() {
             className="w-full relative z-10"
           >
             <ul className="w-full flex justify-between items-center px-4 md:px-20">
-              {['Dettagli', 'Programma', 'Regalo', 'FAQ', 'RSVP'].map((item) => (
+              {['Dettagli', 'Programma', 'Regalo', 'Foto', 'FAQ', 'RSVP'].map((item) => (
                 <li key={item}>
                   <button
                     onClick={() => {
@@ -620,6 +785,43 @@ function Home() {
                 </p>
               </div>
             </motion.div>
+          </div>
+        </section>
+
+        <CardSeparator />
+
+        <section id="foto" className="py-24 px-4 bg-paper/50">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-16 space-y-2">
+              <h2 className="text-3xl font-serif text-navy font-script">Condividi i tuoi scatti</h2>
+              <p className="text-navy-muted tracking-[0.2em] uppercase text-[10px] font-bold">I vostri ricordi con noi</p>
+            </div>
+
+            <div className="max-w-3xl mx-auto text-center mb-16">
+              <p className="text-navy/70 leading-relaxed font-light">
+                Aiutateci a rendere indelebile questo giorno! Abbiamo creato degli album dedicati su <span className="font-bold text-navy">Google Foto</span> per raccogliere i vostri scatti più belli.
+                Scegliete la categoria e caricate le vostre foto per condividerle con noi e con tutti gli ospiti.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {albumSettings.map((cat) => (
+                <PhotoCard
+                  key={cat.id}
+                  title={cat.display_title}
+                  icon={iconMap[cat.category_key] || Camera}
+                  desc={cat.display_title === 'Insieme a voi' ? 'Selfie e sorrisi condivisi' : 'I momenti più belli'}
+                  categoryKey={cat.category_key}
+                  albumUrl={cat.share_url || '#'}
+                  albumTitle={cat.google_album_title}
+                />
+              ))}
+              {albumSettings.length === 0 && (
+                <div className="col-span-full text-center py-10 text-navy-muted italic">
+                  Caricamento album...
+                </div>
+              )}
+            </div>
           </div>
         </section>
 
