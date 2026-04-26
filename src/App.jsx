@@ -292,7 +292,7 @@ const PhotoCard = ({ title, icon: Icon, desc, albumUrl, categoryKey, albumTitle 
         <h3 className="text-lg font-serif text-navy mb-1">{title}</h3>
       </div>
 
-      <div className="pt-4 flex flex-col w-full space-y-3">
+      <div className="pt-4 flex flex-row w-full gap-2">
         <input
           type="file"
           multiple
@@ -305,17 +305,14 @@ const PhotoCard = ({ title, icon: Icon, desc, albumUrl, categoryKey, albumTitle 
         <button
           onClick={() => fileInputRef.current?.click()}
           disabled={isUploading}
-          className="w-full py-3 bg-navy text-white rounded-xl text-[10px] font-bold tracking-widest uppercase hover:bg-gold transition-colors flex items-center justify-center gap-2 shadow-md disabled:opacity-50"
+          className="flex-1 py-3 bg-navy text-white rounded-xl text-[10px] font-bold tracking-widest uppercase hover:bg-gold transition-colors flex items-center justify-center gap-2 shadow-md disabled:opacity-50"
         >
           {isUploading ? (
-            <>
-              <Loader2 className="w-4 h-4 animate-spin" />
-              <span>Caricando {uploadCount.current}/{uploadCount.total}...</span>
-            </>
+            <Loader2 className="w-3 h-3 animate-spin" />
           ) : (
             <>
-              <Camera className="w-4 h-4" />
-              Carica Foto
+              <Camera className="w-3 h-3" />
+              Carica
             </>
           )}
         </button>
@@ -324,10 +321,10 @@ const PhotoCard = ({ title, icon: Icon, desc, albumUrl, categoryKey, albumTitle 
           href={albumUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="w-full py-3 bg-paper text-navy rounded-xl text-[10px] font-bold tracking-widest uppercase hover:bg-navy/5 transition-colors flex items-center justify-center gap-2"
+          className="flex-1 py-3 bg-paper text-navy rounded-xl text-[10px] font-bold tracking-widest uppercase hover:bg-navy/5 transition-colors flex items-center justify-center gap-2"
         >
-          <ExternalLink className="w-4 h-4" />
-          Vedi Album
+          <ExternalLink className="w-3 h-3" />
+          Album
         </a>
       </div>
     </motion.div>
