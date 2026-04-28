@@ -26,10 +26,11 @@ import sigillo from './assets/sigillo.png'
 import chiesa from './assets/chiesa.jpeg'
 import villa from './assets/villa.jpeg'
 import { intervalToDuration, format, differenceInDays } from 'date-fns'
-import { Routes, Route, useNavigate } from 'react-router-dom'
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 import { submitRSVP } from './services/rsvpService'
 import { supabase } from './lib/supabaseClient'
 import Dashboard from './components/Dashboard'
+import { useScroll, useMotionValueEvent } from 'framer-motion'
 
 // --- Components ---
 
@@ -103,25 +104,44 @@ const Countdown = ({ targetDate, showMonths = false }) => {
   )
 }
 
-const TimelineItem = ({ time, title, subtitle, icon: Icon, isLast }) => (
-  <div className="relative pl-12 pb-12 last:pb-0 group">
-    {!isLast && <div className="timeline-line" />}
-    <div className="absolute left-0 top-0 w-10 h-10 bg-white border border-navy/20 rounded-full flex items-center justify-center z-10 card-shadow group-hover:border-navy transition-colors">
-      <Icon className="w-5 h-5 text-navy" />
-    </div>
-    <div className="timeline-dot" />
-    <motion.div
-      initial={{ opacity: 0, x: 20 }}
-      whileInView={{ opacity: 1, x: 0 }}
-      viewport={{ once: true }}
-      className="text-left"
-    >
-      <div className="inline-block bg-navy text-white text-sm px-3 py-1 rounded-md mb-2 font-medium">
-        {time}
+const TimelineItem = ({ time, title, icon: Icon, isLeft, isLast }) => (
+  <div className="relative grid grid-cols-[1fr_auto_1fr] items-center mb-8 last:mb-0 group">
+    {/* Left Side */}
+    <div className={`flex items-center justify-end ${isLeft ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+      <motion.div
+        initial={{ opacity: 0, x: -20 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        className="text-right pr-6"
+      >
+        <div className="text-navy-dark font-bold text-sm tracking-widest">{time}</div>
+        <div className="text-navy text-[11px] font-serif uppercase tracking-wider">{title}</div>
+      </motion.div>
+      <div className="w-10 h-10 bg-white border border-navy/10 rounded-full flex items-center justify-center z-10 shadow-md group-hover:border-gold/50 transition-colors shrink-0">
+        <Icon className="w-5 h-5 text-gold" />
       </div>
-      <h4 className="text-xl font-serif text-navy mb-1">{title}</h4>
-      <p className="text-navy-muted text-sm">{subtitle}</p>
-    </motion.div>
+      <div className="w-8 h-px bg-gold/30 shrink-0" />
+    </div>
+
+    {/* Center Point */}
+    <div className="relative flex flex-col items-center h-full px-2">
+      <div className="w-px h-full bg-navy/10" />
+    </div>
+
+    {/* Right Side */}
+    <div className={`flex items-center justify-start ${!isLeft ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+      <div className="w-8 h-px bg-gold/30 shrink-0" />
+      <div className="w-10 h-10 bg-white border border-navy/10 rounded-full flex items-center justify-center z-10 shadow-md group-hover:border-gold/50 transition-colors shrink-0">
+        <Icon className="w-5 h-5 text-gold" />
+      </div>
+      <motion.div
+        initial={{ opacity: 0, x: 20 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        className="text-left pl-6"
+      >
+        <div className="text-navy-dark font-bold text-sm tracking-widest">{time}</div>
+        <div className="text-navy text-[11px] font-serif uppercase tracking-wider">{title}</div>
+      </motion.div>
+    </div>
   </div>
 )
 
@@ -331,15 +351,71 @@ const PhotoCard = ({ title, icon: Icon, desc, albumUrl, categoryKey, albumTitle 
   )
 }
 
+// --- Navigation Component ---
+
+const Navbar = ({ isOpen }) => {
+  const [hidden, setHidden] = useState(false)
+  const { scrollY } = useScroll()
+  const navigate = useNavigate()
+  const location = useLocation()
+
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    const previous = scrollY.getPrevious()
+    if (latest > previous && latest > 150) {
+      setHidden(true)
+    } else {
+      setHidden(false)
+    }
+  })
+
+  const handleNavClick = (id) => {
+    if (location.pathname !== '/') {
+      navigate('/', { state: { scrollTo: id } })
+    } else {
+      const element = document.getElementById(id.toLowerCase())
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' })
+      }
+    }
+  }
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <motion.nav
+          initial={{ y: -100, opacity: 0 }}
+          animate={{ y: hidden ? -100 : 0, opacity: 1 }}
+          exit={{ y: -100, opacity: 0 }}
+          transition={{ duration: 0.3, ease: "easeInOut" }}
+          className="fixed top-0 left-0 right-0 z-[60] bg-highlight border-b border-navy/10 px-4 py-4 md:px-12 shadow-sm"
+        >
+          <ul className="max-w-7xl mx-auto flex justify-between items-center gap-2 md:gap-4">
+            {['Dettagli', 'Programma', 'Regalo', 'Foto', 'FAQ', 'RSVP'].map((item) => (
+              <li key={item}>
+                <button
+                  onClick={() => handleNavClick(item)}
+                  className="text-[9px] md:text-xs uppercase tracking-[0.2em] font-bold text-navy-dark hover:text-white transition-colors cursor-pointer bg-transparent border-none p-1 md:p-2"
+                >
+                  {item}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </motion.nav>
+      )}
+    </AnimatePresence>
+  )
+}
+
 // --- Home Component (Landing Page) ---
 
-function Home() {
+function Home({ isOpen, setIsOpen }) {
   const [isReady, setIsReady] = useState(false)
-  const [isOpen, setIsOpen] = useState(false)
   const [isOpening, setIsOpening] = useState(false)
   const [showMonths, setShowMonths] = useState(false)
   const targetDate = new Date('2026-09-12T15:30:00')
   const navigate = useNavigate()
+  const location = useLocation()
 
   // Form State
   const [formData, setFormData] = useState({
@@ -363,11 +439,26 @@ function Home() {
     }
   }, [])
 
+  useEffect(() => {
+    if (isOpen && location.state?.scrollTo) {
+      const id = location.state.scrollTo.toLowerCase()
+      setTimeout(() => {
+        const element = document.getElementById(id)
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' })
+          // Clear state to avoid scrolling again on back navigation
+          window.history.replaceState({}, document.title)
+        }
+      }, 100)
+    }
+  }, [isOpen, location.state])
+
   const handleOpenEnvelope = () => {
     if (isOpening || isOpen) return;
     setIsOpening(true);
     setTimeout(() => {
       setIsOpen(true);
+      sessionStorage.setItem('envelope-opened', 'true');
     }, 2400);
   }
 
@@ -485,35 +576,11 @@ function Home() {
             <div className="absolute inset-0 bg-paper/70 backdrop-blur-[1px]" />
           </div>
 
-          {/* Navigation Menu (Z-index 10) */}
-          <motion.nav
-            initial={{ opacity: 0, y: -20 }}
-            animate={isOpen ? { opacity: 1, y: 0 } : {}}
-            transition={{ delay: 1, duration: 1 }}
-            className="w-full relative z-10"
-          >
-            <ul className="w-full flex justify-between items-center px-4 md:px-20">
-              {['Dettagli', 'Programma', 'Regalo', 'Foto', 'FAQ', 'RSVP'].map((item) => (
-                <li key={item}>
-                  <button
-                    onClick={() => {
-                      const element = document.getElementById(item.toLowerCase());
-                      if (element) element.scrollIntoView({ behavior: 'smooth' });
-                    }}
-                    className="text-[10px] md:text-xs uppercase tracking-[0.3em] font-medium text-navy hover:text-navy/70 transition-colors no-underline cursor-pointer bg-transparent border-none p-0"
-                  >
-                    {item}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </motion.nav>
-
           <motion.div
             initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1 }}
-            className="relative z-10 flex flex-col items-center space-y-2"
+            animate={isOpen ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 1, delay: 0.5 }}
+            className="relative z-10 flex flex-col items-center space-y-2 mt-auto mb-auto"
           >
             <h1 className="text-[clamp(4rem,12vw,11rem)] font-kunstler text-navy leading-[0.8] whitespace-nowrap">
               Federica e Federico
@@ -574,9 +641,9 @@ function Home() {
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className="bg-white rounded-[2rem] overflow-hidden shadow-2xl shadow-navy/10 border border-navy/5 flex flex-col w-full max-w-2xl group"
+                className="bg-highlight rounded-[2rem] overflow-hidden shadow-2xl shadow-navy/10 border border-navy/5 flex flex-col w-full max-w-2xl group"
               >
-                <div className="w-full relative overflow-hidden flex items-center justify-center p-4 md:p-6 bg-white">
+                <div className="w-full relative overflow-hidden flex items-center justify-center p-4 md:p-6 bg-white/20">
                   <motion.img
                     src={chiesa}
                     alt="Chiesa di San Giuseppe Calasanzio"
@@ -586,16 +653,19 @@ function Home() {
                 </div>
                 <div className="p-10 flex flex-col items-center text-center space-y-6">
                   <div className="space-y-3">
-                    <span className="text-gold font-bold text-[10px] tracking-[0.3em] uppercase">La Cerimonia</span>
-                    <h3 className="text-3xl font-serif text-navy font-medium">Chiesa di San Giuseppe Calasanzio</h3>
-                    <p className="text-navy-muted font-light text-sm px-4">Via Don Carlo Gnocchi, 16 - Milano</p>
+                    <span className="text-navy-dark font-bold text-[10px] tracking-[0.3em] uppercase opacity-70">La Cerimonia</span>
+                    <h3 className="text-3xl font-serif text-navy-dark font-medium">Chiesa di San Giuseppe Calasanzio</h3>
+                    <p className="text-navy-dark font-light text-sm px-4 opacity-80">Via Don Carlo Gnocchi, 16 - Milano</p>
+                  </div>
+                  <div className="text-navy-dark font-serif text-xl italic">
+                    Alle ore 15:30
                   </div>
                   <div className="pt-4">
                     <a
                       href="https://www.google.com/maps/search/?api=1&query=Chiesa+di+San+Giuseppe+Calasanzio+Via+Don+Carlo+Gnocchi+16+20148+Milano"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center space-x-3 px-8 py-4 bg-navy text-white rounded-full text-[10px] font-bold tracking-[0.2em] uppercase hover:bg-gold transition-colors shadow-lg"
+                      className="inline-flex items-center space-x-3 px-8 py-4 bg-navy-dark text-white rounded-full text-[10px] font-bold tracking-[0.2em] uppercase hover:bg-gold transition-colors shadow-lg"
                     >
                       <MapPin className="w-4 h-4" />
                       <span>Apri su Google Maps</span>
@@ -610,9 +680,9 @@ function Home() {
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className="bg-white rounded-[2rem] overflow-hidden shadow-2xl shadow-navy/10 border border-navy/5 flex flex-col w-full max-w-2xl group"
+                className="bg-highlight rounded-[2rem] overflow-hidden shadow-2xl shadow-navy/10 border border-navy/5 flex flex-col w-full max-w-2xl group"
               >
-                <div className="w-full relative overflow-hidden flex items-center justify-center p-4 md:p-6 bg-white">
+                <div className="w-full relative overflow-hidden flex items-center justify-center p-4 md:p-6 bg-white/20">
                   <motion.img
                     src={villa}
                     alt="Villa Valenca"
@@ -622,16 +692,16 @@ function Home() {
                 </div>
                 <div className="p-10 flex flex-col items-center text-center space-y-6">
                   <div className="space-y-3">
-                    <span className="text-gold font-bold text-[10px] tracking-[0.3em] uppercase">Il Ricevimento</span>
-                    <h3 className="text-3xl font-serif text-navy font-medium">Villa Valenca</h3>
-                    <p className="text-navy-muted font-light text-sm px-4">Via Don Luigi Bersini, 20 - Brescia</p>
+                    <span className="text-navy-dark font-bold text-[10px] tracking-[0.3em] uppercase opacity-70">Il Ricevimento</span>
+                    <h3 className="text-3xl font-serif text-navy-dark font-medium">Villa Valenca</h3>
+                    <p className="text-navy-dark font-light text-sm px-4 opacity-80">Via Don Luigi Bersini, 20 - Brescia</p>
                   </div>
                   <div className="pt-4">
                     <a
                       href="https://maps.app.goo.gl/kdcajB4Ycqnvi7K5A"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center space-x-3 px-8 py-4 bg-navy text-white rounded-full text-[10px] font-bold tracking-[0.2em] uppercase hover:bg-gold transition-colors shadow-lg"
+                      className="inline-flex items-center space-x-3 px-8 py-4 bg-navy-dark text-white rounded-full text-[10px] font-bold tracking-[0.2em] uppercase hover:bg-gold transition-colors shadow-lg"
                     >
                       <MapPin className="w-4 h-4" />
                       <span>Apri su Google Maps</span>
@@ -711,14 +781,14 @@ function Home() {
                 <h2 className="text-3xl font-serif text-navy font-script">Il Programma</h2>
                 <p className="text-navy-muted tracking-[0.2em] uppercase text-[10px] font-bold">Il Giorno più Bello</p>
               </div>
-              <div className="max-w-2xl mx-auto px-4 md:px-0 bg-white/40 p-8 md:p-12 rounded-[2rem] border border-navy/5 flex justify-center">
-                <div className="w-full max-w-md">
-                  <TimelineItem time="15:00" title="Cerimonia" subtitle="Il momento del nostro sì" icon={Heart} />
-                  <TimelineItem time="18:00" title="Aperitivo" subtitle="Nei giardini della villa" icon={GlassWater} />
-                  <TimelineItem time="20:30" title="Cena" subtitle="Condivisione e allegria" icon={UtensilsCrossed} />
-                  <TimelineItem time="22:15" title="Taglio della torta" subtitle="Il lato dolce della serata" icon={PartyPopper} />
-                  <TimelineItem time="23:00" title="Festa" subtitle="Si balla fino alle ore 1:00" icon={Music2} />
-                  <TimelineItem time="02:00" title="Fine della festa" subtitle="Saluti e bei ricordi" icon={PartyPopper} isLast />
+              <div className="w-full max-w-4xl mx-auto px-4 py-16 bg-white/40 rounded-[3rem] border border-navy/5">
+                <div className="relative">
+                  <TimelineItem isLeft time="15:00" title="Cerimonia" subtitle="Il momento del nostro sì" icon={Heart} />
+                  <TimelineItem isLeft={false} time="18:00" title="Aperitivo" subtitle="Nei giardini della villa" icon={GlassWater} />
+                  <TimelineItem isLeft time="20:30" title="Cena" subtitle="Condivisione e allegria" icon={UtensilsCrossed} />
+                  <TimelineItem isLeft={false} time="22:15" title="Taglio della torta" subtitle="Il lato dolce della serata" icon={PartyPopper} />
+                  <TimelineItem isLeft time="23:00" title="Festa" subtitle="Si balla fino alle ore 1:00" icon={Music2} />
+                  <TimelineItem isLeft={false} time="02:00" title="Fine della festa" subtitle="Saluti e bei ricordi" icon={PartyPopper} isLast />
                 </div>
               </div>
             </div>
@@ -1165,7 +1235,10 @@ function PhotoGallery() {
     <div className="min-h-screen bg-paper bg-eucalyptus py-20 px-4">
       <div className="max-w-6xl mx-auto">
         <button
-          onClick={() => navigate('/')}
+          onClick={() => {
+            sessionStorage.setItem('envelope-opened', 'true');
+            navigate('/');
+          }}
           className="mb-12 text-navy-muted hover:text-navy transition-colors flex items-center gap-2 uppercase tracking-widest text-[10px] font-bold"
         >
           ← Torna alla Home
@@ -1204,12 +1277,19 @@ function PhotoGallery() {
 // --- Main App Component (Routing) ---
 
 export default function App() {
+  const [isOpen, setIsOpen] = useState(() => {
+    return sessionStorage.getItem('envelope-opened') === 'true'
+  })
+
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/foto" element={<PhotoGallery />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/dashboard" element={<Dashboard />} />
-    </Routes>
+    <>
+      <Navbar isOpen={isOpen} />
+      <Routes>
+        <Route path="/" element={<Home isOpen={isOpen} setIsOpen={setIsOpen} />} />
+        <Route path="/foto" element={<PhotoGallery />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+      </Routes>
+    </>
   )
 }
