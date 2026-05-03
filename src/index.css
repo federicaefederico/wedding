@@ -8,6 +8,37 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: 'corsivo';
+  src: url('./assets/fonts/ITCEDSCR.TTF') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'perpetua';
+  src: url('./assets/fonts/PERTILI.TTF') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'perpetuaGrassetto';
+  src: url('./assets/fonts/PERTIBD.TTF') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'stampatelloMinuscolo';
+  src: url('./assets/fonts/PER_____.TTF') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+
+
 
 @theme {
   --color-paper: #F3F0E7;
@@ -22,6 +53,13 @@
   --font-serif: "Lora", serif;
   --font-script: "Alex Brush", cursive;
   --font-kunstler: "Kunstler Script Local", "Pinyon Script", cursive;
+  --font-corsivo: "corsivo", cursive;
+  --font-perpetua: "perpetua", serif;
+  --font-perpetua-bold: "perpetuaGrassetto", serif;
+  --font-stampatello: "stampatelloMinuscolo", sans-serif;
+
+
+
 
   --background-eucalyptus: url("./assets/eucalyptus_pattern.svg");
 }
@@ -50,7 +88,27 @@
   .font-script {
     @apply font-script;
   }
+
+  .corsivo {
+    font-family: var(--font-corsivo);
+  }
+
+  .perpetua {
+    font-family: var(--font-perpetua);
+  }
+
+  .perpetuaGrassetto {
+    font-family: var(--font-perpetua-bold);
+    font-weight: bold;
+  }
+
+  .stampatelloMinuscolo {
+    font-family: var(--font-stampatello);
+  }
 }
+
+
+
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {

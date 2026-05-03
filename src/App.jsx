@@ -126,7 +126,7 @@ const GuestAccess = ({ onAuthenticate, dbPassword }) => {
 }
 
 const CardSeparator = () => (
-  <div className="flex items-center justify-center w-full py-12 px-4 overflow-hidden">
+  <div className="flex items-center justify-center w-full py-16 px-4 overflow-hidden">
     <motion.div
       initial={{ width: 0, opacity: 0 }}
       whileInView={{ width: '200px', opacity: 0.2 }}
@@ -711,15 +711,13 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
           <div className="h-12 w-full relative z-10 invisible md:block" />
         </section>
 
-        <section id="countdown" className="py-20 bg-navy">
+        <section id="countdown" className="pt-16 pb-4 bg-navy">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-serif text-paper mb-2">Conto alla rovescia</h2>
-            <p className="text-paper/80">Manca sempre meno al nostro Sì!</p>
+            <h2 className="text-6xl text-paper mb-2 corsivo">Conto alla rovescia</h2>
+            <p className="text-paper/80 perpetua text-sm">Manca sempre meno al nostro Sì!</p>
           </div>
           <Countdown targetDate={targetDate} showMonths={showMonths} />
         </section>
-
-        <CardSeparator />
 
         <section id="citazione" className="py-32 flex flex-col items-center text-center px-4">
           <motion.div
@@ -800,10 +798,9 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
 
             <CardSeparator />
 
-            <div className="text-center mb-16 space-y-2">
-              <h2 className="text-4xl md:text-5xl font-serif text-navy font-script">I Dettagli</h2>
-              <p className="text-navy-muted tracking-[0.2em] uppercase text-xs font-bold">Informazioni Utili</p>
-              <div className="w-24 h-px bg-gold/30 mx-auto mt-4" />
+            <div className="text-center mb-12 space-y-4">
+              <h2 className="text-7xl md:text-5xl text-navy corsivo">I dettagli</h2>
+              <p className="text-navy tracking-[0.5em] text-xs perpetua">Informazioni Utili</p>
             </div>
 
 
@@ -812,11 +809,8 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className="bg-highlight/30 rounded-[2rem] overflow-hidden shadow-2xl shadow-navy/10 border border-navy/5 flex flex-col w-full max-w-2xl group"
+                className="bg-white/60 backdrop-blur-md rounded-lg shadow-2xl border border-navy/5 flex flex-col w-full max-w-2xl group overflow-hidden"
               >
-                <div className="pt-10 pb-2 text-center">
-                  <span className="text-navy-dark font-bold text-[25px] tracking-[0.3em] uppercase opacity-70">La Cerimonia</span>
-                </div>
                 <div className="w-full relative overflow-hidden flex items-center justify-center p-4 md:p-6">
                   <motion.img
                     src={chiesa}
@@ -825,13 +819,17 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
                     className="w-full h-auto max-h-[500px] object-contain shadow-lg"
                   />
                 </div>
-                <div className="p-10 flex flex-col items-center text-center space-y-6">
+                <div className="pt-7 pb-7 text-center">
+                  <span className="text-navy-dark text-[18px] tracking-[0.2em] perpetua">La Cerimonia</span>
+                </div>
+
+                <div className="pb-10 flex flex-col items-center text-center space-y-6">
                   <div className="space-y-3">
-                    <h3 className="text-4xl font-serif text-navy-dark font-medium">Chiesa di San Giuseppe Calasanzio</h3>
-                    <p className="text-navy-dark font-light text-md px-4 opacity-80">Via Don Carlo Gnocchi, 16 - Milano</p>
+                    <h3 className="text-3xl text-navy-dark font-medium perpetuaGrassetto">Chiesa di San Giuseppe Calasanzio</h3>
+                    <p className="text-navy-dark font-light text-[16px] px-4 tracking-[0.01em] stampatelloMinuscolo">Via Don Carlo Gnocchi, 16 – 20148 Milano (MI)</p>
                   </div>
-                  <div className="text-navy-dark font-serif text-xl italic">
-                    Alle ore 15:30
+                  <div className="text-navy-dark text-[18px] tracking-[0.1em] perpetua">
+                    Ore 15:30
                   </div>
                   <div className="pt-4">
                     <a
@@ -854,11 +852,8 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className="bg-highlight/30 rounded-[2rem] overflow-hidden shadow-2xl shadow-navy/10 border border-navy/5 flex flex-col w-full max-w-2xl group"
+                className="bg-white/60 backdrop-blur-md rounded-lg shadow-2xl border border-navy/5 flex flex-col w-full max-w-2xl group overflow-hidden"
               >
-                <div className="pt-10 pb-2 text-center">
-                  <span className="text-navy-dark font-bold text-[25px] tracking-[0.3em] uppercase opacity-70">Il Ricevimento</span>
-                </div>
                 <div className="w-full relative overflow-hidden flex items-center justify-center p-4 md:p-6">
                   <motion.img
                     src={villa}
@@ -867,10 +862,14 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
                     className="w-full h-auto max-h-[500px] object-contain shadow-lg"
                   />
                 </div>
-                <div className="p-10 flex flex-col items-center text-center space-y-6">
+                <div className="pt-5 pb-7 text-center">
+                  <span className="text-navy-dark text-[18px] tracking-[0.2em] perpetua">Il Ricevimento</span>
+                </div>
+
+                <div className="pb-10 flex flex-col items-center text-center space-y-6">
                   <div className="space-y-3">
-                    <h3 className="text-4xl font-serif text-navy-dark font-medium">Villa Valenca</h3>
-                    <p className="text-navy-dark font-light text-md px-4 opacity-80">Via Don Luigi Bersini, 20 - Brescia</p>
+                    <h3 className="text-3xl text-navy-dark font-medium perpetuaGrassetto">Villa Valenca</h3>
+                    <p className="text-navy-dark font-light text-[16px] px-4 tracking-[0.01em] stampatelloMinuscolo">Via Bersini Don Luigi, 20 – 25038 Rovato (BS)</p>
                   </div>
                   <div className="pt-4">
                     <a
@@ -890,12 +889,12 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
 
             <CardSeparator />
 
-            <div id="programma" className="pt-32 w-full max-w-4xl">
-              <div className="text-center mb-16 space-y-2">
-                <h2 className="text-3xl font-serif text-navy font-script">Il Programma</h2>
-                <p className="text-navy-muted tracking-[0.2em] uppercase text-[10px] font-bold">Il nostro giorno insieme</p>
+            <div id="programma" className="w-full max-w-4xl">
+              <div className="text-center mb-16 space-y-4">
+                <h2 className="text-7xl md:text-5xl text-navy corsivo">Il programma</h2>
+                <p className="text-navy tracking-[0.5em] text-xs perpetua">Il nostro giorno insieme</p>
               </div>
-              <div className="w-full max-w-4xl mx-auto px-4 py-16 bg-white/40 rounded-[3rem] border border-navy/5">
+              <div className="w-full max-w-4xl mx-auto px-4">
                 <div className="relative">
                   {/* Central Vertical Line */}
                   <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-navy -translate-x-1/2" />
@@ -913,11 +912,11 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
 
         <CardSeparator />
 
-        <section id="regalo" className="py-24 px-4">
+        <section id="regalo" className="px-4">
           <div className="max-w-3xl mx-auto text-center">
-            <div className="mb-16 space-y-2">
-              <h2 className="text-3xl font-serif text-navy font-script">Il Regalo più Grande</h2>
-              <p className="text-navy-muted tracking-[0.2em] uppercase text-[10px] font-bold">Un gesto d'amore</p>
+            <div className="mb-16 space-y-4">
+              <h2 className="text-7xl md:text-5xl text-navy corsivo">Il regalo <br />più grande</h2>
+              <p className="text-navy tracking-[0.5em] text-xs perpetua">Un gesto d'amore</p>
             </div>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -952,11 +951,11 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
 
         <CardSeparator />
 
-        <section id="foto" className="py-24 px-4 bg-paper/50">
+        <section id="foto" className="px-4">
           <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-16 space-y-2">
-              <h2 className="text-3xl font-serif text-navy font-script">Condividi i tuoi scatti</h2>
-              <p className="text-navy-muted tracking-[0.2em] uppercase text-[10px] font-bold">I vostri ricordi con noi</p>
+            <div className="text-center mb-16 space-y-4">
+              <h2 className="text-7xl md:text-5xl text-navy corsivo">Condividi <br />i tuoi scatti</h2>
+              <p className="text-navy tracking-[0.5em] text-[10px] perpetua">I vostri ricordi con noi</p>
             </div>
 
             <div className="max-w-3xl mx-auto text-center mb-16">
@@ -983,11 +982,11 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
 
         <CardSeparator />
 
-        <section id="faq" className="py-24 px-4">
+        <section id="faq" className="px-4">
           <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-16 space-y-2">
-              <h2 className="text-3xl font-serif text-navy font-script">Domande Frequenti</h2>
-              <p className="text-navy-muted tracking-[0.2em] uppercase text-[10px] font-bold">Tutto quello che c'è da sapere</p>
+            <div className="text-center mb-16 space-y-4">
+              <h2 className="text-7xl md:text-5xl text-navy corsivo">Domande frequenti</h2>
+              <p className="text-navy tracking-[0.5em] text-[10px] perpetua">Tutto quello che c'è da sapere</p>
             </div>
             <FAQAccordion />
           </div>
@@ -996,17 +995,19 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
         <CardSeparator />
 
         {/* RSVP Section */}
-        <section id="rsvp" className="py-20 px-4">
+        <section id="rsvp" className="pb-20 px-4">
           <div className="max-w-xl mx-auto flex flex-col justify-center items-center">
+            <div className="text-center mb-16 space-y-4">
+              <h2 className="text-7xl md:text-5xl text-navy corsivo">Conferma <br /> la tua presenza</h2>
+              <p className="text-navy tracking-[0.5em] text-[10px] perpetua uppercase">Non vediamo l'ora di festeggiare con voi</p>
+            </div>
+
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}
-              className="bg-white/60 backdrop-blur-md p-8 md:p-12 rounded-lg border border-navy/5 shadow-2xl relative overflow-hidden group"
+              className="bg-white/60 backdrop-blur-md p-8 md:p-12 rounded-lg border border-navy/5 shadow-2xl relative overflow-hidden group w-full"
             >
-              <div className="text-center mb-10">
-                <h2 className="text-4xl font-serif text-navy mb-2 font-script">Conferma la tua presenza</h2>
-                <p className="text-navy-muted">Non vediamo l'ora di festeggiare con voi</p>
-              </div>
+
 
 
               {status === 'success' ? (
@@ -1145,18 +1146,17 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
 
 
         <footer className="py-6 px-4 text-center space-y-2 bg-navy text-white/90">
-          <Heart className="w-8 h-8 text-white mx-auto fill-white/20" />
           <div className="space-y-2">
-            <h2 className="text-4xl font-kunstler">Federica e Federico</h2>
-            <p className="text-white/60 tracking-widest uppercase text-sm">12 Settembre 2026</p>
+            <h2 className="text-5xl font-kunstler">Federica e Federico</h2>
+            <p className="text-white/60 tracking-widest uppercase text-xs perpetua">12 Settembre 2026</p>
           </div>
-          <div className="pt-8 grid grid-cols-1 md:grid-cols-2 gap-6 max-w-sm mx-auto border-t border-white/5">
+          <div className="pt-8 grid grid-cols-2 gap-4 max-w-md mx-auto border-t border-white/5">
             <div className="space-y-1">
-              <p className="text-[10px] uppercase tracking-[0.2em] text-white/40 font-bold">Federica</p>
+              <p className="text-[13px] tracking-[0.2em] text-white/40 perpetuaGrassetto">Federica</p>
               <a href="tel:+393892858728" className="text-sm text-white/80 hover:text-white transition-colors tracking-widest">+39 389 285 8728</a>
             </div>
             <div className="space-y-1">
-              <p className="text-[10px] uppercase tracking-[0.2em] text-white/40 font-bold">Federico</p>
+              <p className="text-[13px] tracking-[0.2em] text-white/40 font-bold perpetuaGrassetto">Federico</p>
               <a href="tel:+393332114838" className="text-sm text-white/80 hover:text-white transition-colors tracking-widest">+39 333 211 4838</a>
             </div>
           </div>
