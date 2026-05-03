@@ -940,7 +940,7 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
                   qui trovate le coordinate per farlo: <br />
                 </p>
                 <div className="pt-4 flex flex-col items-center space-y-4">
-                  <div className="bg-paper p-6 rounded-2xl border border-navy/5 card-shadow flex flex-col space-y-6 items-center w-full max-w-sm">
+                  <div className="bg-paper py-6 px-0 rounded-lg border border-navy/5 card-shadow flex flex-col space-y-6 items-center w-full">
                     <div className="flex flex-col items-center space-y-2 w-full">
                       <div className="flex items-center gap-2">
                         <span className="text-[10px] text-navy-muted uppercase tracking-[0.3em] font-bold">IBAN</span>
@@ -1388,7 +1388,7 @@ function PhotoGallery() {
         </button>
 
         <div className="text-center mb-16 space-y-4">
-          <h1 className="text-5xl font-serif text-navy font-script">I vostri ricordi</h1>
+          <h1 className="text-7xl text-navy corsivo">I vostri ricordi</h1>
           <p className="text-navy/60 max-w-2xl mx-auto font-light leading-relaxed">
             Scegliete la categoria e caricate le vostre foto. Ogni scatto sarà un regalo prezioso per noi.
           </p>
