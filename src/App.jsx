@@ -22,7 +22,9 @@ import {
   Music,
   Gift,
   Eye,
-  EyeOff
+  EyeOff,
+  Copy,
+  Check
 } from 'lucide-react'
 import sigillo from './assets/sigillo.png'
 import chiesa from './assets/chiesa.jpeg'
@@ -533,6 +535,14 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
   const [showPrivacyModal, setShowPrivacyModal] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [status, setStatus] = useState(null) // 'success' | 'error' | null
+  const [copied, setCopied] = useState(false)
+
+  const handleCopy = (text) => {
+    navigator.clipboard.writeText(text)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+
 
   useEffect(() => {
     if (document.readyState === 'complete') {
@@ -925,24 +935,40 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
             >
               <div className="relative z-10 space-y-8">
                 <p className="text-navy/70 leading-relaxed max-w-lg mx-auto font-light">
-                  Il pensiero più bello che possiate farci è essere con noi nel nostro grande giorno.
-                  Ma se desiderate aiutarci a realizzare il nostro sogno di viaggio nel <span className="font-bold text-navy">Sudafrica</span>,
-                  qui trovate le coordinate per farlo:
+                  Il pensiero più bello che possiate <br /> farci è essere con noi <br /> nel nostro grande giorno. <br />
+                  Ma se desiderate aiutarci a realizzare <br /> il nostro sogno di viaggio <br /> nel <span className="text-3xl text-navy corsivo">Sudafrica</span>, <br />
+                  qui trovate le coordinate per farlo: <br />
                 </p>
                 <div className="pt-4 flex flex-col items-center space-y-4">
-                  <div className="bg-paper p-6 rounded-2xl border border-navy/5 card-shadow flex flex-col space-y-2 items-center">
-                    <span className="text-[10px] text-navy-muted uppercase tracking-[0.3em] font-bold">Codice IBAN</span>
-                    <p className="text-navy font-mono text-sm md:text-md tracking-wider select-all">
-                      IT00 A 0000 0000 0000 0000 0000 000
-                    </p>
+                  <div className="bg-paper p-6 rounded-2xl border border-navy/5 card-shadow flex flex-col space-y-6 items-center w-full max-w-sm">
+                    <div className="flex flex-col items-center space-y-2 w-full">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] text-navy-muted uppercase tracking-[0.3em] font-bold">IBAN</span>
+                        <button
+                          onClick={() => handleCopy("IT00 A 0000 0000 0000 0000 0000 000")}
+                          className="p-1.5 hover:bg-navy/5 rounded-lg transition-colors text-navy-muted hover:text-navy group/copy"
+                          title="Copia IBAN"
+                        >
+                          {copied ? <Check className="w-3.5 h-3.5 text-green-500" /> : <Copy className="w-3.5 h-3.5" />}
+                        </button>
+                      </div>
+                      <p className="text-navy text-xs md:text-sm tracking-[0.01rem] text-center perpetua">
+                        IT00 A 0000 0000 0000 0000 0000 000
+                      </p>
+                    </div>
+
+                    <div className="flex flex-col items-center space-y-2">
+                      <span className="text-[10px] text-navy-muted uppercase tracking-[0.3em] font-bold">Intestato a</span>
+                      <p className="text-navy perpetua tracking-wide text-[13px]">
+                        Federica Martini <br /> <span className='stampatelloMinuscolo'>e</span> Federico Di Biagio
+                      </p>
+                    </div>
                   </div>
-                  <p className="text-[10px] text-navy-muted italic lowercase tracking-wider">
-                    Intestato a Federica & Federico
-                  </p>
+
                 </div>
                 <p className="text-navy/70 leading-relaxed max-w-lg mx-auto font-light">
-                  Ogni gesto sarà per noi un ricordo prezioso che porteremo in valigia e nel cuore.
-                  Grazie di cuore per essere parte di questa nostra avventura!
+                  Ogni gesto sarà per noi <br /> un ricordo prezioso che porteremo <br /> in valigia e nel cuore. <br />
+                  Grazie per essere parte <br /> di questa nostra avventura!
                 </p>
               </div>
             </motion.div>
@@ -960,8 +986,8 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
 
             <div className="max-w-3xl mx-auto text-center mb-16">
               <p className="text-navy/70 leading-relaxed font-light">
-                Aiutateci a rendere indelebile questo giorno! Abbiamo creato degli album dedicati su <span className="font-bold text-navy">Google Foto</span> per raccogliere i vostri scatti più belli.
-                Scegliete la categoria e caricate le vostre foto per condividerle con noi e con tutti gli ospiti.
+                Aiutateci a rendere indelebile questo giorno! <br /> Abbiamo creato degli album dedicati <br /> per raccogliere i vostri scatti più belli.<br />
+                Scegliete la categoria e caricate le vostre foto <br /> per condividerle con noi e con tutti gli ospiti.
               </p>
             </div>
 
@@ -970,12 +996,13 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => navigate('/foto')}
-                className="group relative px-12 py-6 bg-navy text-white rounded-2xl font-serif text-xl shadow-2xl hover:bg-navy/90 hover:-translate-y-1 transition-all flex items-center gap-4"
+                className="relative group inline-flex items-center gap-3 px-8 py-4 bg-navy text-white rounded-2xl text-[10px] font-bold uppercase tracking-widest hover:bg-navy/90 hover:shadow-xl hover:-translate-y-1 transition-all shadow-md"
               >
-                <Camera className="w-6 h-6 text-gold group-hover:rotate-12 transition-transform" />
+                <Camera className="w-4 h-4 text-gold group-hover:rotate-12 transition-transform" />
                 <span>Carica le tue foto</span>
-                <div className="absolute -inset-1 bg-gold/10 rounded-2xl blur opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div className="absolute -inset-1 bg-gold/10 rounded-2xl blur opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
               </motion.button>
+
             </div>
           </div>
         </section>
@@ -1122,7 +1149,7 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
                         >
                           Informativa sulla Privacy
                         </button>
-                        * e acconsento al trattamento dei miei dati personali per le finalità descritte.
+                        &nbsp;e acconsento al trattamento dei miei dati personali per le finalità descritte.
                       </span>
                     </label>
                   </div>
@@ -1133,7 +1160,7 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
                   >
                     <div className="absolute -inset-1 bg-gold/10 rounded-2xl blur opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
                     <div className="relative z-10 flex items-center gap-2">
-                      {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4 group-hover:rotate-12 transition-transform" />}
+                      {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4 text-gold  group-hover:rotate-12 transition-transform" />}
                       <span>{isSubmitting ? 'Inviando...' : 'Invia conferma'}</span>
                     </div>
                   </button>
