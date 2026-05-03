@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { getRSVPs, deleteRSVP } from '../services/rsvpService'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Trash2, Users, CheckCircle2, XCircle, MessageSquare, AlertTriangle, LogOut, Camera, Save, ExternalLink, Eye, EyeOff, Plus, Heart, GlassWater, Gift, Music, Church, Cake, Sparkles } from 'lucide-react'
+import { Trash2, Users, CheckCircle2, XCircle, MessageSquare, AlertTriangle, LogOut, Camera, Save, ExternalLink, Eye, EyeOff, Plus, Heart, GlassWater, Gift, Music, Church, Cake, Sparkles, Lock, Loader2 } from 'lucide-react'
 import { supabase } from '../lib/supabaseClient'
 import { useNavigate } from 'react-router-dom'
 
@@ -10,6 +10,8 @@ export default function Dashboard() {
   const [albumSettings, setAlbumSettings] = useState([])
   const [showAddModal, setShowAddModal] = useState(false)
   const [newCategory, setNewCategory] = useState({ key: '', title: '', googleTitle: '', iconName: 'Camera' })
+  const [sitePassword, setSitePassword] = useState('')
+  const [isSavingPassword, setIsSavingPassword] = useState(false)
   
   const availableIcons = [
     { id: 'Camera', icon: Camera },
@@ -36,6 +38,7 @@ export default function Dashboard() {
       } else {
         fetchData()
         fetchAlbumSettings()
+        fetchSiteSettings()
       }
     }
     
@@ -65,6 +68,32 @@ export default function Dashboard() {
     } else {
       setAlbumSettings(data)
     }
+  }
+
+  const fetchSiteSettings = async () => {
+    const { data, error } = await supabase
+      .from('site_settings')
+      .select('value')
+      .eq('key', 'guest_password')
+      .maybeSingle()
+    
+    if (!error && data) {
+      setSitePassword(data.value)
+    }
+  }
+
+  const handleUpdatePassword = async () => {
+    setIsSavingPassword(true)
+    const { error } = await supabase
+      .from('site_settings')
+      .upsert({ key: 'guest_password', value: sitePassword.trim() })
+    
+    if (error) {
+      alert('Errore durante il salvataggio della password: ' + error.message)
+    } else {
+      alert('Password aggiornata con successo!')
+    }
+    setIsSavingPassword(false)
   }
 
   const handleAddCategory = async (e) => {
@@ -392,6 +421,47 @@ export default function Dashboard() {
                 </div>
               </motion.div>
             ))}
+          </div>
+        </section>
+
+        {/* --- SEZIONE IMPOSTAZIONI SITO --- */}
+        <section className="mb-16">
+          <div className="flex items-center gap-3 mb-6">
+            <Lock className="w-6 h-6 text-gold" />
+            <h2 className="text-2xl font-serif text-navy">Impostazioni Sito</h2>
+          </div>
+
+          <div className="bg-white p-8 rounded-3xl shadow-xl border border-navy/5 max-w-md">
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-navy-muted uppercase tracking-widest flex items-center gap-2">
+                  Password Accesso Ospiti
+                  <span className="normal-case font-normal italic opacity-60">(Richiesta per vedere il sito)</span>
+                </label>
+                <div className="relative">
+                  <input 
+                    type="text"
+                    className="w-full p-4 bg-paper rounded-2xl border border-navy/10 focus:border-gold focus:outline-none transition-colors font-mono"
+                    value={sitePassword}
+                    onChange={(e) => setSitePassword(e.target.value)}
+                    placeholder="Scegli una password..."
+                  />
+                </div>
+              </div>
+
+              <button
+                onClick={handleUpdatePassword}
+                disabled={isSavingPassword}
+                className="w-full py-4 bg-navy text-white rounded-2xl text-xs font-bold uppercase tracking-widest hover:bg-gold transition-all shadow-lg flex items-center justify-center gap-2 disabled:opacity-50"
+              >
+                {isSavingPassword ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Save className="w-4 h-4" />
+                )}
+                <span>{isSavingPassword ? 'Salvataggio...' : 'Salva Password'}</span>
+              </button>
+            </div>
           </div>
         </section>
       </div>

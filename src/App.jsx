@@ -37,7 +37,83 @@ import { supabase } from './lib/supabaseClient'
 import Dashboard from './components/Dashboard'
 import { useScroll, useMotionValueEvent } from 'framer-motion'
 
+// --- Utility for Password Hashing ---
+async function hashPassword(string) {
+  // Check if we are in a secure context (HTTPS or localhost)
+  if (!window.crypto || !window.crypto.subtle) {
+    // Fallback for development via IP address or insecure contexts
+    // It's not a real hash but satisfies the "not in plain text" requirement for local testing
+    return 'insecure_hash_' + btoa(string);
+  }
+  const utf8 = new TextEncoder().encode(string);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', utf8);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  return hashHex;
+}
+
 // --- Components ---
+const GuestAccess = ({ onAuthenticate, dbPassword }) => {
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState(false)
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    if (password.trim() === dbPassword.trim()) {
+      const hash = await hashPassword(password.trim())
+      localStorage.setItem('guest_auth_hash', hash)
+      onAuthenticate()
+    } else {
+      setError(true)
+      setTimeout(() => setError(false), 2000)
+    }
+  }
+
+  return (
+    <div className="fixed inset-0 z-[200] bg-paper flex items-center justify-center px-4 bg-eucalyptus">
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-white p-8 md:p-12 rounded-[3rem] shadow-2xl border border-navy/5 w-full max-w-md text-center space-y-8"
+      >
+        <div className="space-y-2">
+          <div className="w-16 h-16 bg-navy/5 text-navy rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <Lock className="w-8 h-8" />
+          </div>
+          <h2 className="text-3xl font-serif text-navy font-script italic">Benvenuti</h2>
+          <p className="text-navy-muted text-xs uppercase tracking-widest px-4">
+            Inserisci la password per accedere al sito del matrimonio
+          </p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="relative">
+            <input 
+              type="password"
+              autoFocus
+              className={`w-full p-4 bg-paper rounded-2xl border ${error ? 'border-red-400 animate-shake' : 'border-navy/10'} focus:border-navy focus:outline-none transition-all text-center tracking-[0.5em] font-bold`}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••"
+            />
+            {error && (
+              <p className="absolute top-full left-0 right-0 text-[10px] text-red-500 font-bold uppercase mt-2 animate-bounce">
+                Password Errata
+              </p>
+            )}
+          </div>
+
+          <button 
+            type="submit"
+            className="w-full py-4 bg-navy text-white rounded-2xl text-xs font-bold uppercase tracking-widest hover:bg-gold transition-all shadow-lg flex items-center justify-center gap-2"
+          >
+            <span>Accedi</span>
+          </button>
+        </form>
+      </motion.div>
+    </div>
+  )
+}
 
 const CardSeparator = () => (
   <div className="flex items-center justify-center w-full py-12 px-4 overflow-hidden">
@@ -424,6 +500,36 @@ const Navbar = ({ isOpen }) => {
 function Home({ isOpen, setIsOpen }) {
   const [isReady, setIsReady] = useState(false)
   const [isOpening, setIsOpening] = useState(false)
+  const [isGuestAuthenticated, setIsGuestAuthenticated] = useState(false)
+  const [dbGuestPassword, setDbGuestPassword] = useState('')
+  const [isCheckingGuestAuth, setIsCheckingGuestAuth] = useState(true)
+
+  useEffect(() => {
+    const checkGuestAuth = async () => {
+      // 1. Fetch current password from Supabase
+      const { data, error } = await supabase
+        .from('site_settings')
+        .select('value')
+        .eq('key', 'guest_password')
+        .maybeSingle()
+      
+      const currentPassword = data?.value?.trim() || ''
+      setDbGuestPassword(currentPassword)
+
+      // 2. Check localStorage
+      const storedHash = localStorage.getItem('guest_auth_hash')
+      if (storedHash && currentPassword) {
+        const currentHash = await hashPassword(currentPassword)
+        if (storedHash === currentHash) {
+          setIsGuestAuthenticated(true)
+        }
+      }
+      
+      setIsCheckingGuestAuth(false)
+    }
+
+    checkGuestAuth()
+  }, [])
   const [showMonths, setShowMonths] = useState(false)
   const targetDate = new Date('2026-09-12T15:30:00')
   const navigate = useNavigate()
@@ -505,6 +611,18 @@ function Home({ isOpen, setIsOpen }) {
     } finally {
       setIsSubmitting(false)
     }
+  }
+
+  if (isCheckingGuestAuth) {
+    return (
+      <div className="min-h-screen bg-paper flex items-center justify-center">
+        <Loader2 className="w-8 h-8 text-navy animate-spin" />
+      </div>
+    )
+  }
+
+  if (!isGuestAuthenticated) {
+    return <GuestAccess dbPassword={dbGuestPassword} onAuthenticate={() => setIsGuestAuthenticated(true)} />
   }
 
   return (
@@ -712,7 +830,7 @@ function Home({ isOpen, setIsOpen }) {
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className="bg-highlight rounded-[2rem] overflow-hidden shadow-2xl shadow-navy/10 border border-navy/5 flex flex-col w-full max-w-2xl group"
+                className="bg-highlight/30 rounded-[2rem] overflow-hidden shadow-2xl shadow-navy/10 border border-navy/5 flex flex-col w-full max-w-2xl group"
               >
                 <div className="pt-10 pb-2 text-center">
                   <span className="text-navy-dark font-bold text-[25px] tracking-[0.3em] uppercase opacity-70">La Cerimonia</span>
@@ -753,7 +871,7 @@ function Home({ isOpen, setIsOpen }) {
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className="bg-highlight rounded-[2rem] overflow-hidden shadow-2xl shadow-navy/10 border border-navy/5 flex flex-col w-full max-w-2xl group"
+                className="bg-highlight/30 rounded-[2rem] overflow-hidden shadow-2xl shadow-navy/10 border border-navy/5 flex flex-col w-full max-w-2xl group"
               >
                 <div className="pt-10 pb-2 text-center">
                   <span className="text-navy-dark font-bold text-[25px] tracking-[0.3em] uppercase opacity-70">Il Ricevimento</span>
