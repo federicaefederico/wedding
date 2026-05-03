@@ -25,6 +25,11 @@ import {
 import sigillo from './assets/sigillo.png'
 import chiesa from './assets/chiesa.jpeg'
 import villa from './assets/villa.jpeg'
+import tortaSvg from './assets/icons/torta.svg'
+import aperitivoSvg from './assets/icons/aperitivo.svg'
+import posateSvg from './assets/icons/posate.svg'
+import cerimoniaSvg from './assets/icons/cerimonia.svg'
+import inizioFestaSvg from './assets/icons/inizioFesta.svg'
 import { intervalToDuration, format, differenceInDays } from 'date-fns'
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 import { submitRSVP } from './services/rsvpService'
@@ -104,46 +109,53 @@ const Countdown = ({ targetDate, showMonths = false }) => {
   )
 }
 
-const TimelineItem = ({ time, title, icon: Icon, isLeft, isLast }) => (
-  <div className="relative grid grid-cols-[1fr_auto_1fr] items-center mb-8 last:mb-0 group">
-    {/* Left Side */}
-    <div className={`flex items-center justify-end ${isLeft ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-      <motion.div
-        initial={{ opacity: 0, x: -20 }}
-        whileInView={{ opacity: 1, x: 0 }}
-        className="text-right pr-6"
-      >
-        <div className="text-navy-dark font-bold text-sm tracking-widest">{time}</div>
-        <div className="text-navy text-[11px] font-serif uppercase tracking-wider">{title}</div>
-      </motion.div>
-      <div className="w-10 h-10 bg-white border border-navy/10 rounded-full flex items-center justify-center z-10 shadow-md group-hover:border-gold/50 transition-colors shrink-0">
-        <Icon className="w-5 h-5 text-gold" />
-      </div>
-      <div className="w-8 h-px bg-gold/30 shrink-0" />
-    </div>
+const TimelineItem = ({ time, title, icon, isLeft, isLast }) => {
+  const isSvg = typeof icon === 'string';
+  const Icon = !isSvg ? icon : null;
 
-    {/* Center Point */}
-    <div className="relative flex flex-col items-center h-full px-2">
-      <div className="w-px h-full bg-navy/10" />
-    </div>
-
-    {/* Right Side */}
-    <div className={`flex items-center justify-start ${!isLeft ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-      <div className="w-8 h-px bg-gold/30 shrink-0" />
-      <div className="w-10 h-10 bg-white border border-navy/10 rounded-full flex items-center justify-center z-10 shadow-md group-hover:border-gold/50 transition-colors shrink-0">
-        <Icon className="w-5 h-5 text-gold" />
+  return (
+    <div className="relative grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center py-6 group">
+      {/* Left Side */}
+      <div className={`flex items-center justify-end ${isLeft ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          className="text-right pr-2 md:pr-8 min-w-0"
+        >
+          <div className="text-navy-dark font-bold text-sm md:text-xl tracking-widest">{time}</div>
+          <div className="text-navy text-[10px] md:text-[14px] font-serif uppercase tracking-wider leading-tight">{title}</div>
+        </motion.div>
+        <div className="w-20 h-20 md:w-32 md:h-32 flex items-center justify-center z-10 shrink-0">
+          {isSvg && (
+            <img src={icon} alt="" className="w-18 h-18 md:w-28 md:h-28 object-contain" />
+          )}
+        </div>
+        <div className="w-3 md:w-12 h-0.5 bg-navy shrink-0" />
       </div>
-      <motion.div
-        initial={{ opacity: 0, x: 20 }}
-        whileInView={{ opacity: 1, x: 0 }}
-        className="text-left pl-6"
-      >
-        <div className="text-navy-dark font-bold text-sm tracking-widest">{time}</div>
-        <div className="text-navy text-[11px] font-serif uppercase tracking-wider">{title}</div>
-      </motion.div>
+
+      {/* Center Point - Spacer for the absolute line in parent */}
+      <div className="w-0.5" />
+
+      {/* Right Side */}
+      <div className={`flex items-center justify-start ${!isLeft ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+        <div className="w-3 md:w-12 h-0.5 bg-navy shrink-0" />
+        <div className="w-20 h-20 md:w-32 md:h-32 flex items-center justify-center z-10 shrink-0">
+          {isSvg && (
+            <img src={icon} alt="" className="w-18 h-18 md:w-28 md:h-28 object-contain" />
+          )}
+        </div>
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          className="text-left pl-2 md:pl-8 min-w-0"
+        >
+          <div className="text-navy-dark font-bold text-sm md:text-xl tracking-widest">{time}</div>
+          <div className="text-navy text-[10px] md:text-[14px] font-serif uppercase tracking-wider leading-tight">{title}</div>
+        </motion.div>
+      </div>
     </div>
-  </div>
-)
+  )
+}
 
 const FAQItem = ({ question, answer, isOpen, onClick }) => (
   <div className="border border-navy/10 bg-white/50 backdrop-blur-sm rounded-2xl overflow-hidden mb-4 last:mb-0 transition-all duration-300 hover:border-navy/20">
@@ -616,105 +628,19 @@ function Home({ isOpen, setIsOpen }) {
             className="max-w-2xl"
           >
             <h3 className="text-3xl md:text-5xl font-script text-navy leading-relaxed">
-              "Vieni per il nostro amore, resta per la torta!"
+              "Nella buona sorte e nelle avversità<br />
+              Nelle gioie e nelle difficoltà <br />
+              Se tu ci sarai <br />
+              Io ci sarò"
             </h3>
-            <div className="mt-12 flex justify-center">
-              <div className="w-24 h-24 border border-navy/10 rounded-full flex items-center justify-center bg-white card-shadow">
-                <UtensilsCrossed className="w-8 h-8 text-gold" />
-              </div>
-            </div>
           </motion.div>
         </section>
 
-        <CardSeparator />
-
-        <section id="dettagli" className="py-24 px-4 bg-navy/[0.03] relative overflow-hidden">
+        <section id="dettagli" className="pt-0 pb-24 px-4 relative overflow-hidden">
           <div className="max-w-6xl mx-auto flex flex-col items-center">
-            <div className="text-center mb-16 space-y-2">
-              <h2 className="text-4xl md:text-5xl font-serif text-navy font-script">I Dettagli</h2>
-              <p className="text-navy-muted tracking-[0.2em] uppercase text-xs font-bold">Informazioni Utili</p>
-              <div className="w-24 h-px bg-gold/30 mx-auto mt-4" />
-            </div>
-
-            <div className="flex flex-col items-center gap-0 w-full max-w-4xl mx-auto">
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="bg-highlight rounded-[2rem] overflow-hidden shadow-2xl shadow-navy/10 border border-navy/5 flex flex-col w-full max-w-2xl group"
-              >
-                <div className="w-full relative overflow-hidden flex items-center justify-center p-4 md:p-6 bg-white/20">
-                  <motion.img
-                    src={chiesa}
-                    alt="Chiesa di San Giuseppe Calasanzio"
-                    whileHover={{ scale: 1.02 }}
-                    className="w-full h-auto max-h-[500px] object-contain shadow-lg"
-                  />
-                </div>
-                <div className="p-10 flex flex-col items-center text-center space-y-6">
-                  <div className="space-y-3">
-                    <span className="text-navy-dark font-bold text-[10px] tracking-[0.3em] uppercase opacity-70">La Cerimonia</span>
-                    <h3 className="text-3xl font-serif text-navy-dark font-medium">Chiesa di San Giuseppe Calasanzio</h3>
-                    <p className="text-navy-dark font-light text-sm px-4 opacity-80">Via Don Carlo Gnocchi, 16 - Milano</p>
-                  </div>
-                  <div className="text-navy-dark font-serif text-xl italic">
-                    Alle ore 15:30
-                  </div>
-                  <div className="pt-4">
-                    <a
-                      href="https://www.google.com/maps/search/?api=1&query=Chiesa+di+San+Giuseppe+Calasanzio+Via+Don+Carlo+Gnocchi+16+20148+Milano"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center space-x-3 px-8 py-4 bg-navy-dark text-white rounded-full text-[10px] font-bold tracking-[0.2em] uppercase hover:bg-gold transition-colors shadow-lg"
-                    >
-                      <MapPin className="w-4 h-4" />
-                      <span>Apri su Google Maps</span>
-                    </a>
-                  </div>
-                </div>
-              </motion.div>
-
-              <CardSeparator />
-
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="bg-highlight rounded-[2rem] overflow-hidden shadow-2xl shadow-navy/10 border border-navy/5 flex flex-col w-full max-w-2xl group"
-              >
-                <div className="w-full relative overflow-hidden flex items-center justify-center p-4 md:p-6 bg-white/20">
-                  <motion.img
-                    src={villa}
-                    alt="Villa Valenca"
-                    whileHover={{ scale: 1.02 }}
-                    className="w-full h-auto max-h-[500px] object-contain shadow-lg"
-                  />
-                </div>
-                <div className="p-10 flex flex-col items-center text-center space-y-6">
-                  <div className="space-y-3">
-                    <span className="text-navy-dark font-bold text-[10px] tracking-[0.3em] uppercase opacity-70">Il Ricevimento</span>
-                    <h3 className="text-3xl font-serif text-navy-dark font-medium">Villa Valenca</h3>
-                    <p className="text-navy-dark font-light text-sm px-4 opacity-80">Via Don Luigi Bersini, 20 - Brescia</p>
-                  </div>
-                  <div className="pt-4">
-                    <a
-                      href="https://maps.app.goo.gl/kdcajB4Ycqnvi7K5A"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center space-x-3 px-8 py-4 bg-navy-dark text-white rounded-full text-[10px] font-bold tracking-[0.2em] uppercase hover:bg-gold transition-colors shadow-lg"
-                    >
-                      <MapPin className="w-4 h-4" />
-                      <span>Apri su Google Maps</span>
-                    </a>
-                  </div>
-                </div>
-              </motion.div>
-            </div>
-
-            <CardSeparator />
 
             {/* Gallery Section */}
-            <div className="w-full max-w-6xl mx-auto p-0">
+            <div className="w-full max-w-6xl mx-auto p-0 mb-16">
               <div
                 className="grid gap-3 md:gap-4 w-full aspect-[4/5] md:aspect-video"
                 style={{
@@ -722,7 +648,6 @@ function Home({ isOpen, setIsOpen }) {
                   gridTemplateRows: '37fr 13fr 50fr'
                 }}
               >
-                {/* Images X - Top Left area (summing to 60% width of the left part) */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -741,7 +666,6 @@ function Home({ isOpen, setIsOpen }) {
                   <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=1000&auto=format&fit=crop" className="absolute inset-0 w-full h-full object-cover" alt="" />
                 </motion.div>
 
-                {/* Image Y1 - Right column top half */}
                 <motion.div
                   initial={{ opacity: 0, x: 20 }}
                   whileInView={{ opacity: 1, x: 0 }}
@@ -752,7 +676,6 @@ function Home({ isOpen, setIsOpen }) {
                   <img src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=1000&auto=format&fit=crop" className="absolute inset-0 w-full h-full object-cover" alt="" />
                 </motion.div>
 
-                {/* Image Z - Bottom Left (60% width, 63% height) */}
                 <motion.div
                   initial={{ opacity: 0, scale: 0.95 }}
                   whileInView={{ opacity: 1, scale: 1 }}
@@ -763,7 +686,6 @@ function Home({ isOpen, setIsOpen }) {
                   <img src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=1000&auto=format&fit=crop" className="absolute inset-0 w-full h-full object-cover" alt="" />
                 </motion.div>
 
-                {/* Image Y2 - Right column bottom half */}
                 <motion.div
                   initial={{ opacity: 0, x: 20 }}
                   whileInView={{ opacity: 1, x: 0 }}
@@ -776,6 +698,96 @@ function Home({ isOpen, setIsOpen }) {
               </div>
             </div>
 
+            <CardSeparator />
+
+            <div className="text-center mb-16 space-y-2">
+              <h2 className="text-4xl md:text-5xl font-serif text-navy font-script">I Dettagli</h2>
+              <p className="text-navy-muted tracking-[0.2em] uppercase text-xs font-bold">Informazioni Utili</p>
+              <div className="w-24 h-px bg-gold/30 mx-auto mt-4" />
+            </div>
+
+
+            <div className="flex flex-col items-center gap-16 w-full max-w-4xl mx-auto">
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="bg-highlight rounded-[2rem] overflow-hidden shadow-2xl shadow-navy/10 border border-navy/5 flex flex-col w-full max-w-2xl group"
+              >
+                <div className="pt-10 pb-2 text-center">
+                  <span className="text-navy-dark font-bold text-[25px] tracking-[0.3em] uppercase opacity-70">La Cerimonia</span>
+                </div>
+                <div className="w-full relative overflow-hidden flex items-center justify-center p-4 md:p-6">
+                  <motion.img
+                    src={chiesa}
+                    alt="Chiesa di San Giuseppe Calasanzio"
+                    whileHover={{ scale: 1.02 }}
+                    className="w-full h-auto max-h-[500px] object-contain shadow-lg"
+                  />
+                </div>
+                <div className="p-10 flex flex-col items-center text-center space-y-6">
+                  <div className="space-y-3">
+                    <h3 className="text-4xl font-serif text-navy-dark font-medium">Chiesa di San Giuseppe Calasanzio</h3>
+                    <p className="text-navy-dark font-light text-md px-4 opacity-80">Via Don Carlo Gnocchi, 16 - Milano</p>
+                  </div>
+                  <div className="text-navy-dark font-serif text-xl italic">
+                    Alle ore 15:30
+                  </div>
+                  <div className="pt-4">
+                    <a
+                      href="https://www.google.com/maps/search/?api=1&query=Chiesa+di+San+Giuseppe+Calasanzio+Via+Don+Carlo+Gnocchi+16+20148+Milano"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center space-x-3 px-8 py-4 bg-navy-dark text-white rounded-full text-[10px] font-bold tracking-[0.2em] uppercase hover:bg-gold transition-colors shadow-lg"
+                    >
+                      <MapPin className="w-4 h-4" />
+                      <span>Apri su Google Maps</span>
+                    </a>
+                  </div>
+                </div>
+              </motion.div>
+
+
+
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="bg-highlight rounded-[2rem] overflow-hidden shadow-2xl shadow-navy/10 border border-navy/5 flex flex-col w-full max-w-2xl group"
+              >
+                <div className="pt-10 pb-2 text-center">
+                  <span className="text-navy-dark font-bold text-[25px] tracking-[0.3em] uppercase opacity-70">Il Ricevimento</span>
+                </div>
+                <div className="w-full relative overflow-hidden flex items-center justify-center p-4 md:p-6">
+                  <motion.img
+                    src={villa}
+                    alt="Villa Valenca"
+                    whileHover={{ scale: 1.02 }}
+                    className="w-full h-auto max-h-[500px] object-contain shadow-lg"
+                  />
+                </div>
+                <div className="p-10 flex flex-col items-center text-center space-y-6">
+                  <div className="space-y-3">
+                    <h3 className="text-4xl font-serif text-navy-dark font-medium">Villa Valenca</h3>
+                    <p className="text-navy-dark font-light text-md px-4 opacity-80">Via Don Luigi Bersini, 20 - Brescia</p>
+                  </div>
+                  <div className="pt-4">
+                    <a
+                      href="https://maps.app.goo.gl/kdcajB4Ycqnvi7K5A"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center space-x-3 px-8 py-4 bg-navy-dark text-white rounded-full text-[10px] font-bold tracking-[0.2em] uppercase hover:bg-gold transition-colors shadow-lg"
+                    >
+                      <MapPin className="w-4 h-4" />
+                      <span>Apri su Google Maps</span>
+                    </a>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+
+            <CardSeparator />
+
             <div id="programma" className="pt-32 w-full max-w-4xl">
               <div className="text-center mb-16 space-y-2">
                 <h2 className="text-3xl font-serif text-navy font-script">Il Programma</h2>
@@ -783,11 +795,13 @@ function Home({ isOpen, setIsOpen }) {
               </div>
               <div className="w-full max-w-4xl mx-auto px-4 py-16 bg-white/40 rounded-[3rem] border border-navy/5">
                 <div className="relative">
-                  <TimelineItem isLeft time="15:00" title="Cerimonia" subtitle="Il momento del nostro sì" icon={Heart} />
-                  <TimelineItem isLeft={false} time="18:00" title="Aperitivo" subtitle="Nei giardini della villa" icon={GlassWater} />
-                  <TimelineItem isLeft time="20:30" title="Cena" subtitle="Condivisione e allegria" icon={UtensilsCrossed} />
-                  <TimelineItem isLeft={false} time="22:15" title="Taglio della torta" subtitle="Il lato dolce della serata" icon={PartyPopper} />
-                  <TimelineItem isLeft time="23:00" title="Festa" subtitle="Si balla fino alle ore 1:00" icon={Music2} />
+                  {/* Central Vertical Line */}
+                  <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-navy -translate-x-1/2" />
+                  <TimelineItem isLeft time="15:30" title="Cerimonia" subtitle="Il momento del nostro sì" icon={cerimoniaSvg} />
+                  <TimelineItem isLeft={false} time="18:00" title="Aperitivo" subtitle="Nei giardini della villa" icon={aperitivoSvg} />
+                  <TimelineItem isLeft time="20:30" title="Cena" subtitle="Condivisione e allegria" icon={posateSvg} />
+                  <TimelineItem isLeft={false} time="22:15" title="Taglio della torta" subtitle="Il lato dolce della serata" icon={tortaSvg} />
+                  <TimelineItem isLeft time="23:00" title="Festa" subtitle="Si balla fino alle ore 1:00" icon={inizioFestaSvg} />
                   <TimelineItem isLeft={false} time="02:00" title="Fine della festa" subtitle="Saluti e bei ricordi" icon={PartyPopper} isLast />
                 </div>
               </div>
@@ -795,9 +809,9 @@ function Home({ isOpen, setIsOpen }) {
           </div>
         </section>
 
-        <CardSeparator />
 
-        <section id="regalo" className="py-24 px-4 bg-navy/[0.02]">
+
+        <section id="regalo" className="py-24 px-4">
           <div className="max-w-3xl mx-auto text-center">
             <div className="mb-16 space-y-2">
               <h2 className="text-3xl font-serif text-navy font-script">Il Regalo più Grande</h2>
@@ -870,7 +884,7 @@ function Home({ isOpen, setIsOpen }) {
 
         <CardSeparator />
 
-        <section id="faq" className="py-24 px-4 bg-white/20">
+        <section id="faq" className="py-24 px-4">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-16 space-y-2">
               <h2 className="text-3xl font-serif text-navy font-script">Domande Frequenti</h2>
