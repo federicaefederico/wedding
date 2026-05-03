@@ -74,7 +74,7 @@ const GuestAccess = ({ onAuthenticate, dbPassword }) => {
 
   return (
     <div className="fixed inset-0 z-[200] bg-paper flex items-center justify-center px-4 bg-eucalyptus">
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="bg-white p-8 md:p-12 rounded-[3rem] shadow-2xl border border-navy/5 w-full max-w-md text-center space-y-8"
@@ -91,7 +91,7 @@ const GuestAccess = ({ onAuthenticate, dbPassword }) => {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="relative group">
-            <input 
+            <input
               type={showPassword ? "text" : "password"}
               autoFocus
               className={`w-full p-4 bg-paper rounded-2xl border ${error ? 'border-red-400 animate-shake' : 'border-navy/10'} focus:border-navy focus:outline-none transition-all text-center tracking-[0.5em] font-bold`}
@@ -113,7 +113,7 @@ const GuestAccess = ({ onAuthenticate, dbPassword }) => {
             )}
           </div>
 
-          <button 
+          <button
             type="submit"
             className="w-full py-4 bg-navy text-white rounded-2xl text-xs font-bold uppercase tracking-widest hover:bg-gold transition-all shadow-lg flex items-center justify-center gap-2"
           >
@@ -208,7 +208,7 @@ const TimelineItem = ({ time, title, icon, isLeft, isLast }) => {
             <img src={icon} alt="" className="w-24 h-24 md:w-44 md:h-44 object-contain" />
           )}
         </div>
-        
+
         {/* Horizontal Connector to Center Line */}
         <div className="absolute right-[-2px] w-12 md:w-32 h-0.5 bg-navy" style={{ top: 'calc(50% + 10px)' }} />
 
@@ -714,7 +714,7 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
         <section id="countdown" className="py-20 bg-navy">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-serif text-paper mb-2">Conto alla rovescia</h2>
-            <p className="text-paper/80">Per il giorno più speciale della nostra vita</p>
+            <p className="text-paper/80">Manca sempre meno al nostro Sì!</p>
           </div>
           <Countdown targetDate={targetDate} showMonths={showMonths} />
         </section>
@@ -893,7 +893,7 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
             <div id="programma" className="pt-32 w-full max-w-4xl">
               <div className="text-center mb-16 space-y-2">
                 <h2 className="text-3xl font-serif text-navy font-script">Il Programma</h2>
-                <p className="text-navy-muted tracking-[0.2em] uppercase text-[10px] font-bold">Il Giorno più Bello</p>
+                <p className="text-navy-muted tracking-[0.2em] uppercase text-[10px] font-bold">Il nostro giorno insieme</p>
               </div>
               <div className="w-full max-w-4xl mx-auto px-4 py-16 bg-white/40 rounded-[3rem] border border-navy/5">
                 <div className="relative">
@@ -911,7 +911,7 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
           </div>
         </section>
 
-
+        <CardSeparator />
 
         <section id="regalo" className="py-24 px-4">
           <div className="max-w-3xl mx-auto text-center">
@@ -922,11 +922,8 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              className="bg-white/60 backdrop-blur-md p-10 md:p-16 rounded-[3rem] border border-navy/5 shadow-2xl relative overflow-hidden group"
+              className="bg-white/60 backdrop-blur-md p-10 md:p-16 rounded-lg border border-navy/5 shadow-2xl relative overflow-hidden group"
             >
-              <div className="absolute top-0 right-0 p-8 text-navy/5 transform translate-x-4 -translate-y-4">
-                <Heart className="w-24 h-24 stroke-[1px]" />
-              </div>
               <div className="relative z-10 space-y-8">
                 <p className="text-navy/70 leading-relaxed max-w-lg mx-auto font-light">
                   Il pensiero più bello che possiate farci è essere con noi nel nostro grande giorno.
@@ -1004,7 +1001,7 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}
-              className="bg-white p-8 md:p-12 rounded-lg card-shadow border border-navy/5"
+              className="bg-white/60 backdrop-blur-md p-8 md:p-12 rounded-lg border border-navy/5 shadow-2xl relative overflow-hidden group"
             >
               <div className="text-center mb-10">
                 <h2 className="text-4xl font-serif text-navy mb-2 font-script">Conferma la tua presenza</h2>
@@ -1409,7 +1406,7 @@ export default function App() {
         .select('value')
         .eq('key', 'guest_password')
         .maybeSingle()
-      
+
       const currentPassword = data?.value?.trim() || ''
       setDbGuestPassword(currentPassword)
 
@@ -1438,9 +1435,9 @@ export default function App() {
       <Navbar isOpen={isOpen} isAuthenticated={isGuestAuthenticated} />
       <Routes>
         <Route path="/" element={
-          <Home 
-            isOpen={isOpen} 
-            setIsOpen={setIsOpen} 
+          <Home
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
             isAuthenticated={isGuestAuthenticated}
             onAuthenticated={() => setIsGuestAuthenticated(true)}
             dbPassword={dbGuestPassword}
