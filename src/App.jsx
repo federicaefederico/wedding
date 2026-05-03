@@ -20,7 +20,9 @@ import {
   AlertCircle,
   ExternalLink,
   Music,
-  Gift
+  Gift,
+  Eye,
+  EyeOff
 } from 'lucide-react'
 import sigillo from './assets/sigillo.png'
 import chiesa from './assets/chiesa.jpeg'
@@ -55,6 +57,7 @@ async function hashPassword(string) {
 // --- Components ---
 const GuestAccess = ({ onAuthenticate, dbPassword }) => {
   const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState(false)
 
   const handleSubmit = async (e) => {
@@ -87,15 +90,22 @@ const GuestAccess = ({ onAuthenticate, dbPassword }) => {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="relative">
+          <div className="relative group">
             <input 
-              type="password"
+              type={showPassword ? "text" : "password"}
               autoFocus
               className={`w-full p-4 bg-paper rounded-2xl border ${error ? 'border-red-400 animate-shake' : 'border-navy/10'} focus:border-navy focus:outline-none transition-all text-center tracking-[0.5em] font-bold`}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-navy/40 hover:text-navy transition-colors p-2"
+            >
+              {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+            </button>
             {error && (
               <p className="absolute top-full left-0 right-0 text-[10px] text-red-500 font-bold uppercase mt-2 animate-bounce">
                 Password Errata
@@ -192,41 +202,47 @@ const TimelineItem = ({ time, title, icon, isLeft, isLast }) => {
   return (
     <div className="relative grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center py-6 group">
       {/* Left Side */}
-      <div className={`flex items-center justify-end ${isLeft ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          className="text-right pr-2 md:pr-8 min-w-0"
-        >
-          <div className="text-navy-dark font-bold text-sm md:text-xl tracking-widest">{time}</div>
-          <div className="text-navy text-[10px] md:text-[14px] font-serif uppercase tracking-wider leading-tight">{title}</div>
-        </motion.div>
-        <div className="w-20 h-20 md:w-32 md:h-32 flex items-center justify-center z-10 shrink-0">
+      <div className={`relative flex flex-col items-end justify-center ${isLeft ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+        <div className="w-28 h-28 md:w-48 md:h-48 flex items-center justify-center z-10 shrink-0">
           {isSvg && (
-            <img src={icon} alt="" className="w-18 h-18 md:w-28 md:h-28 object-contain" />
+            <img src={icon} alt="" className="w-24 h-24 md:w-44 md:h-44 object-contain" />
           )}
         </div>
-        <div className="w-3 md:w-12 h-0.5 bg-navy shrink-0" />
+        
+        {/* Horizontal Connector to Center Line */}
+        <div className="absolute right-[-2px] w-12 md:w-32 h-0.5 bg-navy" style={{ top: 'calc(50% + 10px)' }} />
+
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          className="text-right pr-4 md:pr-12 pt-8"
+        >
+          <div className="text-navy-dark font-bold text-lg md:text-3xl tracking-widest">{time}</div>
+          <div className="text-navy text-xs md:text-lg font-serif uppercase tracking-wider leading-tight">{title}</div>
+        </motion.div>
       </div>
 
       {/* Center Point - Spacer for the absolute line in parent */}
       <div className="w-0.5" />
 
       {/* Right Side */}
-      <div className={`flex items-center justify-start ${!isLeft ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-        <div className="w-3 md:w-12 h-0.5 bg-navy shrink-0" />
-        <div className="w-20 h-20 md:w-32 md:h-32 flex items-center justify-center z-10 shrink-0">
+      <div className={`relative flex flex-col items-start justify-center ${!isLeft ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+        <div className="w-28 h-28 md:w-48 md:h-48 flex items-center justify-center z-10 shrink-0">
           {isSvg && (
-            <img src={icon} alt="" className="w-18 h-18 md:w-28 md:h-28 object-contain" />
+            <img src={icon} alt="" className="w-24 h-24 md:w-44 md:h-44 object-contain" />
           )}
         </div>
+
+        {/* Horizontal Connector to Center Line */}
+        <div className="absolute left-[-2px] w-12 md:w-32 h-0.5 bg-navy" style={{ top: 'calc(50% + 10px)' }} />
+
         <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          className="text-left pl-2 md:pl-8 min-w-0"
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          className="text-left pl-4 md:pl-12 pt-8"
         >
-          <div className="text-navy-dark font-bold text-sm md:text-xl tracking-widest">{time}</div>
-          <div className="text-navy text-[10px] md:text-[14px] font-serif uppercase tracking-wider leading-tight">{title}</div>
+          <div className="text-navy-dark font-bold text-lg md:text-3xl tracking-widest">{time}</div>
+          <div className="text-navy text-xs md:text-lg font-serif uppercase tracking-wider leading-tight">{title}</div>
         </motion.div>
       </div>
     </div>
@@ -440,8 +456,7 @@ const PhotoCard = ({ title, icon: Icon, desc, albumUrl, categoryKey, albumTitle 
 }
 
 // --- Navigation Component ---
-
-const Navbar = ({ isOpen }) => {
+const Navbar = ({ isOpen, isAuthenticated }) => {
   const [hidden, setHidden] = useState(false)
   const { scrollY } = useScroll()
   const navigate = useNavigate()
@@ -469,7 +484,7 @@ const Navbar = ({ isOpen }) => {
 
   return (
     <AnimatePresence>
-      {isOpen && (
+      {isOpen && isAuthenticated && (
         <motion.nav
           initial={{ y: -100, opacity: 0 }}
           animate={{ y: hidden ? -100 : 0, opacity: 1 }}
@@ -497,39 +512,10 @@ const Navbar = ({ isOpen }) => {
 
 // --- Home Component (Landing Page) ---
 
-function Home({ isOpen, setIsOpen }) {
+function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword }) {
   const [isReady, setIsReady] = useState(false)
   const [isOpening, setIsOpening] = useState(false)
-  const [isGuestAuthenticated, setIsGuestAuthenticated] = useState(false)
-  const [dbGuestPassword, setDbGuestPassword] = useState('')
-  const [isCheckingGuestAuth, setIsCheckingGuestAuth] = useState(true)
 
-  useEffect(() => {
-    const checkGuestAuth = async () => {
-      // 1. Fetch current password from Supabase
-      const { data, error } = await supabase
-        .from('site_settings')
-        .select('value')
-        .eq('key', 'guest_password')
-        .maybeSingle()
-      
-      const currentPassword = data?.value?.trim() || ''
-      setDbGuestPassword(currentPassword)
-
-      // 2. Check localStorage
-      const storedHash = localStorage.getItem('guest_auth_hash')
-      if (storedHash && currentPassword) {
-        const currentHash = await hashPassword(currentPassword)
-        if (storedHash === currentHash) {
-          setIsGuestAuthenticated(true)
-        }
-      }
-      
-      setIsCheckingGuestAuth(false)
-    }
-
-    checkGuestAuth()
-  }, [])
   const [showMonths, setShowMonths] = useState(false)
   const targetDate = new Date('2026-09-12T15:30:00')
   const navigate = useNavigate()
@@ -613,18 +599,6 @@ function Home({ isOpen, setIsOpen }) {
     }
   }
 
-  if (isCheckingGuestAuth) {
-    return (
-      <div className="min-h-screen bg-paper flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-navy animate-spin" />
-      </div>
-    )
-  }
-
-  if (!isGuestAuthenticated) {
-    return <GuestAccess dbPassword={dbGuestPassword} onAuthenticate={() => setIsGuestAuthenticated(true)} />
-  }
-
   return (
     <div className="min-h-screen bg-paper bg-eucalyptus overflow-x-hidden pt-0 mt-0">
       <AnimatePresence>
@@ -634,7 +608,15 @@ function Home({ isOpen, setIsOpen }) {
             className="fixed inset-0 z-[100] bg-paper flex items-center justify-center"
             exit={{ opacity: 0 }}
             transition={{ duration: 1 }}
-          />
+          >
+            <Loader2 className="w-8 h-8 text-navy animate-spin" />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {isReady && isOpen && !isAuthenticated && (
+          <GuestAccess dbPassword={dbPassword} onAuthenticate={onAuthenticated} />
         )}
       </AnimatePresence>
 
@@ -692,7 +674,7 @@ function Home({ isOpen, setIsOpen }) {
         )}
       </AnimatePresence>
 
-      <main className={`transition-all duration-1000 ${isOpen ? 'opacity-100' : 'opacity-0 blur-lg pointer-events-none h-screen overflow-hidden'}`}>
+      <main className={`transition-all duration-1000 ${isOpen && isAuthenticated ? 'opacity-100' : 'opacity-0 blur-lg pointer-events-none h-screen overflow-hidden'}`}>
         <section className="relative min-h-screen flex flex-col items-center justify-between text-center px-0 pt-12 overflow-hidden">
           {/* Background Image with Fixed Effect */}
           <div className="absolute inset-0 z-0">
@@ -856,10 +838,11 @@ function Home({ isOpen, setIsOpen }) {
                       href="https://www.google.com/maps/search/?api=1&query=Chiesa+di+San+Giuseppe+Calasanzio+Via+Don+Carlo+Gnocchi+16+20148+Milano"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center space-x-3 px-8 py-4 bg-navy-dark text-white rounded-full text-[10px] font-bold tracking-[0.2em] uppercase hover:bg-gold transition-colors shadow-lg"
+                      className="relative group inline-flex items-center gap-3 px-8 py-4 bg-navy text-white rounded-2xl text-[10px] font-bold uppercase tracking-widest hover:bg-navy/90 hover:shadow-xl hover:-translate-y-1 transition-all shadow-md"
                     >
-                      <MapPin className="w-4 h-4" />
+                      <MapPin className="w-4 h-4 text-gold group-hover:rotate-12 transition-transform" />
                       <span>Apri su Google Maps</span>
+                      <div className="absolute -inset-1 bg-gold/10 rounded-2xl blur opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
                     </a>
                   </div>
                 </div>
@@ -894,10 +877,11 @@ function Home({ isOpen, setIsOpen }) {
                       href="https://maps.app.goo.gl/kdcajB4Ycqnvi7K5A"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center space-x-3 px-8 py-4 bg-navy-dark text-white rounded-full text-[10px] font-bold tracking-[0.2em] uppercase hover:bg-gold transition-colors shadow-lg"
+                      className="relative group inline-flex items-center gap-3 px-8 py-4 bg-navy text-white rounded-2xl text-[10px] font-bold uppercase tracking-widest hover:bg-navy/90 hover:shadow-xl hover:-translate-y-1 transition-all shadow-md"
                     >
-                      <MapPin className="w-4 h-4" />
+                      <MapPin className="w-4 h-4 text-gold group-hover:rotate-12 transition-transform" />
                       <span>Apri su Google Maps</span>
+                      <div className="absolute -inset-1 bg-gold/10 rounded-2xl blur opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
                     </a>
                   </div>
                 </div>
@@ -987,14 +971,14 @@ function Home({ isOpen, setIsOpen }) {
 
             <div className="flex justify-center">
               <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
                 onClick={() => navigate('/foto')}
-                className="group relative px-12 py-6 bg-navy text-white rounded-full font-serif text-xl shadow-2xl hover:bg-navy/90 transition-all flex items-center gap-4"
+                className="group relative px-12 py-6 bg-navy text-white rounded-2xl font-serif text-xl shadow-2xl hover:bg-navy/90 hover:-translate-y-1 transition-all flex items-center gap-4"
               >
                 <Camera className="w-6 h-6 text-gold group-hover:rotate-12 transition-transform" />
                 <span>Carica le tue foto</span>
-                <div className="absolute -inset-1 bg-gold/20 rounded-full blur opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div className="absolute -inset-1 bg-gold/10 rounded-2xl blur opacity-0 group-hover:opacity-100 transition-opacity"></div>
               </motion.button>
             </div>
           </div>
@@ -1147,10 +1131,13 @@ function Home({ isOpen, setIsOpen }) {
 
                   <button
                     disabled={isSubmitting || !formData.privacyAccepted}
-                    className="w-full py-4 bg-navy text-white rounded-md hover:bg-navy/90 transition-all font-bold tracking-widest uppercase text-xs flex items-center justify-center gap-2 mt-4 disabled:opacity-50"
+                    className="relative w-full py-4 bg-navy text-white rounded-2xl hover:bg-navy/90 hover:shadow-xl hover:-translate-y-1 transition-all font-bold tracking-widest uppercase text-xs flex items-center justify-center gap-2 mt-4 disabled:opacity-50 disabled:translate-y-0 disabled:shadow-md group"
                   >
-                    {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-                    {isSubmitting ? 'Inviando...' : 'Invia conferma'}
+                    <div className="absolute -inset-1 bg-gold/10 rounded-2xl blur opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                    <div className="relative z-10 flex items-center gap-2">
+                      {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4 group-hover:rotate-12 transition-transform" />}
+                      <span>{isSubmitting ? 'Inviando...' : 'Invia conferma'}</span>
+                    </div>
                   </button>
                 </form>
               )}
@@ -1407,17 +1394,58 @@ function PhotoGallery() {
 }
 
 // --- Main App Component (Routing) ---
-
 export default function App() {
   const [isOpen, setIsOpen] = useState(() => {
     return sessionStorage.getItem('envelope-opened') === 'true'
   })
+  const [isGuestAuthenticated, setIsGuestAuthenticated] = useState(false)
+  const [dbGuestPassword, setDbGuestPassword] = useState('')
+  const [isCheckingGuestAuth, setIsCheckingGuestAuth] = useState(true)
+
+  useEffect(() => {
+    const checkGuestAuth = async () => {
+      const { data } = await supabase
+        .from('site_settings')
+        .select('value')
+        .eq('key', 'guest_password')
+        .maybeSingle()
+      
+      const currentPassword = data?.value?.trim() || ''
+      setDbGuestPassword(currentPassword)
+
+      const storedHash = localStorage.getItem('guest_auth_hash')
+      if (storedHash && currentPassword) {
+        const currentHash = await hashPassword(currentPassword)
+        if (storedHash === currentHash) {
+          setIsGuestAuthenticated(true)
+        }
+      }
+      setIsCheckingGuestAuth(false)
+    }
+    checkGuestAuth()
+  }, [])
+
+  if (isCheckingGuestAuth) {
+    return (
+      <div className="min-h-screen bg-paper flex items-center justify-center">
+        <Loader2 className="w-8 h-8 text-navy animate-spin" />
+      </div>
+    )
+  }
 
   return (
     <>
-      <Navbar isOpen={isOpen} />
+      <Navbar isOpen={isOpen} isAuthenticated={isGuestAuthenticated} />
       <Routes>
-        <Route path="/" element={<Home isOpen={isOpen} setIsOpen={setIsOpen} />} />
+        <Route path="/" element={
+          <Home 
+            isOpen={isOpen} 
+            setIsOpen={setIsOpen} 
+            isAuthenticated={isGuestAuthenticated}
+            onAuthenticated={() => setIsGuestAuthenticated(true)}
+            dbPassword={dbGuestPassword}
+          />
+        } />
         <Route path="/foto" element={<PhotoGallery />} />
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />

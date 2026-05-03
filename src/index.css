@@ -11,12 +11,13 @@
 
 @theme {
   --color-paper: #F3F0E7;
-  --color-navy: #5D7B93;
-  --color-navy-muted: #9ABACF;
-  --color-gold: #D1A847;
+  --color-navy: #2A628F;      /* 2A628F - Azzurro Principale */
+  --color-navy-muted: #9BB7D4; /* 9BB7D4 - Azzurro Chiaro */
+  --color-gold: #EEC584;      /* EEC584 - Oro */
   --color-accent-red: #FF0000;
-  --color-highlight: #7d98bb;
-  --color-navy-dark: #1e2f3d;
+  --color-highlight: #9BB7D4;  /* 9BB7D4 - Colore per Card/Sfondi */
+  --color-navy-dark: #16324F;  /* 16324F - Navy Scuro */
+  --color-sage: #A2BBA3;       /* A2BBA3 - Verde Salvia */
   
   --font-serif: "Lora", serif;
   --font-script: "Alex Brush", cursive;
