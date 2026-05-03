@@ -820,15 +820,15 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
                   />
                 </div>
                 <div className="pt-7 pb-7 text-center">
-                  <span className="text-navy-dark text-[18px] tracking-[0.2em] perpetua">La Cerimonia</span>
+                  <span className="text-navy/70 text-[18px] tracking-[0.2em] perpetua">La Cerimonia</span>
                 </div>
 
                 <div className="pb-10 flex flex-col items-center text-center space-y-6">
                   <div className="space-y-3">
-                    <h3 className="text-3xl text-navy-dark font-medium perpetuaGrassetto">Chiesa di San Giuseppe Calasanzio</h3>
-                    <p className="text-navy-dark font-light text-[16px] px-4 tracking-[0.01em] stampatelloMinuscolo">Via Don Carlo Gnocchi, 16 – 20148 Milano (MI)</p>
+                    <h3 className="text-3xl text-navy font-medium perpetuaGrassetto">Chiesa di San Giuseppe Calasanzio</h3>
+                    <p className="text-navy font-light text-[16px] px-4 tracking-[0.01em] stampatelloMinuscolo">Via Don Carlo Gnocchi, 16 – 20148 Milano (MI)</p>
                   </div>
-                  <div className="text-navy-dark text-[18px] tracking-[0.1em] perpetua">
+                  <div className="text-navy/70 text-[18px] tracking-[0.1em] perpetua">
                     Ore 15:30
                   </div>
                   <div className="pt-4">
@@ -863,13 +863,13 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
                   />
                 </div>
                 <div className="pt-5 pb-7 text-center">
-                  <span className="text-navy-dark text-[18px] tracking-[0.2em] perpetua">Il Ricevimento</span>
+                  <span className="text-navy/70 text-[18px] tracking-[0.2em] perpetua">Il Ricevimento</span>
                 </div>
 
                 <div className="pb-10 flex flex-col items-center text-center space-y-6">
                   <div className="space-y-3">
-                    <h3 className="text-3xl text-navy-dark font-medium perpetuaGrassetto">Villa Valenca</h3>
-                    <p className="text-navy-dark font-light text-[16px] px-4 tracking-[0.01em] stampatelloMinuscolo">Via Bersini Don Luigi, 20 – 25038 Rovato (BS)</p>
+                    <h3 className="text-3xl text-navy font-medium perpetuaGrassetto">Villa Valenca</h3>
+                    <p className="text-navy font-light text-[16px] px-4 tracking-[0.01em] stampatelloMinuscolo">Via Bersini Don Luigi, 20 – 25038 Rovato (BS)</p>
                   </div>
                   <div className="pt-4">
                     <a
@@ -914,8 +914,8 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
 
         <section id="regalo" className="px-4">
           <div className="max-w-3xl mx-auto text-center">
-            <div className="mb-16 space-y-4">
-              <h2 className="text-7xl md:text-5xl text-navy corsivo">Il regalo <br />più grande</h2>
+            <div className="mb-16 space-y-7">
+              <h2 className="text-7xl md:text-5xl text-navy corsivo leading-[3.5rem]">Il regalo <br />più grande</h2>
               <p className="text-navy tracking-[0.5em] text-xs perpetua">Un gesto d'amore</p>
             </div>
             <motion.div
@@ -953,9 +953,9 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
 
         <section id="foto" className="px-4">
           <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-16 space-y-4">
-              <h2 className="text-7xl md:text-5xl text-navy corsivo">Condividi <br />i tuoi scatti</h2>
-              <p className="text-navy tracking-[0.5em] text-[10px] perpetua">I vostri ricordi con noi</p>
+            <div className="text-center mb-16 space-y-7">
+              <h2 className="text-7xl md:text-5xl text-navy corsivo leading-[3.5rem]">Condividi <br />i tuoi scatti</h2>
+              <p className="text-navy tracking-[0.5em] text-xs perpetua">I vostri ricordi con noi</p>
             </div>
 
             <div className="max-w-3xl mx-auto text-center mb-16">
@@ -984,9 +984,9 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
 
         <section id="faq" className="px-4">
           <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-16 space-y-4">
-              <h2 className="text-7xl md:text-5xl text-navy corsivo">Domande frequenti</h2>
-              <p className="text-navy tracking-[0.5em] text-[10px] perpetua">Tutto quello che c'è da sapere</p>
+            <div className="text-center mb-16 space-y-7">
+              <h2 className="text-7xl md:text-5xl text-navy corsivo leading-[3.5rem]">Domande frequenti</h2>
+              <p className="text-navy tracking-[0.5em] text-xs perpetua">Tutto quello che c'è da sapere</p>
             </div>
             <FAQAccordion />
           </div>
@@ -997,9 +997,9 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
         {/* RSVP Section */}
         <section id="rsvp" className="pb-20 px-4">
           <div className="max-w-xl mx-auto flex flex-col justify-center items-center">
-            <div className="text-center mb-16 space-y-4">
-              <h2 className="text-7xl md:text-5xl text-navy corsivo">Conferma <br /> la tua presenza</h2>
-              <p className="text-navy tracking-[0.5em] text-[10px] perpetua uppercase">Non vediamo l'ora di festeggiare con voi</p>
+            <div className="text-center mb-16 space-y-7">
+              <h2 className="text-7xl md:text-5xl text-navy corsivo leading-[3.5rem]">Conferma <br /> la tua presenza</h2>
+              <p className="text-navy tracking-[0.5em] text-xs perpetua uppercase">Non vediamo l'ora di festeggiare con voi</p>
             </div>
 
             <motion.div
