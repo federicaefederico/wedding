@@ -79,15 +79,15 @@ const GuestAccess = ({ onAuthenticate, dbPassword }) => {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white p-8 md:p-12 rounded-[3rem] shadow-2xl border border-navy/5 w-full max-w-md text-center space-y-8"
+        className="bg-white p-8 md:p-12 rounded-lg shadow-2xl border border-navy/5 w-full max-w-md text-center space-y-8"
       >
         <div className="space-y-2">
           <div className="w-16 h-16 bg-navy/5 text-navy rounded-2xl flex items-center justify-center mx-auto mb-4">
             <Lock className="w-8 h-8" />
           </div>
-          <h2 className="text-3xl font-serif text-navy font-script italic">Benvenuti</h2>
+          <h2 className="text-6xl text-navy corsivo">Benvenuti</h2>
           <p className="text-navy-muted text-xs uppercase tracking-widest px-4">
-            Inserisci la password per accedere al sito del matrimonio
+            Inserisci la password per accedere al sito del matrimonio di Federica e Federico
           </p>
         </div>
 
@@ -197,54 +197,76 @@ const Countdown = ({ targetDate, showMonths = false }) => {
   )
 }
 
-const TimelineItem = ({ time, title, icon, isLeft, isLast }) => {
+const TimelineItem = ({ time, title, icon, isLeft }) => {
   const isSvg = typeof icon === 'string';
   const Icon = !isSvg ? icon : null;
 
   return (
-    <div className="relative grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center py-6 group">
+    <div className="relative grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center py-10 group">
       {/* Left Side */}
       <div className={`relative flex flex-col items-end justify-center ${isLeft ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-        <div className="w-28 h-28 md:w-48 md:h-48 flex items-center justify-center z-10 shrink-0">
-          {isSvg && (
-            <img src={icon} alt="" className="w-24 h-24 md:w-44 md:h-44 object-contain" />
-          )}
-        </div>
-
-        {/* Horizontal Connector to Center Line */}
-        <div className="absolute right-[-2px] w-12 md:w-32 h-0.5 bg-navy" style={{ top: 'calc(50% + 10px)' }} />
-
         <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          className="text-right pr-4 md:pr-12 pt-8"
+          initial={{ opacity: 0, x: -20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          className="flex flex-col items-end pr-8 md:pr-16"
         >
-          <div className="text-navy-dark font-bold text-lg md:text-3xl tracking-widest">{time}</div>
-          <div className="text-navy text-xs md:text-lg font-serif uppercase tracking-wider leading-tight">{title}</div>
+          {/* Icon Above */}
+          <div className="w-16 h-16 md:w-32 md:h-32 flex items-center justify-center mb-2">
+            {isSvg ? (
+              <img src={icon} alt="" className="w-14 h-14 md:w-28 md:h-28 object-contain" />
+            ) : (
+              <Icon className="w-10 h-10 md:w-20 md:h-20 text-navy/70" />
+            )}
+          </div>
+
+          {/* Time & Horizontal Bar */}
+          <div className="relative flex items-center justify-end w-full">
+            {/* Horizontal Connector - Matching vertical style and avoiding collision */}
+            <div className="absolute right-[-32px] md:right-[-64px] w-4 md:w-8 h-0.5 bg-navy" />
+            <div className="text-navy-dark font-bold text-xl md:text-4xl tracking-[0.2em] leading-none z-10">
+              {time}
+            </div>
+          </div>
+
+          {/* Title Below */}
+          <div className="text-navy text-[10px] md:text-base font-serif uppercase tracking-[0.3em] text-right mt-3 opacity-80">
+            {title}
+          </div>
         </motion.div>
       </div>
 
-      {/* Center Point - Spacer for the absolute line in parent */}
+      {/* Center Line Spacer */}
       <div className="w-0.5" />
 
       {/* Right Side */}
       <div className={`relative flex flex-col items-start justify-center ${!isLeft ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-        <div className="w-28 h-28 md:w-48 md:h-48 flex items-center justify-center z-10 shrink-0">
-          {isSvg && (
-            <img src={icon} alt="" className="w-24 h-24 md:w-44 md:h-44 object-contain" />
-          )}
-        </div>
-
-        {/* Horizontal Connector to Center Line */}
-        <div className="absolute left-[-2px] w-12 md:w-32 h-0.5 bg-navy" style={{ top: 'calc(50% + 10px)' }} />
-
         <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          className="text-left pl-4 md:pl-12 pt-8"
+          initial={{ opacity: 0, x: 20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          className="flex flex-col items-start pl-8 md:pl-16"
         >
-          <div className="text-navy-dark font-bold text-lg md:text-3xl tracking-widest">{time}</div>
-          <div className="text-navy text-xs md:text-lg font-serif uppercase tracking-wider leading-tight">{title}</div>
+          {/* Icon Above */}
+          <div className="w-16 h-16 md:w-32 md:h-32 flex items-center justify-center mb-2">
+            {isSvg ? (
+              <img src={icon} alt="" className="w-14 h-14 md:w-28 md:h-28 object-contain" />
+            ) : (
+              <Icon className="w-10 h-10 md:w-20 md:h-20 text-navy/70" />
+            )}
+          </div>
+
+          {/* Time & Horizontal Bar */}
+          <div className="relative flex items-center justify-start w-full">
+            {/* Horizontal Connector - Matching vertical style and avoiding collision */}
+            <div className="absolute left-[-32px] md:left-[-64px] w-4 md:w-8 h-0.5 bg-navy" />
+            <div className="text-navy-dark font-bold text-xl md:text-4xl tracking-[0.2em] leading-none z-10">
+              {time}
+            </div>
+          </div>
+
+          {/* Title Below */}
+          <div className="text-navy text-[10px] md:text-base font-serif uppercase tracking-[0.3em] text-left mt-3 opacity-80">
+            {title}
+          </div>
         </motion.div>
       </div>
     </div>
@@ -289,11 +311,11 @@ const FAQAccordion = () => {
   const items = [
     {
       q: "Entro quando devo confermare?",
-      a: "Vi preghiamo di confermare la vostra presenza entro il 12 Luglio 2026 utilizzando il modulo RSVP qui sotto o contattandoci direttamente."
+      a: "Vi preghiamo di confermare la vostra presenza entro il 12 Luglio 2026 compilando indivisualmente il modulo RSVP qui sotto."
     },
     {
       q: "C'è un dress code particolare?",
-      a: "L'abito formale è gradito. Tenete presente che parte del ricevimento si terrà nei giardini della villa, quindi vi consigliamo calzature comode per il prato."
+      a: "Non è previsto un dress code specifico: sentitevi liberi di esprimere il vostro stile con un tocco di eleganza che renda ancora più speciale l'occasione."
     },
     {
       q: "Cosa devo fare se ho allergie o restrizioni alimentari?",
@@ -301,11 +323,11 @@ const FAQAccordion = () => {
     },
     {
       q: "I bambini sono i benvenuti?",
-      a: "Certamente! I più piccoli sono i benvenuti e sarà previsto per loro un menù dedicato. Se avete esigenze particolari, saremo felici di fare il possibile per soddisfarle.\n\nTuttavia, desideriamo informarvi che, data l’atmosfera intima della location e il mood della serata, non sono previste aree gioco o servizi di animazione.\n\nVi chiediamo gentilmente di segnalarci in anticipo eventuali necessità specifiche, come la disponibilità di seggioloni o spazi per culle, così da poterci organizzare al meglio."
+      a: "Certamente! I più piccoli sono i benvenuti e sarà previsto per loro un menù dedicato. Se avete esigenze particolari, saremo felici di fare il possibile per soddisfarle.\n\nTuttavia, desideriamo informarvi che, data l’atmosfera intima della location e il mood della serata, non sono previste aree gioco o servizi di animazione.\n\nVi chiediamo gentilmente di segnalarci nel modulo RSVP qui sotto eventuali necessità specifiche, come la disponibilità di seggioloni o spazi per culle, così da poterci organizzare al meglio."
     },
     {
       q: "È disponibile un parcheggio presso la Villa?",
-      a: "Sì, Villa Valenca dispone di un ampio parcheggio privato e gratuito a disposizione di tutti gli ospiti."
+      a: "Sì, Villa Valenca dispone di un ampio parcheggio privato e gratuito a disposizione di tutti gli ospiti.\nL'indirizzo esatto per raggiungere l'ingresso del parcheggio è Via Castrezzato 108 - 25030 Coccaglio (BS)."
     }
   ]
 
@@ -495,7 +517,7 @@ const Navbar = ({ isOpen, isAuthenticated }) => {
           className="fixed top-0 left-0 right-0 z-[60] bg-highlight border-b border-navy/10 px-4 py-4 md:px-12 shadow-sm"
         >
           <ul className="max-w-7xl mx-auto flex justify-between items-center gap-2 md:gap-4">
-            {['Dettagli', 'Programma', 'Regalo', 'Foto', 'FAQ', 'RSVP'].map((item) => (
+            {['Location', 'Programma', 'Regalo', 'Foto', 'FAQ', 'RSVP'].map((item) => (
               <li key={item}>
                 <button
                   onClick={() => handleNavClick(item)}
@@ -535,12 +557,12 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
   const [showPrivacyModal, setShowPrivacyModal] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [status, setStatus] = useState(null) // 'success' | 'error' | null
-  const [copied, setCopied] = useState(false)
+  const [copiedId, setCopiedId] = useState(null)
 
-  const handleCopy = (text) => {
+  const handleCopy = (text, id) => {
     navigator.clipboard.writeText(text)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
+    setCopiedId(id)
+    setTimeout(() => setCopiedId(null), 2000)
   }
 
 
@@ -736,15 +758,13 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
             className="max-w-2xl"
           >
             <h3 className="text-3xl md:text-5xl font-script text-navy leading-relaxed">
-              "Nella buona sorte e nelle avversità<br />
-              Nelle gioie e nelle difficoltà <br />
-              Se tu ci sarai <br />
-              Io ci sarò"
+              "Comincia da qui<br />
+              il nostro per sempre"
             </h3>
           </motion.div>
         </section>
 
-        <section id="dettagli" className="pt-0 pb-24 px-4 relative overflow-hidden">
+        <section className="pt-0 pb-24 px-4 relative overflow-hidden">
           <div className="max-w-6xl mx-auto flex flex-col items-center">
 
             {/* Gallery Section */}
@@ -808,8 +828,8 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
 
             <CardSeparator />
 
-            <div className="text-center mb-12 space-y-4">
-              <h2 className="text-7xl md:text-5xl text-navy corsivo">I dettagli</h2>
+            <div id="location" className="text-center mb-12 space-y-4">
+              <h2 className="text-7xl md:text-5xl text-navy corsivo">Le location</h2>
               <p className="text-navy tracking-[0.5em] text-xs perpetua">Informazioni Utili</p>
             </div>
 
@@ -908,12 +928,12 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
                 <div className="relative">
                   {/* Central Vertical Line */}
                   <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-navy -translate-x-1/2" />
-                  <TimelineItem isLeft time="15:30" title="Cerimonia" subtitle="Il momento del nostro sì" icon={cerimoniaSvg} />
-                  <TimelineItem isLeft={false} time="18:00" title="Aperitivo" subtitle="Nei giardini della villa" icon={aperitivoSvg} />
-                  <TimelineItem isLeft time="20:30" title="Cena" subtitle="Condivisione e allegria" icon={posateSvg} />
-                  <TimelineItem isLeft={false} time="22:15" title="Taglio della torta" subtitle="Il lato dolce della serata" icon={tortaSvg} />
-                  <TimelineItem isLeft time="23:00" title="Festa" subtitle="Si balla fino alle ore 1:00" icon={inizioFestaSvg} />
-                  <TimelineItem isLeft={false} time="02:00" title="Fine della festa" subtitle="Saluti e bei ricordi" icon={PartyPopper} isLast />
+                  <TimelineItem isLeft time="15:30" title="La Cerimonia" icon={cerimoniaSvg} />
+                  <TimelineItem isLeft={false} time="18:00" title="L'Aperitivo" icon={aperitivoSvg} />
+                  <TimelineItem isLeft time="19:30" title="La Cena" icon={posateSvg} />
+                  <TimelineItem isLeft={false} time="22:00" title="Il Taglio della torta" icon={tortaSvg} />
+                  <TimelineItem isLeft time="23:00" title="La Festa" icon={inizioFestaSvg} />
+                  <TimelineItem isLeft={false} time="02:00" title="La buonanotte" icon={PartyPopper} isLast />
                 </div>
               </div>
             </div>
@@ -945,22 +965,31 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
                       <div className="flex items-center gap-2">
                         <span className="text-[10px] text-navy-muted uppercase tracking-[0.3em] font-bold">IBAN</span>
                         <button
-                          onClick={() => handleCopy("IT00 A 0000 0000 0000 0000 0000 000")}
+                          onClick={() => handleCopy("IT20 W036 6901 6001 1070 1979 531", "iban")}
                           className="p-1.5 hover:bg-navy/5 rounded-lg transition-colors text-navy-muted hover:text-navy group/copy"
                           title="Copia IBAN"
                         >
-                          {copied ? <Check className="w-3.5 h-3.5 text-green-500" /> : <Copy className="w-3.5 h-3.5" />}
+                          {copiedId === "iban" ? <Check className="w-3.5 h-3.5 text-green-500" /> : <Copy className="w-3.5 h-3.5" />}
                         </button>
                       </div>
                       <p className="text-navy text-xs md:text-sm tracking-[0.01rem] text-center perpetua">
-                        IT00 A 0000 0000 0000 0000 0000 000
+                        IT20 W036 6901 6001 1070 1979 531
                       </p>
                     </div>
 
                     <div className="flex flex-col items-center space-y-2">
-                      <span className="text-[10px] text-navy-muted uppercase tracking-[0.3em] font-bold">Intestato a</span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] text-navy-muted uppercase tracking-[0.3em] font-bold">Intestato a</span>
+                        <button
+                          onClick={() => handleCopy("F Pulejo & F Minnella", "payee")}
+                          className="p-1.5 hover:bg-navy/5 rounded-lg transition-colors text-navy-muted hover:text-navy group/copy"
+                          title="Copia Intestatario"
+                        >
+                          {copiedId === "payee" ? <Check className="w-3.5 h-3.5 text-green-500" /> : <Copy className="w-3.5 h-3.5" />}
+                        </button>
+                      </div>
                       <p className="text-navy perpetua tracking-wide text-[13px]">
-                        Federica Martini <br /> <span className='stampatelloMinuscolo'>e</span> Federico Di Biagio
+                        F Pulejo & F Minnella
                       </p>
                     </div>
                   </div>
@@ -973,7 +1002,7 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
               </div>
             </motion.div>
           </div>
-        </section>
+        </section >
 
         <CardSeparator />
 
@@ -986,8 +1015,8 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
 
             <div className="max-w-3xl mx-auto text-center mb-16">
               <p className="text-navy/70 leading-relaxed font-light">
-                Aiutateci a rendere indelebile questo giorno! <br /> Abbiamo creato degli album dedicati <br /> per raccogliere i vostri scatti più belli.<br />
-                Scegliete la categoria e caricate le vostre foto <br /> per condividerle con noi e con tutti gli ospiti.
+                Aiutateci a rendere indelebile questo giorno! <br /> Abbiamo creato un album dedicato <br /> per raccogliere i vostri scatti più belli.<br />
+                Caricate le vostre foto per condividerle <br /> con noi e con tutti gli ospiti.
               </p>
             </div>
 
@@ -1253,8 +1282,8 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
             </motion.div>
           )}
         </AnimatePresence>
-      </main>
-    </div>
+      </main >
+    </div >
   )
 }
 
