@@ -78,10 +78,18 @@ const GuestAccess = ({ onAuthenticate, dbPassword }) => {
   }
 
   return (
-    <div className="fixed inset-0 z-[200] bg-paper flex items-center justify-center px-4 bg-eucalyptus">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 1 }}
+      className="fixed inset-0 z-[200] bg-paper flex items-center justify-center px-4 bg-eucalyptus"
+    >
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95 }}
+        transition={{ duration: 0.5 }}
         className="bg-white p-8 md:p-12 rounded-lg shadow-2xl border border-navy/5 w-full max-w-md text-center space-y-8"
       >
         <div className="space-y-2">
@@ -126,7 +134,7 @@ const GuestAccess = ({ onAuthenticate, dbPassword }) => {
           </button>
         </form>
       </motion.div>
-    </div>
+    </motion.div>
   )
 }
 
@@ -594,6 +602,7 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
   }, [isOpen, location.state])
 
   const VIDEO_DURATION_BEFORE_FADE = 2.0; // Modifica questo valore per cambiare la durata dell'animazione in secondi
+  const VIDEO_PLAYBACK_SPEED = 2.5; // Modifica questo valore per cambiare la velocità del video (1.0 = normale)
 
   const handleVideoEnded = () => {
     setIsOpen(true);
@@ -609,6 +618,7 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
     if (isOpening || isOpen) return;
     setIsOpening(true);
     if (videoRef.current) {
+      videoRef.current.playbackRate = VIDEO_PLAYBACK_SPEED;
       videoRef.current.play().catch(() => {
         handleVideoEnded();
       });
@@ -717,7 +727,7 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
             transition={{ duration: 1, delay: 0.5 }}
             className="relative z-10 flex flex-col items-center space-y-2 mt-[6rem] mb-auto"
           >
-            <h1 className="text-[clamp(4rem,12vw,11rem)] font-kunstler text-navy leading-[0.8] whitespace-nowrap">
+            <h1 className="text-[clamp(4rem,12vw,11rem)] font-kunstler text-navy leading-[0.8] whitespace-nowrap px-[1.6px]">
               Federica e Federico
             </h1>
             <div className="flex items-center justify-center space-x-4 text-navy-muted">
@@ -1016,7 +1026,7 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => navigate('/foto')}
-                className="relative group inline-flex items-center gap-3 px-8 py-4 bg-navy text-white rounded-2xl text-[10px] font-bold uppercase tracking-widest hover:bg-navy/90 hover:shadow-xl hover:-translate-y-1 transition-all shadow-md"
+                className="relative group inline-flex items-center gap-3 px-8 py-4 bg-navy text-white rounded-lg text-[10px] font-bold uppercase tracking-widest hover:bg-navy/90 hover:shadow-xl hover:-translate-y-1 transition-all shadow-md"
               >
                 <Camera className="w-4 h-4 text-gold group-hover:rotate-12 transition-transform" />
                 <span>Carica le tue foto</span>
@@ -1180,7 +1190,7 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
                   >
                     <div className="absolute -inset-1 bg-gold/10 rounded-2xl blur opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
                     <div className="relative z-10 flex items-center gap-2">
-                      {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4 text-gold  group-hover:rotate-12 transition-transform" />}
+                      {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4 text-gold group-hover:rotate-12 transition-transform" />}
                       <span>{isSubmitting ? 'Inviando...' : 'Invia conferma'}</span>
                     </div>
                   </button>
