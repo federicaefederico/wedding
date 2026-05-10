@@ -35,6 +35,7 @@ import posateSvg from './assets/icons/posate.svg'
 import cerimoniaSvg from './assets/icons/cerimonia.svg'
 import inizioFestaSvg from './assets/icons/inizioFesta.svg'
 import sfondo from './assets/sfondo.JPEG'
+import bustaVideo from './assets/busta.mp4'
 import { intervalToDuration, format, differenceInDays } from 'date-fns'
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 import { submitRSVP } from './services/rsvpService'
@@ -540,6 +541,7 @@ const Navbar = ({ isOpen, isAuthenticated }) => {
 function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword }) {
   const [isReady, setIsReady] = useState(false)
   const [isOpening, setIsOpening] = useState(false)
+  const videoRef = useRef(null)
 
   const [showMonths, setShowMonths] = useState(false)
   const targetDate = new Date('2026-09-12T15:30:00')
@@ -590,13 +592,20 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
     }
   }, [isOpen, location.state])
 
+  const handleVideoEnded = () => {
+    setIsOpen(true);
+  }
+
   const handleOpenEnvelope = () => {
     if (isOpening || isOpen) return;
     setIsOpening(true);
-    setTimeout(() => {
-      setIsOpen(true);
-      sessionStorage.setItem('envelope-opened', 'true');
-    }, 2400);
+    if (videoRef.current) {
+      videoRef.current.play().catch(() => {
+        handleVideoEnded();
+      });
+    } else {
+      handleVideoEnded();
+    }
   }
 
   const handleRSVPSubmit = async (e) => {
@@ -657,52 +666,21 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
         {isReady && !isOpen && (
           <motion.div
             key="splash"
-            className="fixed inset-0 z-50 flex items-center justify-center bg-[#f3f0e7] m-[-100%] perspective-[1500px] overflow-hidden"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-[#f3f0e7] overflow-hidden cursor-pointer"
+            onClick={handleOpenEnvelope}
             initial={{ opacity: 1 }}
-            animate={isOpening ? { opacity: 0 } : { opacity: 1 }}
-            transition={{ duration: 0.6, delay: 1.8, ease: "easeOut" }}
             exit={{ opacity: 0 }}
+            transition={{ duration: 1.5, ease: "easeInOut" }}
           >
-            <motion.div
-              className="relative w-[250vw] md:w-[150vw] xl:w-[120vw] aspect-[2/2.1] cursor-pointer"
-              onClick={handleOpenEnvelope}
-              initial={{ scale: 1 }}
-              animate={isOpening ? { scale: 3 } : { scale: 1 }}
-              transition={{ duration: 2, delay: 1.5, ease: "easeInOut" }}
-            >
-              <div className="absolute inset-0 bg-[#fcfbf9] rounded-none z-10 border border-navy/10 overflow-hidden"></div>
-              <div className="absolute inset-0 z-20 pointer-events-none drop-shadow-2xl filter will-change-[filter]">
-                <svg viewBox="0 0 400 300" preserveAspectRatio="none" className="w-full h-full overflow-visible">
-                  <polygon fill="#f9f7f3" points="0,0 200,150 0,300" stroke="rgba(0,0,0,0.04)" strokeWidth="1" strokeLinejoin="round" />
-                  <polygon fill="#f9f7f3" points="400,0 200,150 400,300" stroke="rgba(0,0,0,0.04)" strokeWidth="1" strokeLinejoin="round" />
-                  <polygon fill="#fdfdfc" points="0,300 200,150 400,300" stroke="rgba(0,0,0,0.05)" strokeWidth="1" strokeLinejoin="round" />
-                </svg>
-              </div>
-              <motion.div
-                className="absolute inset-x-0 top-0 h-1/2 z-30 pointer-events-none origin-top rounded-none filter drop-shadow-xl will-change-[transform,filter]"
-                initial={{ rotateX: 0 }}
-                animate={{ rotateX: isOpening ? 180 : 0 }}
-                transition={{ duration: 1.8, ease: "easeInOut" }}
-                style={{ transformStyle: "preserve-3d" }}
-              >
-                <svg viewBox="0 0 400 150" preserveAspectRatio="none" className="w-full h-full overflow-visible">
-                  <polygon fill="#f8f5f0" points="0,0 200,150 400,0" stroke="rgba(0,0,0,0.06)" strokeWidth="1" strokeLinejoin="round" />
-                </svg>
-                <div
-                  className="absolute left-1/2  pointer-events-auto"
-                  style={{ transform: "translate(-50%, -50%) translateZ(1px)" }}
-                >
-                  <div className="w-[18vw] max-w-[220px] min-w-[140px] aspect-square flex items-center justify-center group filter drop-shadow-[0_8px_16px_rgba(0,0,0,0.3)] will-change-[filter]">
-                    <img
-                      src={sigillo}
-                      alt=""
-                      loading="eager"
-                      className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105 will-change-transform block"
-                    />
-                  </div>
-                </div>
-              </motion.div>
-            </motion.div>
+            <video
+              ref={videoRef}
+              src={bustaVideo}
+              className="w-full h-full object-cover pointer-events-none"
+              playsInline
+              muted
+              onEnded={handleVideoEnded}
+              preload="auto"
+            />
           </motion.div>
         )}
       </AnimatePresence>
@@ -1409,7 +1387,6 @@ function PhotoGallery() {
       <div className="max-w-6xl mx-auto">
         <button
           onClick={() => {
-            sessionStorage.setItem('envelope-opened', 'true');
             navigate('/');
           }}
           className="mb-12 text-navy-muted hover:text-navy transition-colors flex items-center gap-2 uppercase tracking-widest text-[10px] font-bold"
@@ -1449,9 +1426,7 @@ function PhotoGallery() {
 
 // --- Main App Component (Routing) ---
 export default function App() {
-  const [isOpen, setIsOpen] = useState(() => {
-    return sessionStorage.getItem('envelope-opened') === 'true'
-  })
+  const [isOpen, setIsOpen] = useState(false)
   const [isGuestAuthenticated, setIsGuestAuthenticated] = useState(false)
   const [dbGuestPassword, setDbGuestPassword] = useState('')
   const [isCheckingGuestAuth, setIsCheckingGuestAuth] = useState(true)
