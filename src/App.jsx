@@ -695,14 +695,16 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
         )}
       </AnimatePresence>
 
-      <main className={`transition-all duration-1000 ${isOpen && isAuthenticated ? 'opacity-100' : 'opacity-0 blur-lg pointer-events-none h-screen overflow-hidden'}`}>
+      <main className={`transition-opacity duration-1000 ${isOpen && isAuthenticated ? 'opacity-100' : 'opacity-0 pointer-events-none h-screen overflow-hidden'}`}>
         <section className="relative min-h-screen flex flex-col items-center justify-between text-center px-0 pt-12 overflow-hidden">
           {/* Background Image with Fixed Effect */}
           <div className="absolute inset-0 z-0 pointer-events-none" style={{ clipPath: 'inset(0 0 0 0)' }}>
             <div
-              className="fixed inset-0 bg-cover bg-center bg-no-repeat"
+              className="fixed inset-x-0 top-0 h-[100lvh] bg-cover bg-center bg-no-repeat"
               style={{
-                backgroundImage: `url(${sfondo})`
+                backgroundImage: `url(${sfondo})`,
+                transform: 'translateZ(0)',
+                willChange: 'transform'
               }}
             />
             {/* Overlay for Readability */}
