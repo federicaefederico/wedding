@@ -592,8 +592,16 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
     }
   }, [isOpen, location.state])
 
+  const VIDEO_DURATION_BEFORE_FADE = 3.5; // Modifica questo valore per cambiare la durata dell'animazione in secondi
+
   const handleVideoEnded = () => {
     setIsOpen(true);
+  }
+
+  const handleTimeUpdate = () => {
+    if (videoRef.current && videoRef.current.currentTime >= VIDEO_DURATION_BEFORE_FADE) {
+      handleVideoEnded();
+    }
   }
 
   const handleOpenEnvelope = () => {
@@ -674,12 +682,13 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
           >
             <video
               ref={videoRef}
-              src={bustaVideo}
+              src={`${bustaVideo}#t=0.001`}
               className="w-full h-full object-cover pointer-events-none"
               playsInline
               muted
               onEnded={handleVideoEnded}
-              preload="auto"
+              onTimeUpdate={handleTimeUpdate}
+              preload="metadata"
             />
           </motion.div>
         )}
