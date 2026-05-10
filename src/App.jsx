@@ -34,6 +34,7 @@ import aperitivoSvg from './assets/icons/aperitivo.svg'
 import posateSvg from './assets/icons/posate.svg'
 import cerimoniaSvg from './assets/icons/cerimonia.svg'
 import inizioFestaSvg from './assets/icons/inizioFesta.svg'
+import sfondo from './assets/sfondo.JPEG'
 import { intervalToDuration, format, differenceInDays } from 'date-fns'
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 import { submitRSVP } from './services/rsvpService'
@@ -311,7 +312,7 @@ const FAQAccordion = () => {
   const items = [
     {
       q: "Entro quando devo confermare?",
-      a: "Vi preghiamo di confermare la vostra presenza entro il 12 Luglio 2026 compilando indivisualmente il modulo RSVP qui sotto."
+      a: "Vi preghiamo di confermare la vostra presenza entro l'11 Giugno 2026 compilando individualmente il modulo RSVP qui sotto."
     },
     {
       q: "C'è un dress code particolare?",
@@ -514,10 +515,10 @@ const Navbar = ({ isOpen, isAuthenticated }) => {
           animate={{ y: hidden ? -100 : 0, opacity: 1 }}
           exit={{ y: -100, opacity: 0 }}
           transition={{ duration: 0.3, ease: "easeInOut" }}
-          className="fixed top-0 left-0 right-0 z-[60] bg-highlight border-b border-navy/10 px-4 py-4 md:px-12 shadow-sm"
+          className="fixed top-0 left-0 right-0 z-[60] bg-highlight border-b border-navy/10 px-2 py-4 md:px-12 shadow-sm"
         >
-          <ul className="max-w-7xl mx-auto flex justify-between items-center gap-2 md:gap-4">
-            {['Location', 'Programma', 'Regalo', 'Foto', 'FAQ', 'RSVP'].map((item) => (
+          <ul className="max-w-7xl mx-auto flex justify-between items-center gap-1 md:gap-4">
+            {['Location', 'Programma', 'lista nozze', 'Foto', 'FAQ', 'RSVP'].map((item) => (
               <li key={item}>
                 <button
                   onClick={() => handleNavClick(item)}
@@ -656,14 +657,14 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
         {isReady && !isOpen && (
           <motion.div
             key="splash"
-            className="fixed inset-0 z-50 flex items-center justify-center bg-[#f3f0e7] px-4 perspective-[1500px] overflow-hidden"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-[#f3f0e7] m-[-100%] perspective-[1500px] overflow-hidden"
             initial={{ opacity: 1 }}
             animate={isOpening ? { opacity: 0 } : { opacity: 1 }}
             transition={{ duration: 0.6, delay: 1.8, ease: "easeOut" }}
             exit={{ opacity: 0 }}
           >
             <motion.div
-              className="relative w-[250vw] md:w-[150vw] xl:w-[120vw] aspect-[4/3] cursor-pointer"
+              className="relative w-[250vw] md:w-[150vw] xl:w-[120vw] aspect-[2/2.1] cursor-pointer"
               onClick={handleOpenEnvelope}
               initial={{ scale: 1 }}
               animate={isOpening ? { scale: 3 } : { scale: 1 }}
@@ -691,7 +692,7 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
                   className="absolute left-1/2  pointer-events-auto"
                   style={{ transform: "translate(-50%, -50%) translateZ(1px)" }}
                 >
-                  <div className="w-[12vw] max-w-[150px] min-w-[100px] aspect-square flex items-center justify-center group filter drop-shadow-[0_8px_16px_rgba(0,0,0,0.3)] will-change-[filter]">
+                  <div className="w-[18vw] max-w-[220px] min-w-[140px] aspect-square flex items-center justify-center group filter drop-shadow-[0_8px_16px_rgba(0,0,0,0.3)] will-change-[filter]">
                     <img
                       src={sigillo}
                       alt=""
@@ -713,7 +714,7 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
             <div
               className="absolute inset-0 bg-cover bg-center bg-no-repeat bg-scroll md:bg-fixed"
               style={{
-                backgroundImage: "url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=2070&auto=format&fit=crop')"
+                backgroundImage: `url(${sfondo})`
               }}
             />
             {/* Overlay for Readability */}
@@ -830,7 +831,7 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
 
             <div id="location" className="text-center mb-12 space-y-4">
               <h2 className="text-7xl md:text-5xl text-navy corsivo">Le location</h2>
-              <p className="text-navy tracking-[0.5em] text-xs perpetua">Informazioni Utili</p>
+              <p className="text-navy tracking-[0.5em] text-xs perpetua">I luoghi della nostra giornata</p>
             </div>
 
 
@@ -866,7 +867,7 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
                       href="https://www.google.com/maps/search/?api=1&query=Chiesa+di+San+Giuseppe+Calasanzio+Via+Don+Carlo+Gnocchi+16+20148+Milano"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="relative group inline-flex items-center gap-3 px-8 py-4 bg-navy text-white rounded-2xl text-[10px] font-bold uppercase tracking-widest hover:bg-navy/90 hover:shadow-xl hover:-translate-y-1 transition-all shadow-md"
+                      className="relative group inline-flex items-center gap-3 px-8 py-4 bg-navy text-white rounded-lg text-[10px] font-bold uppercase tracking-widest hover:bg-navy/90 hover:shadow-xl hover:-translate-y-1 transition-all shadow-md"
                     >
                       <MapPin className="w-4 h-4 text-gold group-hover:rotate-12 transition-transform" />
                       <span>Apri su Google Maps</span>
@@ -906,7 +907,7 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
                       href="https://maps.app.goo.gl/kdcajB4Ycqnvi7K5A"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="relative group inline-flex items-center gap-3 px-8 py-4 bg-navy text-white rounded-2xl text-[10px] font-bold uppercase tracking-widest hover:bg-navy/90 hover:shadow-xl hover:-translate-y-1 transition-all shadow-md"
+                      className="relative group inline-flex items-center gap-3 px-8 py-4 bg-navy text-white rounded-lg text-[10px] font-bold uppercase tracking-widest hover:bg-navy/90 hover:shadow-xl hover:-translate-y-1 transition-all shadow-md"
                     >
                       <MapPin className="w-4 h-4 text-gold group-hover:rotate-12 transition-transform" />
                       <span>Apri su Google Maps</span>
@@ -956,7 +957,7 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
               <div className="relative z-10 space-y-8">
                 <p className="text-navy/70 leading-relaxed max-w-lg mx-auto font-light">
                   Il pensiero più bello che possiate <br /> farci è essere con noi <br /> nel nostro grande giorno. <br />
-                  Ma se desiderate aiutarci a realizzare <br /> il nostro sogno di viaggio <br /> nel <span className="text-3xl text-navy corsivo">Sudafrica</span>, <br />
+                  Ma se desiderate aiutarci a realizzare <br /> il nostro sogno di <br /> safari in <span className="text-3xl text-navy corsivo">Sudafrica</span> <br /> e relax alle <span className="text-3xl text-navy corsivo">Mauritius</span>, <br />
                   qui trovate le coordinate per farlo: <br />
                 </p>
                 <div className="pt-4 flex flex-col items-center space-y-4">
@@ -1202,7 +1203,7 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
 
 
         <footer className="py-6 px-4 text-center space-y-2 bg-navy text-white/90">
-          <div className="space-y-2">
+          <div className="space-y-0">
             <h2 className="text-5xl font-kunstler">Federica e Federico</h2>
             <p className="text-white/60 tracking-widest uppercase text-xs perpetua">12 Settembre 2026</p>
           </div>

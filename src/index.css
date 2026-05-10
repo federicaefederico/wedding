@@ -42,14 +42,20 @@
 
 @theme {
   --color-paper: #F3F0E7;
-  --color-navy: #2A628F;      /* 2A628F - Azzurro Principale */
-  --color-navy-muted: #9BB7D4; /* 9BB7D4 - Azzurro Chiaro */
-  --color-gold: #EEC584;      /* EEC584 - Oro */
+  --color-navy: #2A628F;
+  /* 2A628F - Azzurro Principale */
+  --color-navy-muted: #638db2;
+  /* 9BB7D4 - Azzurro Chiaro */
+  --color-gold: #EEC584;
+  /* EEC584 - Oro */
   --color-accent-red: #FF0000;
-  --color-highlight: #9BB7D4;  /* 9BB7D4 - Colore per Card/Sfondi */
-  --color-navy-dark: #16324F;  /* 16324F - Navy Scuro */
-  --color-sage: #A2BBA3;       /* A2BBA3 - Verde Salvia */
-  
+  --color-highlight: #638db2;
+  /* 9BB7D4 - Colore per Card/Sfondi */
+  --color-navy-dark: #16324F;
+  /* 16324F - Navy Scuro */
+  --color-sage: #A2BBA3;
+  /* A2BBA3 - Verde Salvia */
+
   --font-serif: "Lora", serif;
   --font-script: "Alex Brush", cursive;
   --font-kunstler: "Kunstler Script Local", "Pinyon Script", cursive;
@@ -66,8 +72,8 @@
 
 @layer utilities {
   .bg-eucalyptus {
-    background-image: 
-      linear-gradient(rgba(243, 240, 231, 0.85), rgba(243, 240, 231, 0.85)), 
+    background-image:
+      linear-gradient(rgba(243, 240, 231, 0.85), rgba(243, 240, 231, 0.85)),
       var(--background-eucalyptus);
     background-repeat: repeat;
     background-size: 600px;
@@ -75,13 +81,20 @@
 }
 
 @layer base {
-  html, body {
+
+  html,
+  body {
     @apply bg-paper text-navy font-serif scroll-smooth overflow-x-hidden;
     margin: 0;
     padding: 0;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply font-serif;
   }
 
