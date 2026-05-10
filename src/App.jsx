@@ -34,6 +34,7 @@ import aperitivoSvg from './assets/icons/aperitivo.svg'
 import posateSvg from './assets/icons/posate.svg'
 import cerimoniaSvg from './assets/icons/cerimonia.svg'
 import inizioFestaSvg from './assets/icons/inizioFesta.svg'
+import macchinaSvg from './assets/icons/macchina.svg'
 import sfondo from './assets/sfondo.JPEG'
 import bustaVideo from './assets/busta.mp4'
 import { intervalToDuration, format, differenceInDays } from 'date-fns'
@@ -204,7 +205,7 @@ const TimelineItem = ({ time, title, icon, isLeft }) => {
   const Icon = !isSvg ? icon : null;
 
   return (
-    <div className="relative grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center py-10 group">
+    <div className="relative grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center py-4 group">
       {/* Left Side */}
       <div className={`relative flex flex-col items-end justify-center ${isLeft ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
         <motion.div
@@ -225,7 +226,7 @@ const TimelineItem = ({ time, title, icon, isLeft }) => {
           <div className="relative flex items-center justify-end w-full">
             {/* Horizontal Connector - Matching vertical style and avoiding collision */}
             <div className="absolute right-[-32px] md:right-[-64px] w-4 md:w-8 h-0.5 bg-navy" />
-            <div className="text-navy-dark font-bold text-xl md:text-4xl tracking-[0.2em] leading-none z-10">
+            <div className="text-navy font-bold text-xl md:text-4xl tracking-[0.2em] leading-none z-10">
               {time}
             </div>
           </div>
@@ -260,7 +261,7 @@ const TimelineItem = ({ time, title, icon, isLeft }) => {
           <div className="relative flex items-center justify-start w-full">
             {/* Horizontal Connector - Matching vertical style and avoiding collision */}
             <div className="absolute left-[-32px] md:left-[-64px] w-4 md:w-8 h-0.5 bg-navy" />
-            <div className="text-navy-dark font-bold text-xl md:text-4xl tracking-[0.2em] leading-none z-10">
+            <div className="text-navy font-bold text-xl md:text-4xl tracking-[0.2em] leading-none z-10">
               {time}
             </div>
           </div>
@@ -592,7 +593,7 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
     }
   }, [isOpen, location.state])
 
-  const VIDEO_DURATION_BEFORE_FADE = 3.5; // Modifica questo valore per cambiare la durata dell'animazione in secondi
+  const VIDEO_DURATION_BEFORE_FADE = 2.0; // Modifica questo valore per cambiare la durata dell'animazione in secondi
 
   const handleVideoEnded = () => {
     setIsOpen(true);
@@ -699,7 +700,7 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
           {/* Background Image with Fixed Effect */}
           <div className="absolute inset-0 z-0">
             <div
-              className="absolute inset-0 bg-cover bg-center bg-no-repeat bg-scroll md:bg-fixed"
+              className="absolute inset-0 bg-cover bg-center bg-no-repeat bg-fixed"
               style={{
                 backgroundImage: `url(${sfondo})`
               }}
@@ -712,7 +713,7 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
             initial={{ opacity: 0, y: 30 }}
             animate={isOpen ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 1, delay: 0.5 }}
-            className="relative z-10 flex flex-col items-center space-y-2 mt-auto mb-auto"
+            className="relative z-10 flex flex-col items-center space-y-2 mt-[6rem] mb-auto"
           >
             <h1 className="text-[clamp(4rem,12vw,11rem)] font-kunstler text-navy leading-[0.8] whitespace-nowrap">
               Federica e Federico
@@ -921,7 +922,7 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
                   <TimelineItem isLeft time="19:30" title="La Cena" icon={posateSvg} />
                   <TimelineItem isLeft={false} time="22:00" title="Il Taglio della torta" icon={tortaSvg} />
                   <TimelineItem isLeft time="23:00" title="La Festa" icon={inizioFestaSvg} />
-                  <TimelineItem isLeft={false} time="02:00" title="La buonanotte" icon={PartyPopper} isLast />
+                  <TimelineItem isLeft={false} time="02:00" title="La buonanotte" icon={macchinaSvg} isLast />
                 </div>
               </div>
             </div>
