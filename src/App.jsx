@@ -1043,7 +1043,7 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-16 space-y-7">
               <h2 className="text-7xl md:text-5xl text-navy corsivo leading-[3.5rem]">Domande frequenti</h2>
-              <p className="text-navy tracking-[0.5em] text-xs perpetua">Tutto quello che c'è da sapere</p>
+              <p className="text-navy tracking-[0.5em] text-xs perpetua">Tutto quello <br /> che c'è da sapere</p>
             </div>
             <FAQAccordion />
           </div>
