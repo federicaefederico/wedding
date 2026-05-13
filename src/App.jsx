@@ -334,7 +334,7 @@ const FAQAccordion = () => {
     },
     {
       q: "I bambini sono i benvenuti?",
-      a: "Certamente! I più piccoli sono i benvenuti e sarà previsto per loro un menù dedicato. Se avete esigenze particolari, saremo felici di fare il possibile per soddisfarle.\n\nTuttavia, desideriamo informarvi che, data l’atmosfera intima della location e il mood della serata, non sono previste aree gioco o servizi di animazione.\n\nVi chiediamo gentilmente di segnalarci nel modulo RSVP qui sotto eventuali necessità specifiche, come la disponibilità di seggioloni o spazi per culle, così da poterci organizzare al meglio."
+      a: "Certamente! I più piccoli sono i benvenuti e sarà previsto per loro un menù dedicato. Se avete esigenze particolari, saremo felici di fare il possibile per soddisfarle.\n\nTuttavia, desideriamo informarvi che, data l’atmosfera intima della location e il mood della serata, non sono previste aree gioco o servizi di animazione.\n\nVi chiediamo gentilmente di segnalarci nel modulo RSVP qui sotto eventuali necessità specifiche, come la disponibilità di seggioloni o spazi per passeggini, così da poterci organizzare al meglio."
     },
     {
       q: "È disponibile un parcheggio presso la Villa?",
