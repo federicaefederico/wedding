@@ -235,6 +235,7 @@ export default function Dashboard() {
                   <tr className="bg-navy text-white text-[10px] uppercase tracking-widest">
                     <th className="p-5 font-bold">Ospite</th>
                     <th className="p-5 font-bold">Presenza</th>
+                    <th className="p-5 font-bold">Bambini</th>
                     <th className="p-5 font-bold">Allergie / Note</th>
                     <th className="p-5 font-bold">Messaggio</th>
                     <th className="p-5 font-bold text-center">Azioni</th>
@@ -249,8 +250,7 @@ export default function Dashboard() {
                       className="hover:bg-navy/[0.02] transition-colors"
                     >
                       <td className="p-5">
-                        <div className="font-serif text-navy text-lg">{rsvp.name}</div>
-                        <div className="text-xs text-navy-muted">{rsvp.email || 'Nessuna email'}</div>
+                        <div className="font-serif text-navy text-lg">{rsvp.name} {rsvp.surname}</div>
                       </td>
                       <td className="p-5">
                         {rsvp.attendance === 'yes' ? (
@@ -261,6 +261,16 @@ export default function Dashboard() {
                           <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-red-100 text-red-600 rounded-full text-xs font-medium">
                             <XCircle className="w-3.5 h-3.5" /> Non ci sarà
                           </span>
+                        )}
+                      </td>
+                      <td className="p-5">
+                        {rsvp.has_children ? (
+                          <div className="text-xs text-navy/80">
+                            <span className="font-bold">Sì</span> ({rsvp.children_ages ? rsvp.children_ages.split(',').length : 0})
+                            <div className="text-[10px] text-navy-muted">Età: {rsvp.children_ages || '-'}</div>
+                          </div>
+                        ) : (
+                          <span className="text-xs text-navy-muted">No</span>
                         )}
                       </td>
                       <td className="p-5">

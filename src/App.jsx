@@ -560,8 +560,11 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
   // Form State
   const [formData, setFormData] = useState({
     name: '',
-    email: '',
+    surname: '',
     attendance: '',
+    hasChildren: '',
+    numChildren: 0,
+    childrenAges: [],
     dietary_requirements: '',
     message: '',
     privacyAccepted: false
@@ -629,8 +632,12 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
 
   const handleRSVPSubmit = async (e) => {
     e.preventDefault()
-    if (!formData.name || !formData.attendance) {
+    if (!formData.name || !formData.surname || !formData.attendance || !formData.hasChildren) {
       alert('Per favore compila i campi obbligatori (*)')
+      return
+    }
+    if (formData.hasChildren === 'yes' && (formData.numChildren <= 0 || formData.childrenAges.some(age => age === ''))) {
+      alert('Per favore inserisci il numero e l\'età di tutti i bambini')
       return
     }
     if (!formData.privacyAccepted) {
@@ -646,8 +653,11 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
       setStatus('success')
       setFormData({
         name: '',
-        email: '',
+        surname: '',
         attendance: '',
+        hasChildren: '',
+        numChildren: 0,
+        childrenAges: [],
         dietary_requirements: '',
         message: '',
         privacyAccepted: false
@@ -752,15 +762,15 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
           <Countdown targetDate={targetDate} showMonths={showMonths} />
         </section>
 
-        <section id="citazione" className="py-32 flex flex-col items-center text-center px-4">
+        <section id="citazione" className="pb-16 pt-32 flex flex-col items-center text-center px-4">
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             className="max-w-2xl"
           >
             <h3 className="text-3xl md:text-5xl font-script text-navy leading-relaxed">
-              "Comincia da qui<br />
-              il nostro per sempre"
+              Comincia da qui<br />
+              il nostro per sempre
             </h3>
           </motion.div>
         </section>
@@ -1086,7 +1096,7 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
               ) : (
                 <form className="space-y-6" onSubmit={handleRSVPSubmit}>
                   <div className="space-y-2 text-left">
-                    <label className="text-xs font-bold text-navy uppercase tracking-widest">Inserisci nome e cognome *</label>
+                    <label className="text-xs font-bold text-navy uppercase tracking-widest">Inserisci Nome *</label>
                     <input
                       type="text"
                       required
@@ -1098,12 +1108,13 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
                   </div>
 
                   <div className="space-y-2 text-left">
-                    <label className="text-xs font-bold text-navy uppercase tracking-widest">Email (opzionale)</label>
+                    <label className="text-xs font-bold text-navy uppercase tracking-widest">Cognome *</label>
                     <input
-                      type="email"
-                      value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      placeholder="tu@email.com"
+                      type="text"
+                      required
+                      value={formData.surname}
+                      onChange={(e) => setFormData({ ...formData, surname: e.target.value })}
+                      placeholder="Il tuo cognome"
                       className="w-full p-4 bg-paper rounded border border-navy/10 focus:border-navy focus:outline-none transition-colors"
                     />
                   </div>
@@ -1136,6 +1147,92 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
                       </label>
                     </div>
                   </div>
+
+                  <div className="space-y-4 text-left pt-2">
+                    <label className="text-xs font-bold text-navy uppercase tracking-widest">Ci saranno bambini con te? *</label>
+                    <div className="flex space-x-8">
+                      <label className="flex items-center space-x-3 cursor-pointer">
+                        <input
+                          type="radio"
+                          name="hasChildren"
+                          required
+                          value="yes"
+                          checked={formData.hasChildren === 'yes'}
+                          onChange={(e) => setFormData({ ...formData, hasChildren: e.target.value, childrenAges: [] })}
+                          className="w-5 h-5 accent-navy"
+                        />
+                        <span className="text-navy-muted">Sì</span>
+                      </label>
+                      <label className="flex items-center space-x-3 cursor-pointer">
+                        <input
+                          type="radio"
+                          name="hasChildren"
+                          value="no"
+                          checked={formData.hasChildren === 'no'}
+                          onChange={(e) => setFormData({ ...formData, hasChildren: e.target.value, numChildren: 0, childrenAges: [] })}
+                          className="w-5 h-5 accent-navy"
+                        />
+                        <span className="text-navy-muted">No</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  <AnimatePresence>
+                    {formData.hasChildren === 'yes' && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        className="space-y-6 overflow-hidden"
+                      >
+                        <div className="space-y-2">
+                          <label className="text-xs font-bold text-navy uppercase tracking-widest">Quanti bambini? *</label>
+                          <select
+                            value={formData.numChildren}
+                            onChange={(e) => {
+                              const num = parseInt(e.target.value)
+                              setFormData({
+                                ...formData,
+                                numChildren: num,
+                                childrenAges: Array(num).fill('')
+                              })
+                            }}
+                            className="w-full p-4 bg-paper rounded border border-navy/10 focus:border-navy focus:outline-none transition-colors"
+                          >
+                            <option value="0">Seleziona...</option>
+                            {[1, 2, 3, 4, 5].map(n => (
+                              <option key={n} value={n}>{n} {n === 1 ? 'bambino' : 'bambini'}</option>
+                            ))}
+                          </select>
+                        </div>
+
+                        {formData.numChildren > 0 && (
+                          <div className="grid grid-cols-2 gap-4">
+                            {formData.childrenAges.map((age, index) => (
+                              <div key={index} className="space-y-2">
+                                <label className="text-[10px] font-bold text-navy uppercase tracking-widest">Età bambino {index + 1} *</label>
+                                <select
+                                  value={age}
+                                  required
+                                  onChange={(e) => {
+                                    const newAges = [...formData.childrenAges]
+                                    newAges[index] = e.target.value
+                                    setFormData({ ...formData, childrenAges: newAges })
+                                  }}
+                                  className="w-full p-3 bg-paper rounded border border-navy/10 focus:border-navy focus:outline-none transition-colors text-sm"
+                                >
+                                  <option value="">Età...</option>
+                                  {[...Array(11)].map((_, i) => (
+                                    <option key={i} value={i}>{i} anni</option>
+                                  ))}
+                                </select>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
 
                   <div className="space-y-2 text-left">
                     <label className="text-xs font-bold text-navy uppercase tracking-widest">Allergie o intolleranze alimentari</label>

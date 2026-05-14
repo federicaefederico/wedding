@@ -9,8 +9,10 @@ export const submitRSVP = async (rsvpData) => {
     .insert([
       {
         name: rsvpData.name,
-        email: rsvpData.email || null,
+        surname: rsvpData.surname || null,
         attendance: rsvpData.attendance,
+        has_children: rsvpData.hasChildren === 'yes',
+        children_ages: rsvpData.childrenAges.length > 0 ? rsvpData.childrenAges.join(',') : null,
         dietary_requirements: rsvpData.dietary_requirements || null,
         message: rsvpData.message || null,
       },
