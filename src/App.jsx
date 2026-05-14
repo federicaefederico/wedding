@@ -330,11 +330,11 @@ const FAQAccordion = () => {
     },
     {
       q: "Cosa devo fare se ho allergie o restrizioni alimentari?",
-      a: "Potete indicare qualsiasi allergia o intolleranza direttamente nel modulo RSVP. Avviseremo lo chef per garantirvi un menu dedicato."
+      a: "Potete indicare qualsiasi allergia o intolleranza direttamente nel modulo RSVP. Avviseremo lo chef per garantirvi un menù dedicato."
     },
     {
       q: "I bambini sono i benvenuti?",
-      a: "Certamente! I più piccoli sono i benvenuti e sarà previsto per loro un menù dedicato. Se avete esigenze particolari, saremo felici di fare il possibile per soddisfarle.\n\nTuttavia, desideriamo informarvi che, data l’atmosfera intima della location e il mood della serata, non sono previste aree gioco o servizi di animazione.\n\nVi chiediamo gentilmente di segnalarci nel modulo RSVP qui sotto eventuali necessità specifiche, come la disponibilità di seggioloni o spazi per culle, così da poterci organizzare al meglio."
+      a: "Certamente! I più piccoli sono i benvenuti e sarà previsto per loro un menù dedicato. Se avete esigenze particolari, saremo felici di fare il possibile per soddisfarle.\n\nTuttavia, desideriamo informarvi che, data l’atmosfera intima della location e il mood della serata, non sono previste aree gioco o servizi di animazione.\n\nVi chiediamo gentilmente di segnalarci nel modulo RSVP qui sotto eventuali necessità specifiche, come la disponibilità di seggioloni o spazi per passeggini, così da poterci organizzare al meglio."
     },
     {
       q: "È disponibile un parcheggio presso la Villa?",
@@ -1053,7 +1053,7 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-16 space-y-7">
               <h2 className="text-7xl md:text-5xl text-navy corsivo leading-[3.5rem]">Domande frequenti</h2>
-              <p className="text-navy tracking-[0.5em] text-xs perpetua">Tutto quello che c'è da sapere</p>
+              <p className="text-navy tracking-[0.5em] text-xs perpetua">Tutto quello <br /> che c'è da sapere</p>
             </div>
             <FAQAccordion />
           </div>
@@ -1066,7 +1066,7 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
           <div className="max-w-xl mx-auto flex flex-col justify-center items-center">
             <div className="text-center mb-16 space-y-7">
               <h2 className="text-7xl md:text-5xl text-navy corsivo leading-[3.5rem]">Conferma <br /> la tua presenza</h2>
-              <p className="text-navy tracking-[0.5em] text-xs perpetua uppercase">Non vediamo l'ora di festeggiare con voi</p>
+              <p className="text-navy tracking-[0.5em] text-xs perpetua uppercase">Non vediamo l'ora <br /> di festeggiare con voi</p>
             </div>
 
             <motion.div
