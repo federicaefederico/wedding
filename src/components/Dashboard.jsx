@@ -267,7 +267,12 @@ export default function Dashboard() {
                         {rsvp.has_children ? (
                           <div className="text-xs text-navy/80">
                             <span className="font-bold">Sì</span> ({rsvp.children_ages ? rsvp.children_ages.split(',').length : 0})
-                            <div className="text-[10px] text-navy-muted">Età: {rsvp.children_ages || '-'}</div>
+                            <div className="text-[10px] text-navy-muted">
+                              <span className="font-semibold">Nomi:</span> {rsvp.children_names || '-'}
+                            </div>
+                            <div className="text-[10px] text-navy-muted">
+                              <span className="font-semibold">Età:</span> {rsvp.children_ages || '-'}
+                            </div>
                           </div>
                         ) : (
                           <span className="text-xs text-navy-muted">No</span>

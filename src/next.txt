@@ -1,0 +1,2 @@
+Quando dico, possono cambiare anche 2 foto alla volta intendo che potrebbe succedere per caso.
+Ogni cambio deve avere il proprio timer per cambiare

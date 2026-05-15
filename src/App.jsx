@@ -59,6 +59,10 @@ async function hashPassword(string) {
   return hashHex;
 }
 
+// --- Configuration ---
+// primi 2 numeri per grandezz per cellulare, altri 2 per grandezza pc
+const TIMELINE_ICON_SIZE = `w-34 h-34 md:w-40 md:h-40`
+
 // --- Components ---
 const GuestAccess = ({ onAuthenticate, dbPassword }) => {
   const [password, setPassword] = useState('')
@@ -162,6 +166,108 @@ const CardSeparator = () => (
   </div>
 )
 
+const GALLERY_PHOTOS = [
+  "https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1000&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=1000&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=1000&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=1000&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=1000&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1583939003579-730e3918a45a?q=80&w=1000&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1510076857177-7470076d4098?q=80&w=1000&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1523438885200-e635ba2c371e?q=80&w=1000&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1513104890138-7c749659a591?q=80&w=1000&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1472653816316-3ad6f10a6592?q=80&w=1000&auto=format&fit=crop"
+]
+
+const PhotoSlot = ({ src, className, style, delay }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.8, delay }}
+    className={`relative overflow-hidden shadow-lg border border-navy/5 ${className}`}
+    style={style}
+  >
+    <AnimatePresence>
+      <motion.img
+        key={src}
+        src={src}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 1.5, ease: "easeInOut" }}
+        className="absolute inset-0 w-full h-full object-cover"
+        alt=""
+      />
+    </AnimatePresence>
+  </motion.div>
+)
+
+const DynamicGallery = () => {
+  const [state, setState] = useState({
+    visible: GALLERY_PHOTOS.slice(0, 5),
+    queue: GALLERY_PHOTOS.slice(5)
+  })
+
+  useEffect(() => {
+    let timeoutId;
+
+    const updateGallery = () => {
+      setState(prev => {
+        let { visible, queue } = prev
+        let newQueue = [...queue]
+        let newVisible = [...visible]
+
+        // Decidi quante foto cambiare (1 o 2)
+        const count = Math.random() > 0.8 ? 2 : 1
+        const slotsToChange = []
+        
+        while(slotsToChange.length < count) {
+          const idx = Math.floor(Math.random() * 5)
+          if(!slotsToChange.includes(idx)) slotsToChange.push(idx)
+        }
+
+        slotsToChange.forEach(slotIndex => {
+          if (newQueue.length === 0) {
+            newQueue = GALLERY_PHOTOS.filter(p => !newVisible.includes(p))
+            for (let i = newQueue.length - 1; i > 0; i--) {
+              const j = Math.floor(Math.random() * (i + 1));
+              [newQueue[i], newQueue[j]] = [newQueue[j], newQueue[i]]
+            }
+          }
+          newVisible[slotIndex] = newQueue.shift()
+        })
+
+        return {
+          visible: newVisible,
+          queue: newQueue
+        }
+      })
+
+      const delay = Math.floor(Math.random() * (5000 - 2000 + 1)) + 2000
+      timeoutId = setTimeout(updateGallery, delay)
+    }
+
+    timeoutId = setTimeout(updateGallery, 3000)
+    return () => clearTimeout(timeoutId)
+  }, [])
+
+  return (
+    <div
+      className="grid gap-3 md:gap-4 w-full aspect-[4/5] md:aspect-video"
+      style={{
+        gridTemplateColumns: '3fr 3fr 4fr',
+        gridTemplateRows: '37fr 13fr 50fr'
+      }}
+    >
+      <PhotoSlot src={state.visible[0]} delay={0} />
+      <PhotoSlot src={state.visible[1]} delay={0.1} />
+      <PhotoSlot src={state.visible[2]} delay={0.2} style={{ gridRow: '1 / span 2', gridColumn: '3' }} />
+      <PhotoSlot src={state.visible[3]} delay={0.3} style={{ gridRow: '2 / span 2', gridColumn: '1 / span 2' }} className="shadow-2xl" />
+      <PhotoSlot src={state.visible[4]} delay={0.4} style={{ gridColumn: '3', gridRow: '3' }} />
+    </div>
+  )
+}
+
 const Countdown = ({ targetDate, showMonths = false }) => {
   const [now, setNow] = useState(new Date())
 
@@ -222,11 +328,11 @@ const TimelineItem = ({ time, title, icon, isLeft }) => {
           className="flex flex-col items-end pr-8 md:pr-16"
         >
           {/* Icon Above */}
-          <div className="w-16 h-16 md:w-32 md:h-32 flex items-center justify-center mb-2">
+          <div className={`${TIMELINE_ICON_SIZE} flex items-center justify-center mb-2`}>
             {isSvg ? (
-              <img src={icon} alt="" className="w-14 h-14 md:w-28 md:h-28 object-contain" />
+              <img src={icon} alt="" className="w-full h-full object-contain" />
             ) : (
-              <Icon className="w-10 h-10 md:w-20 md:h-20 text-navy/70" />
+              <Icon className="w-full h-full text-navy/70" />
             )}
           </div>
 
@@ -257,11 +363,11 @@ const TimelineItem = ({ time, title, icon, isLeft }) => {
           className="flex flex-col items-start pl-8 md:pl-16"
         >
           {/* Icon Above */}
-          <div className="w-16 h-16 md:w-32 md:h-32 flex items-center justify-center mb-2">
+          <div className={`${TIMELINE_ICON_SIZE} flex items-center justify-center mb-2`}>
             {isSvg ? (
-              <img src={icon} alt="" className="w-14 h-14 md:w-28 md:h-28 object-contain" />
+              <img src={icon} alt="" className="w-full h-full object-contain" />
             ) : (
-              <Icon className="w-10 h-10 md:w-20 md:h-20 text-navy/70" />
+              <Icon className="w-full h-full text-navy/70" />
             )}
           </div>
 
@@ -285,7 +391,7 @@ const TimelineItem = ({ time, title, icon, isLeft }) => {
 }
 
 const FAQItem = ({ question, answer, isOpen, onClick }) => (
-  <div className="border border-navy/10 bg-white/50 backdrop-blur-sm rounded-2xl overflow-hidden mb-4 last:mb-0 transition-all duration-300 hover:border-navy/20">
+  <div className="border border-navy/10 bg-white/50 backdrop-blur-sm rounded-lg overflow-hidden mb-4 last:mb-0 transition-all duration-300 hover:border-navy/20">
     <button
       onClick={onClick}
       className="w-full flex items-center justify-between p-6 text-left transition-colors"
@@ -307,7 +413,7 @@ const FAQItem = ({ question, answer, isOpen, onClick }) => (
           exit={{ height: 0, opacity: 0 }}
           transition={{ duration: 0.3, ease: "easeInOut" }}
         >
-          <div className="p-6 pt-0 text-navy-muted text-sm border-t border-navy/5 leading-relaxed whitespace-pre-line">
+          <div className="p-6 pb-3 pt-3 text-navy-muted text-sm border-t border-navy/5 leading-relaxed whitespace-pre-line">
             {answer}
           </div>
         </motion.div>
@@ -565,6 +671,7 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
     hasChildren: '',
     numChildren: 0,
     childrenAges: [],
+    childrenNames: [],
     dietary_requirements: '',
     message: '',
     privacyAccepted: false
@@ -636,8 +743,8 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
       alert('Per favore compila i campi obbligatori (*)')
       return
     }
-    if (formData.hasChildren === 'yes' && (formData.numChildren <= 0 || formData.childrenAges.some(age => age === ''))) {
-      alert('Per favore inserisci il numero e l\'età di tutti i bambini')
+    if (formData.hasChildren === 'yes' && (formData.numChildren <= 0 || formData.childrenAges.some(age => age === '') || formData.childrenNames.some(name => !name.trim()))) {
+      alert('Per favore inserisci il numero, l\'età e il nome di tutti i bambini')
       return
     }
     if (!formData.privacyAccepted) {
@@ -658,6 +765,7 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
         hasChildren: '',
         numChildren: 0,
         childrenAges: [],
+        childrenNames: [],
         dietary_requirements: '',
         message: '',
         privacyAccepted: false
@@ -780,61 +888,7 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
 
             {/* Gallery Section */}
             <div className="w-full max-w-6xl mx-auto p-0 mb-16">
-              <div
-                className="grid gap-3 md:gap-4 w-full aspect-[4/5] md:aspect-video"
-                style={{
-                  gridTemplateColumns: '3fr 3fr 4fr',
-                  gridTemplateRows: '37fr 13fr 50fr'
-                }}
-              >
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8 }}
-                  className="relative overflow-hidden shadow-lg border border-navy/5"
-                >
-                  <img src="https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1000&auto=format&fit=crop" className="absolute inset-0 w-full h-full object-cover" alt="" />
-                </motion.div>
-
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.1 }}
-                  className="relative overflow-hidden shadow-lg border border-navy/5"
-                >
-                  <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=1000&auto=format&fit=crop" className="absolute inset-0 w-full h-full object-cover" alt="" />
-                </motion.div>
-
-                <motion.div
-                  initial={{ opacity: 0, x: 20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.8, delay: 0.2 }}
-                  className="relative overflow-hidden shadow-lg border border-navy/5"
-                  style={{ gridRow: '1 / span 2', gridColumn: '3' }}
-                >
-                  <img src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=1000&auto=format&fit=crop" className="absolute inset-0 w-full h-full object-cover" alt="" />
-                </motion.div>
-
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 1, delay: 0.3 }}
-                  className="relative overflow-hidden shadow-2xl border border-navy/5"
-                  style={{ gridRow: '2 / span 2', gridColumn: '1 / span 2' }}
-                >
-                  <img src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=1000&auto=format&fit=crop" className="absolute inset-0 w-full h-full object-cover" alt="" />
-                </motion.div>
-
-                <motion.div
-                  initial={{ opacity: 0, x: 20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.8, delay: 0.4 }}
-                  className="relative overflow-hidden shadow-lg border border-navy/5"
-                  style={{ gridColumn: '3', gridRow: '3' }}
-                >
-                  <img src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?q=80&w=1000&auto=format&fit=crop" className="absolute inset-0 w-full h-full object-cover" alt="" />
-                </motion.div>
-              </div>
+              <DynamicGallery />
             </div>
 
             <CardSeparator />
@@ -877,7 +931,7 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
                       href="https://www.google.com/maps/search/?api=1&query=Chiesa+di+San+Giuseppe+Calasanzio+Via+Don+Carlo+Gnocchi+16+20148+Milano"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="relative group inline-flex items-center gap-3 px-8 py-4 bg-navy text-white rounded-lg text-[10px] font-bold uppercase tracking-widest hover:bg-navy/90 hover:shadow-xl hover:-translate-y-1 transition-all shadow-md"
+                      className="relative group inline-flex items-center gap-3 px-8 py-4 bg-highlight text-white rounded-lg text-[10px] font-bold uppercase tracking-widest hover:bg-navy/90 hover:shadow-xl hover:-translate-y-1 transition-all shadow-md"
                     >
                       <MapPin className="w-4 h-4 text-gold group-hover:rotate-12 transition-transform" />
                       <span>Apri su Google Maps</span>
@@ -917,7 +971,7 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
                       href="https://maps.app.goo.gl/kdcajB4Ycqnvi7K5A"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="relative group inline-flex items-center gap-3 px-8 py-4 bg-navy text-white rounded-lg text-[10px] font-bold uppercase tracking-widest hover:bg-navy/90 hover:shadow-xl hover:-translate-y-1 transition-all shadow-md"
+                      className="relative group inline-flex items-center gap-3 px-8 py-4 bg-highlight text-white rounded-lg text-[10px] font-bold uppercase tracking-widest hover:bg-navy/90 hover:shadow-xl hover:-translate-y-1 transition-all shadow-md"
                     >
                       <MapPin className="w-4 h-4 text-gold group-hover:rotate-12 transition-transform" />
                       <span>Apri su Google Maps</span>
@@ -1081,11 +1135,11 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="bg-green-50 border border-green-100 p-8 rounded-xl text-center"
+                  className="border-green-100 p-8 rounded-xl text-center"
                 >
-                  <PartyPopper className="w-12 h-12 text-green-500 mx-auto mb-4" />
+                  {/* <PartyPopper className="w-12 h-12 text-green-500 mx-auto mb-4" /> */}
                   <h3 className="text-xl font-serif text-navy mb-2">Grazie mille!</h3>
-                  <p className="text-navy-muted">La tua conferma è stata inviata con successo.</p>
+                  <p className="text-navy-muted">La tua risposta è stata inviata con successo.</p>
                   <button
                     onClick={() => setStatus(null)}
                     className="mt-6 text-xs font-bold text-navy uppercase tracking-widest border-b border-navy/20 pb-1"
@@ -1158,7 +1212,7 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
                           required
                           value="yes"
                           checked={formData.hasChildren === 'yes'}
-                          onChange={(e) => setFormData({ ...formData, hasChildren: e.target.value, childrenAges: [] })}
+                          onChange={(e) => setFormData({ ...formData, hasChildren: e.target.value, childrenAges: [], childrenNames: [] })}
                           className="w-5 h-5 accent-navy"
                         />
                         <span className="text-navy-muted">Sì</span>
@@ -1169,7 +1223,7 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
                           name="hasChildren"
                           value="no"
                           checked={formData.hasChildren === 'no'}
-                          onChange={(e) => setFormData({ ...formData, hasChildren: e.target.value, numChildren: 0, childrenAges: [] })}
+                          onChange={(e) => setFormData({ ...formData, hasChildren: e.target.value, numChildren: 0, childrenAges: [], childrenNames: [] })}
                           className="w-5 h-5 accent-navy"
                         />
                         <span className="text-navy-muted">No</span>
@@ -1194,38 +1248,56 @@ function Home({ isOpen, setIsOpen, isAuthenticated, onAuthenticated, dbPassword 
                               setFormData({
                                 ...formData,
                                 numChildren: num,
-                                childrenAges: Array(num).fill('')
+                                childrenAges: Array(num).fill(''),
+                                childrenNames: Array(num).fill('')
                               })
                             }}
                             className="w-full p-4 bg-paper rounded border border-navy/10 focus:border-navy focus:outline-none transition-colors"
                           >
                             <option value="0">Seleziona...</option>
-                            {[1, 2, 3, 4, 5].map(n => (
+                            {[1, 2, 3, 4].map(n => (
                               <option key={n} value={n}>{n} {n === 1 ? 'bambino' : 'bambini'}</option>
                             ))}
                           </select>
                         </div>
 
                         {formData.numChildren > 0 && (
-                          <div className="grid grid-cols-2 gap-4">
+                          <div className="space-y-4">
                             {formData.childrenAges.map((age, index) => (
-                              <div key={index} className="space-y-2">
-                                <label className="text-[10px] font-bold text-navy uppercase tracking-widest">Età bambino {index + 1} *</label>
-                                <select
-                                  value={age}
-                                  required
-                                  onChange={(e) => {
-                                    const newAges = [...formData.childrenAges]
-                                    newAges[index] = e.target.value
-                                    setFormData({ ...formData, childrenAges: newAges })
-                                  }}
-                                  className="w-full p-3 bg-paper rounded border border-navy/10 focus:border-navy focus:outline-none transition-colors text-sm"
-                                >
-                                  <option value="">Età...</option>
-                                  {[...Array(11)].map((_, i) => (
-                                    <option key={i} value={i}>{i} anni</option>
-                                  ))}
-                                </select>
+                              <div key={index} className="grid grid-cols-1 md:grid-cols-7 gap-4 p-4 bg-navy/[0.02] rounded-xl border border-navy/5">
+                                <div className="space-y-2 md:col-span-5 text-left">
+                                  <label className="text-[10px] font-bold text-navy uppercase tracking-widest">Nome bambino {index + 1} *</label>
+                                  <input
+                                    type="text"
+                                    required
+                                    value={formData.childrenNames[index] || ''}
+                                    onChange={(e) => {
+                                      const newNames = [...formData.childrenNames]
+                                      newNames[index] = e.target.value
+                                      setFormData({ ...formData, childrenNames: newNames })
+                                    }}
+                                    placeholder="Nome"
+                                    className="w-full p-3 bg-white rounded border border-navy/10 focus:border-navy focus:outline-none transition-colors text-sm"
+                                  />
+                                </div>
+                                <div className="space-y-2 md:col-span-2 text-left">
+                                  <label className="text-[10px] font-bold text-navy uppercase tracking-widest">Età *</label>
+                                  <select
+                                    value={age}
+                                    required
+                                    onChange={(e) => {
+                                      const newAges = [...formData.childrenAges]
+                                      newAges[index] = e.target.value
+                                      setFormData({ ...formData, childrenAges: newAges })
+                                    }}
+                                    className="w-full p-3 bg-white rounded border border-navy/10 focus:border-navy focus:outline-none transition-colors text-sm"
+                                  >
+                                    <option value="">Età...</option>
+                                    {[...Array(18)].map((_, i) => (
+                                      <option key={i} value={i}>{i} anni</option>
+                                    ))}
+                                  </select>
+                                </div>
                               </div>
                             ))}
                           </div>

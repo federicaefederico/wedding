@@ -13,6 +13,7 @@ export const submitRSVP = async (rsvpData) => {
         attendance: rsvpData.attendance,
         has_children: rsvpData.hasChildren === 'yes',
         children_ages: rsvpData.childrenAges.length > 0 ? rsvpData.childrenAges.join(',') : null,
+        children_names: rsvpData.childrenNames?.length > 0 ? rsvpData.childrenNames.join(',') : null,
         dietary_requirements: rsvpData.dietary_requirements || null,
         message: rsvpData.message || null,
       },
